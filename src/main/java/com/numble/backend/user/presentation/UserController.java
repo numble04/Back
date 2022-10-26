@@ -41,8 +41,9 @@ public class UserController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<Void> logout(@RequestHeader("Authorization") String token) {
-        Long id = userService.logout(token);
+    public ResponseEntity<Void> logout(@RequestHeader("Authorization") String accessToken,
+                                       @RequestHeader("RefreshToken") String refreshToken) {
+        Long id = userService.logout(accessToken,refreshToken);
         return ResponseEntity.created(URI.create("/api/user/register/"+id)).build();
     }
 }

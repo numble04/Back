@@ -72,14 +72,16 @@ public class UserService {
                 jwtTokenUtil.generateRefreshToken(username), JwtExpirationEnums.REFRESH_TOKEN_EXPIRATION_TIME.getValue()));
     }
 
-    public Long logout(String token) {
-        String stoken = token.substring(7);
-        String username = jwtTokenUtil.getUsername(stoken);
-        Long ms = jwtTokenUtil.getRemainMilliSeconds(stoken);
+    public Long logout(String accessToken,String refreshToken) {
+        String t1 = accessToken.substring(7);
+        String username = jwtTokenUtil.getUsername(t1);
+        Long ms = jwtTokenUtil.getRemainMilliSeconds(t1);
         System.out.println("남은 시간: "+ms);
         logoutAccessTokenRedisRepository.save(
-                LogoutAccessToken.of(stoken,username,ms)
+                LogoutAccessToken.of(t1,username,ms)
         );
+
+        refreshTokenRedisRepository.deleteById(username);
 
         return userRepository.findBynickname(username)
                     .orElseThrow(() -> new UserNotFoundException()).getId();
