@@ -2,7 +2,11 @@ package com.numble.backend.common.presentation;
 
 import com.numble.backend.common.dto.ExceptionResponse;
 import com.numble.backend.common.exception.BusinessException;
+import com.numble.backend.common.exception.ExceptionCode;
+import com.numble.backend.user.exception.UserNotFoundException;
+import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.codec.DecodingException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -14,6 +18,21 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @Slf4j
 @RestControllerAdvice
 public class ControllerAdvice {
+
+    @ExceptionHandler(ExpiredJwtException.class)
+    public ResponseEntity<ExceptionResponse> handleExpiredJwtException(final ExpiredJwtException e) {
+        return toResponseEntity("access 토큰이 만료",HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ExceptionResponse> handleUserNotFoundException(final UserNotFoundException e) {
+        return toResponseEntity("유저를 찾을 수 없음",HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(DecodingException.class)
+    public ResponseEntity<ExceptionResponse> handleDecodingException(final DecodingException e) {
+        return toResponseEntity(ExceptionCode.WRONG_TOKEN.getMessage(), HttpStatus.UNAUTHORIZED);
+    }
 
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<ExceptionResponse> handleLevellogException(final BusinessException e) {

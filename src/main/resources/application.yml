@@ -5,6 +5,7 @@ spring:
     url: jdbc:mysql://localhost:3306/numble?serverTimezone=UTC&characterEncoding=UTF-8
     username: root
     password: 1234
+
   jpa:
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
     open-in-view: false
@@ -12,6 +13,14 @@ spring:
     hibernate:
       format_sql: true
       ddl-auto: update
+
+  redis:
+    host: localhost
+    port: 6379
+
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
 
   logging:
     level:
@@ -23,5 +32,7 @@ spring:
               sql:
                 BasicBinder: TRACE
 
+jwt:
+  secret: my-32-character-ultra-secure-and-ultra-long-secret
 
 

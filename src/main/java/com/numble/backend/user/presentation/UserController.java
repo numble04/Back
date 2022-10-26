@@ -2,8 +2,10 @@ package com.numble.backend.user.presentation;
 
 import com.numble.backend.user.application.UserService;
 import com.numble.backend.user.dto.request.UserCreateRequest;
+import com.numble.backend.user.dto.request.UserLoginRequest;
 import com.numble.backend.user.dto.request.UserRequest;
 import com.numble.backend.user.dto.response.UserResponse;
+import com.numble.backend.user.dto.response.UserTokenResponse;
 import com.numble.backend.user.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -28,8 +30,19 @@ public class UserController {
         return ResponseEntity.created(URI.create("/api/user/register/"+id)).build();
     }
 
-//    @PostMapping("/login")
-//    public ReponseEntity<UserLoginResponse> login(@RequestBody UserLoginRequest userLoginRequest) {
-//        return ResponseEntity.ok(userService.login(userLoginRequest));
-//    }
+    @PostMapping("/login")
+    public ResponseEntity<UserTokenResponse> login(@RequestBody UserLoginRequest userLoginRequest) {
+        return ResponseEntity.ok(userService.login(userLoginRequest));
+    }
+
+    @GetMapping("/health")
+    public ResponseEntity<String> health(){
+        return ResponseEntity.ok("authorize 확인");
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(@RequestHeader("Authorization") String token) {
+        Long id = userService.logout(token);
+        return ResponseEntity.created(URI.create("/api/user/register/"+id)).build();
+    }
 }

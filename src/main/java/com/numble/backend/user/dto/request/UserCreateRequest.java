@@ -11,4 +11,8 @@ public class UserCreateRequest {
     private String name;
     private String phone;
     private String nickname;
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 }
