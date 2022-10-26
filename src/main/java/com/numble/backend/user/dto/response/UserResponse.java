@@ -1,4 +1,4 @@
-package com.numble.backend.user.dto;
+package com.numble.backend.user.dto.response;
 
 import lombok.AccessLevel;
 import lombok.Builder;

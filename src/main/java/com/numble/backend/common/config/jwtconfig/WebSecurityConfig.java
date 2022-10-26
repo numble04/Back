@@ -1,4 +1,4 @@
-package com.numble.backend.common.config;
+package com.numble.backend.common.config.jwtconfig;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

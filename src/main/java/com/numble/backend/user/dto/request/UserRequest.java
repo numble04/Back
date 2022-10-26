@@ -1,4 +1,4 @@
-package com.numble.backend.user.dto;
+package com.numble.backend.user.dto.request;
 
 import lombok.Builder;
 import lombok.Getter;

@@ -12,17 +12,31 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Getter
 @Builder
-@Table(uniqueConstraints = {@UniqueConstraint(name = "userId_unique", columnNames = {"userId"})})
+@Table(name="User")
 public class User extends BaseEntity {
 
     @Column(nullable = false)
-    private String userId;
+    private String email;
+
+    @Column(nullable = false)
+    private String password;
 
     @Column(nullable = false)
     private String name;
 
     @Column(nullable = false)
-    private String password;
+    private String nickname;
+
+    @Column(nullable = false, length = 20)
+    private String phone;
+
+    private String img_key;
+
+    private String region;
+
+    private String time;
+
+    private String game_cate;
 
 
 }
