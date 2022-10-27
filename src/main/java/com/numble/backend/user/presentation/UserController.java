@@ -50,7 +50,7 @@ public class UserController {
 	@PutMapping
 	public ResponseEntity<Void> updateById(@AuthenticationPrincipal CustomUserDetails customUserDetails,
 		@RequestBody UserUpdateRequest userUpdateRequest) {
-		userService.updateUserInfoById(customUserDetails.getId(),userUpdateRequest);
+		userService.updateById(customUserDetails.getId(),userUpdateRequest);
 
 		return ResponseEntity.noContent().build();
 	}
