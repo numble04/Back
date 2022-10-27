@@ -88,12 +88,12 @@ public class UserService {
 
 	public Long logout(String accessToken, String refreshToken) {
 		checkToken(accessToken, refreshToken);
-		String t1 = accessToken.substring(7);
-		String username = jwtTokenUtil.getUsername(t1);
-		Long ms = jwtTokenUtil.getRemainMilliSeconds(t1);
+		String token = accessToken.substring(7);
+		String username = jwtTokenUtil.getUsername(token);
+		Long ms = jwtTokenUtil.getRemainMilliSeconds(token);
 
 		logoutAccessTokenRedisRepository.save(
-			LogoutAccessToken.of(t1, username, ms)
+			LogoutAccessToken.of(token, username, ms)
 		);
 		refreshTokenRedisRepository.deleteById(username);
 
@@ -108,25 +108,23 @@ public class UserService {
 	}
 
 	@Transactional
-	public void updateUserInfoById(Long id, UserUpdateRequest userUpdateRequest) {
-		userRepository.setUserInfoById(userUpdateRequest.getImgUrl(), userUpdateRequest.getRegion(),
+	public void updateById(Long id, UserUpdateRequest userUpdateRequest) {
+		userRepository.updateById(userUpdateRequest.getImgUrl(), userUpdateRequest.getRegion(),
 			userUpdateRequest.getTime(), userUpdateRequest.getGameCate(), id);
 	}
 
 	@Transactional
 	public void deleteById(String accessToken, String refreshToken, Long id) {
 		checkToken(accessToken, refreshToken);
-		String t1 = accessToken.substring(7);
-		String username = jwtTokenUtil.getUsername(t1);
-		Long ms = jwtTokenUtil.getRemainMilliSeconds(t1);
+		String token = accessToken.substring(7);
+		String username = jwtTokenUtil.getUsername(token);
+		Long ms = jwtTokenUtil.getRemainMilliSeconds(token);
 
 		logoutAccessTokenRedisRepository.save(
-			LogoutAccessToken.of(t1, username, ms)
+			LogoutAccessToken.of(token, username, ms)
 		);
 		refreshTokenRedisRepository.deleteById(username);
 		userRepository.deleteById(id);
-
-		return;
 
 	}
 
