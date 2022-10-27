@@ -5,6 +5,7 @@ import com.numble.backend.user.application.UserService;
 import com.numble.backend.user.dto.request.UserCreateRequest;
 import com.numble.backend.user.dto.request.UserLoginRequest;
 import com.numble.backend.user.dto.request.UserRequest;
+import com.numble.backend.user.dto.request.UserUpdateRequest;
 import com.numble.backend.user.dto.response.UserResponse;
 import com.numble.backend.user.dto.response.UserTokenResponse;
 import com.numble.backend.user.exception.UserNotFoundException;
@@ -44,6 +45,23 @@ public class UserController {
 		UserTokenResponse response = userService.login(userLoginRequest);
 
 		return ResponseEntity.ok(response);
+	}
+
+	@PutMapping
+	public ResponseEntity<Void> updateById(@AuthenticationPrincipal CustomUserDetails customUserDetails,
+		@RequestBody UserUpdateRequest userUpdateRequest) {
+		userService.updateUserInfoById(customUserDetails.getId(),userUpdateRequest);
+
+		return ResponseEntity.noContent().build();
+	}
+
+	@DeleteMapping
+	public ResponseEntity<Void> deleteById(@AuthenticationPrincipal CustomUserDetails customUserDetails,
+		@RequestHeader("Authorization") String accessToken,
+		@RequestHeader("RefreshToken") String refreshToken) {
+		userService.deleteById(accessToken,refreshToken,customUserDetails.getId());
+
+		return ResponseEntity.noContent().build();
 	}
 
 

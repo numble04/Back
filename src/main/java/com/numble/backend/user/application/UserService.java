@@ -15,6 +15,7 @@ import com.numble.backend.user.domain.mapper.UserLoginMapper;
 import com.numble.backend.user.dto.request.UserCreateRequest;
 import com.numble.backend.user.dto.request.UserLoginRequest;
 import com.numble.backend.user.dto.request.UserRequest;
+import com.numble.backend.user.dto.request.UserUpdateRequest;
 import com.numble.backend.user.dto.response.UserResponse;
 import com.numble.backend.user.dto.response.UserTokenResponse;
 import com.numble.backend.user.exception.EmailExistsException;
@@ -101,10 +102,32 @@ public class UserService {
 	}
 
 	private void checkToken(String accessToken, String refreshToken) {
-		if (!(StringUtils.hasText(accessToken) && StringUtils.hasText(refreshToken) && accessToken.startsWith(
-			"Bearer "))) {
+		if (!(StringUtils.hasText(accessToken) && StringUtils.hasText(refreshToken) && accessToken.startsWith("Bearer "))) {
 			throw new DecodingException("토큰이 잘못됨");
 		}
+	}
+
+	@Transactional
+	public void updateUserInfoById(Long id, UserUpdateRequest userUpdateRequest) {
+		userRepository.setUserInfoById(userUpdateRequest.getImgUrl(), userUpdateRequest.getRegion(),
+			userUpdateRequest.getTime(), userUpdateRequest.getGameCate(), id);
+	}
+
+	@Transactional
+	public void deleteById(String accessToken, String refreshToken, Long id) {
+		checkToken(accessToken, refreshToken);
+		String t1 = accessToken.substring(7);
+		String username = jwtTokenUtil.getUsername(t1);
+		Long ms = jwtTokenUtil.getRemainMilliSeconds(t1);
+
+		logoutAccessTokenRedisRepository.save(
+			LogoutAccessToken.of(t1, username, ms)
+		);
+		refreshTokenRedisRepository.deleteById(username);
+		userRepository.deleteById(id);
+
+		return;
+
 	}
 
 }

@@ -35,6 +35,6 @@ public class User extends BaseEntity {
 
 	private String time;
 
-	private String game_cate;
+	private String gameCate;
 
 }
