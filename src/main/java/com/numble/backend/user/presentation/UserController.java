@@ -1,5 +1,6 @@
 package com.numble.backend.user.presentation;
 
+import com.numble.backend.common.config.security.CustomUserDetails;
 import com.numble.backend.user.application.UserService;
 import com.numble.backend.user.dto.request.UserCreateRequest;
 import com.numble.backend.user.dto.request.UserLoginRequest;
@@ -11,6 +12,7 @@ import com.numble.backend.user.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -22,9 +24,9 @@ public class UserController {
 	private final UserService userService;
 
 	@GetMapping
-	public ResponseEntity<UserResponse> findByname(@RequestHeader("Authorization") String accessToken) throws
+	public ResponseEntity<Long> findById(@AuthenticationPrincipal CustomUserDetails customUserDetails) throws
 		UserNotFoundException {
-		return ResponseEntity.ok(userService.findByname(accessToken));
+		return ResponseEntity.ok(customUserDetails.getId());
 	}
 
 	@PostMapping("/register")
