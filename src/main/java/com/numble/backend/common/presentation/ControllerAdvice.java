@@ -24,11 +24,6 @@ public class ControllerAdvice {
         return toResponseEntity("access 토큰이 만료",HttpStatus.FORBIDDEN);
     }
 
-    @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<ExceptionResponse> handleUserNotFoundException(final UserNotFoundException e) {
-        return toResponseEntity("유저를 찾을 수 없음",HttpStatus.BAD_REQUEST);
-    }
-
     @ExceptionHandler(DecodingException.class)
     public ResponseEntity<ExceptionResponse> handleDecodingException(final DecodingException e) {
         return toResponseEntity(ExceptionCode.WRONG_TOKEN.getMessage(), HttpStatus.UNAUTHORIZED);
