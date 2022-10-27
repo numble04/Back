@@ -17,6 +17,7 @@ import com.numble.backend.user.dto.request.UserLoginRequest;
 import com.numble.backend.user.dto.request.UserRequest;
 import com.numble.backend.user.dto.response.UserResponse;
 import com.numble.backend.user.dto.response.UserTokenResponse;
+import com.numble.backend.user.exception.EmailExistsException;
 import com.numble.backend.user.exception.UserNotFoundException;
 
 import io.jsonwebtoken.io.DecodingException;
@@ -41,31 +42,35 @@ public class UserService {
 	private final JwtTokenUtil jwtTokenUtil;
 	private final PasswordEncoder passwordEncoder;
 
-	public UserResponse findByname(final String accessToken) {
-		String username = jwtTokenUtil.getUsername(accessToken);
-		return UserMapper.INSTANCE.ToDto(
-			userRepository.findBynickname(username)
-				.orElseThrow(() -> new UserNotFoundException()));
-	}
 
+	// 중복 검사 실시
 	@Transactional
 	public Long save(final UserCreateRequest userCreateRequest) {
-		userCreateRequest.setPassword(passwordEncoder.encode(userCreateRequest.getPassword()));
-		System.out.println(userCreateRequest.getEmail());
-		System.out.println(UserCreateMapper.INSTANCE.ToEntity(userCreateRequest).getId());
-		return userRepository.save(UserCreateMapper.INSTANCE.ToEntity(userCreateRequest)).getId();
+		checkEmail(userCreateRequest.getEmail());
+		String password = passwordEncoder.encode(userCreateRequest.getPassword());
+		User user = UserCreateMapper.INSTANCE.ToEntity(userCreateRequest,password);
+
+		return userRepository.save(user).getId();
 	}
 
+	private void checkEmail(final String email) {
+		if (userRepository.existsByEmail(email)){
+			throw new EmailExistsException();
+		}
+	}
+
+	// 한 자리 변수명 금지, dto 빌드 직접
 	public UserTokenResponse login(final UserLoginRequest userLoginRequest) {
 		User user = userRepository.findByemail(userLoginRequest.getEmail())
 			.orElseThrow(() -> new UserNotFoundException());
 		checkPassword(userLoginRequest.getPassword(), user.getPassword());
 
-		Token t = Token.builder()
+		UserTokenResponse response = UserTokenResponse.builder()
 			.accessToken(jwtTokenUtil.generateAccessToken(user.getNickname()))
 			.refreshToken(saveRefreshToken(user.getNickname()).getRefreshToken())
 			.build();
-		return UserLoginMapper.INSTANCE.ToDto(t);
+
+		return response;
 	}
 
 	private void checkPassword(String rawPassword, String findMemberPassword) {
@@ -75,6 +80,7 @@ public class UserService {
 	}
 
 	private RefreshToken saveRefreshToken(String username) {
+
 		return refreshTokenRedisRepository.save(RefreshToken.createRefreshToken(username,
 			jwtTokenUtil.generateRefreshToken(username), JwtExpirationEnums.REFRESH_TOKEN_EXPIRATION_TIME.getValue()));
 	}

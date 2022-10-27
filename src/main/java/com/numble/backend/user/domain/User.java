@@ -11,7 +11,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Getter
 @Builder
-@Table(name = "User")
+@Table(name = "User", uniqueConstraints = {})
 public class User extends BaseEntity {
 
 	@Column(nullable = false)

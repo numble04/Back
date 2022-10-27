@@ -26,31 +26,39 @@ public class UserController {
 	@GetMapping
 	public ResponseEntity<Long> findById(@AuthenticationPrincipal CustomUserDetails customUserDetails) throws
 		UserNotFoundException {
+
 		return ResponseEntity.ok(customUserDetails.getId());
 	}
 
-	@PostMapping("/register")
+
+	@PostMapping
 	public ResponseEntity<Void> save(@RequestBody UserCreateRequest userCreateRequest) {
-		System.out.println("userCreateRequest.getEmail() = " + userCreateRequest.getEmail());
 		Long id = userService.save(userCreateRequest);
-		return ResponseEntity.created(URI.create("/api/users/register/" + id)).build();
+
+		return ResponseEntity.created(URI.create("/api/users/" + id)).build();
 	}
+
 
 	@PostMapping("/login")
 	public ResponseEntity<UserTokenResponse> login(@RequestBody UserLoginRequest userLoginRequest) {
 		UserTokenResponse response = userService.login(userLoginRequest);
+
 		return ResponseEntity.ok(response);
 	}
 
+
 	@GetMapping("/health")
 	public ResponseEntity<String> health() {
+
 		return ResponseEntity.ok("authorize 확인");
 	}
+
 
 	@PostMapping("/logout")
 	public ResponseEntity<Void> logout(@RequestHeader("Authorization") String accessToken,
 		@RequestHeader("RefreshToken") String refreshToken) {
 		Long id = userService.logout(accessToken, refreshToken);
+
 		return ResponseEntity.created(URI.create("/api/users/register/" + id)).build();
 	}
 }

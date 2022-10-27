@@ -15,6 +15,7 @@ import org.mapstruct.factory.Mappers;
 public interface UserCreateMapper {
 	UserCreateMapper INSTANCE = Mappers.getMapper(UserCreateMapper.class);
 
-	User ToEntity(UserCreateRequest dto);
+	@Mapping(source="password",target="password")
+	User ToEntity(UserCreateRequest dto, String password);
 
 }
