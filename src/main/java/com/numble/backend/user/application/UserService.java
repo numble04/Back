@@ -34,13 +34,12 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
 
-//    public UserResponse findByname(final UserRequest userRequest) {
-//
-//       return UserMapper.INSTANCE.ToDto(
-//               userRepository.findByname(userRequest.getName())
-//               .orElseThrow(() -> new UserNotFoundException()));
-//
-//    }
+    public UserResponse findByname(final String accessToken) {
+        String username = jwtTokenUtil.getUsername(accessToken);
+        return UserMapper.INSTANCE.ToDto(
+                userRepository.findBynickname(username)
+                        .orElseThrow(()-> new UserNotFoundException()));
+    }
 
     @Transactional
     public Long save(final UserCreateRequest userCreateRequest) {

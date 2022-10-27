@@ -14,20 +14,20 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/api/users")
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
 
-//    @GetMapping
-//    public ResponseEntity<UserResponse> findByname(@RequestBody UserRequest userRequest) throws UserNotFoundException {
-//        return ResponseEntity.ok(userService.findByname(userRequest));
-//    }
+    @GetMapping
+    public ResponseEntity<UserResponse> findByname(@RequestHeader("Authorization") String accessToken) throws UserNotFoundException {
+        return ResponseEntity.ok(userService.findByname(accessToken));
+    }
 
     @PostMapping("/register")
     public ResponseEntity<Void> save(@RequestBody UserCreateRequest userCreateRequest) {
         Long id = userService.save(userCreateRequest);
-        return ResponseEntity.created(URI.create("/api/user/register/"+id)).build();
+        return ResponseEntity.created(URI.create("/api/users/register/"+id)).build();
     }
 
     @PostMapping("/login")
@@ -44,6 +44,6 @@ public class UserController {
     public ResponseEntity<Void> logout(@RequestHeader("Authorization") String accessToken,
                                        @RequestHeader("RefreshToken") String refreshToken) {
         Long id = userService.logout(accessToken,refreshToken);
-        return ResponseEntity.created(URI.create("/api/user/register/"+id)).build();
+        return ResponseEntity.created(URI.create("/api/users/register/"+id)).build();
     }
 }
