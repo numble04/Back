@@ -7,7 +7,9 @@ import com.numble.backend.user.dto.request.UserRequest;
 import com.numble.backend.user.dto.response.UserResponse;
 import com.numble.backend.user.dto.response.UserTokenResponse;
 import com.numble.backend.user.exception.UserNotFoundException;
+
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,33 +19,36 @@ import java.net.URI;
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
 public class UserController {
-    private final UserService userService;
+	private final UserService userService;
 
-    @GetMapping
-    public ResponseEntity<UserResponse> findByname(@RequestHeader("Authorization") String accessToken) throws UserNotFoundException {
-        return ResponseEntity.ok(userService.findByname(accessToken));
-    }
+	@GetMapping
+	public ResponseEntity<UserResponse> findByname(@RequestHeader("Authorization") String accessToken) throws
+		UserNotFoundException {
+		return ResponseEntity.ok(userService.findByname(accessToken));
+	}
 
-    @PostMapping("/register")
-    public ResponseEntity<Void> save(@RequestBody UserCreateRequest userCreateRequest) {
-        Long id = userService.save(userCreateRequest);
-        return ResponseEntity.created(URI.create("/api/users/register/"+id)).build();
-    }
+	@PostMapping("/register")
+	public ResponseEntity<Void> save(@RequestBody UserCreateRequest userCreateRequest) {
+		System.out.println("userCreateRequest.getEmail() = " + userCreateRequest.getEmail());
+		Long id = userService.save(userCreateRequest);
+		return ResponseEntity.created(URI.create("/api/users/register/" + id)).build();
+	}
 
-    @PostMapping("/login")
-    public ResponseEntity<UserTokenResponse> login(@RequestBody UserLoginRequest userLoginRequest) {
-        return ResponseEntity.ok(userService.login(userLoginRequest));
-    }
+	@PostMapping("/login")
+	public ResponseEntity<UserTokenResponse> login(@RequestBody UserLoginRequest userLoginRequest) {
+		UserTokenResponse response = userService.login(userLoginRequest);
+		return ResponseEntity.ok(response);
+	}
 
-    @GetMapping("/health")
-    public ResponseEntity<String> health(){
-        return ResponseEntity.ok("authorize 확인");
-    }
+	@GetMapping("/health")
+	public ResponseEntity<String> health() {
+		return ResponseEntity.ok("authorize 확인");
+	}
 
-    @PostMapping("/logout")
-    public ResponseEntity<Void> logout(@RequestHeader("Authorization") String accessToken,
-                                       @RequestHeader("RefreshToken") String refreshToken) {
-        Long id = userService.logout(accessToken,refreshToken);
-        return ResponseEntity.created(URI.create("/api/users/register/"+id)).build();
-    }
+	@PostMapping("/logout")
+	public ResponseEntity<Void> logout(@RequestHeader("Authorization") String accessToken,
+		@RequestHeader("RefreshToken") String refreshToken) {
+		Long id = userService.logout(accessToken, refreshToken);
+		return ResponseEntity.created(URI.create("/api/users/register/" + id)).build();
+	}
 }

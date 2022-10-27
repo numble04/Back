@@ -10,7 +10,7 @@ import javax.persistence.Column;
 @Builder
 @Getter
 public class UserResponse {
-    private String userId;
-    private String name;
-    private String password;
+	private String userId;
+	private String name;
+	private String password;
 }
