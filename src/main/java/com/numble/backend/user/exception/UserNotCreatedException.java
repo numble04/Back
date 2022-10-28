@@ -4,11 +4,10 @@ import com.numble.backend.common.exception.BusinessException;
 
 import org.springframework.http.HttpStatus;
 
-public class UserNotFoundException extends BusinessException {
-	private static final String CLIENT_MESSAGE = "사용자가 존재하지 않습니다.";
+public class UserNotCreatedException extends BusinessException {
+	private static final String CLIENT_MESSAGE = "사용자 생성 실패";
 
-	public UserNotFoundException() {
+	public UserNotCreatedException() {
 		super(CLIENT_MESSAGE, HttpStatus.BAD_REQUEST);
 	}
 }
-

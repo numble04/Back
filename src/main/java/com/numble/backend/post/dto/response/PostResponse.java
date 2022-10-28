@@ -1,7 +1,6 @@
 package com.numble.backend.post.dto.response;
 
-import com.numble.backend.user.dto.UserResponse;
-
+import com.numble.backend.user.dto.response.UserResponse;
 import lombok.Builder;
 import lombok.Getter;
 
