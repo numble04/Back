@@ -153,4 +153,11 @@ public class PostService {
 
 		postRepository.deleteById(postId);
 	}
+
+	@Transactional
+	public void updateLikeById(CustomUserDetails customUserDetails, Long postId, PostUpdateRequest postUpdateRequest) {
+		Post post = postRepository.findById(postId)
+			.orElseThrow(() -> new PostNotFoundException());
+
+	}
 }

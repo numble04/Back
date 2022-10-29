@@ -80,6 +80,17 @@ public class PostController {
 		return ResponseEntity.noContent().build();
 	}
 
+	@PutMapping("/{postId}/like")
+	public ResponseEntity<Void> updateLikeById(@AuthenticationPrincipal CustomUserDetails customUserDetails,
+		@PathVariable final Long postId, @RequestBody PostUpdateRequest postUpdateRequest) {
+
+		postService.updateLikeById(customUserDetails, postId,postUpdateRequest);
+
+		return ResponseEntity.noContent().build();
+	}
+
+
+
 	@DeleteMapping("/{postId}")
 	public ResponseEntity<Void> updateById(@AuthenticationPrincipal CustomUserDetails customUserDetails,
 		@PathVariable final Long postId) {
