@@ -142,7 +142,7 @@ public class PostService {
 		Post post = postRepository.findById(postId)
 			.orElseThrow(() -> new PostNotFoundException());
 
-		post.updateContent(postUpdateRequest.getContents(),customUserDetails.getId());
+		post.updateContent(postUpdateRequest.getContent(),customUserDetails.getId());
 	}
 	@Transactional
 	public void deleteById(CustomUserDetails customUserDetails, Long postId) {

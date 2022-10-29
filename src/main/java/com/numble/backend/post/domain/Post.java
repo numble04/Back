@@ -36,7 +36,7 @@ public class Post extends BaseEntity {
     private String title;
 
     @Column
-    private String contents;
+    private String content;
 
     @Column(nullable = false)
     private Integer type;
@@ -49,8 +49,8 @@ public class Post extends BaseEntity {
     private List<Image> images;
 
 
-    private void validateContents(final String contents) {
-        if (contents == null || contents.isBlank()) {
+    private void validateContent(final String content) {
+        if (content == null || content.isBlank()) {
             throw new InvalidFieldException("게시글 내용은 공백이나 null일 수 없습니다.");
         }
     }
@@ -62,10 +62,10 @@ public class Post extends BaseEntity {
         }
     }
 
-    public void updateContent(final String contents, final Long userId) {
-        validateContents(contents);
+    public void updateContent(final String content, final Long userId) {
+        validateContent(content);
         validateMemberIsAuthor(userId);
-        this.contents = contents;
+        this.content = content;
     }
 
 
