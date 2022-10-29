@@ -9,7 +9,7 @@ import lombok.Getter;
 public class PostResponse {
     private Long id;
     private String title;
-    private String contents;
+    private String content;
     private Integer type;
     private UserResponse userResponse;
 }

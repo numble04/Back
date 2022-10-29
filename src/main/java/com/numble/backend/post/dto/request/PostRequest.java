@@ -9,6 +9,6 @@ import lombok.Getter;
 @Getter
 public class PostRequest {
     private String title;
-    private String contents;
+    private String content;
     private Integer type;
 }

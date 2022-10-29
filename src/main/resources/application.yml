@@ -36,3 +36,15 @@ jwt:
   secret: my-32-character-ultra-secure-and-ultra-long-secret
 
 
+cloud:
+  aws:
+    credentials:
+      accessKey: ${AWS_ACCESS_KEY_ID}       # AWS IAM AccessKey 적기
+      secretKey: ${AWS_SECRET_ACCESS_KEY}   # AWS IAM SecretKey 적기
+    s3:
+      bucket: numble-s3    # ex) marryting-gyunny
+      dir: /img         # ex) /gyunny
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
