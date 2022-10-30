@@ -1,0 +1,46 @@
+version: '3'
+
+services:
+  redis:
+    image: redis:alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+
+  database:
+    restart: always
+    container_name: numble_mysql
+    image: mysql/mysql-server:5.7
+    environment:
+      MYSQL_DATABASE: numble
+      MYSQL_ROOT_HOST: '%'
+      MYSQL_ROOT_PASSWORD: 1234
+      TZ: 'Asia/Seoul'
+    ports:
+      - "3307:3307"
+    command:
+      - "mysqld"
+      - "--character-set-server=utf8mb4"
+      - "--collation-server=utf8mb4_unicode_ci"
+
+  backend:
+    restart: always
+    container_name: numble_backend
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    expose:
+      - 8080
+    environment:
+      SPRING_DATASOURCE_driver-class-name: com.mysql.cj.jdbc.Driver
+      SPRING_DATASOURCE_URL: jdbc:mysql://numble_mysql:3306/numble?useSSL=false
+      SPRING_DATASOURCE_USERNAME: "root"
+      SPRING_DATASOURCE_PASSWORD: "1234"
+      SPRING_REDIS_HOST: redis
+    depends_on:
+      - database
+      - redis
+
+
