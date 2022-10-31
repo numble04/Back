@@ -5,6 +5,7 @@ import static javax.persistence.FetchType.LAZY;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -30,9 +31,9 @@ import lombok.NoArgsConstructor;
 @Builder
 public class Post extends BaseEntity {
 
-    @NotNull(message ="제목은 Null일 수 없습니다")
+    @Column(nullable = false)
     private String title;
-    @NotNull(message ="내용은 Null일 수 없습니다")
+    @Column(nullable = false)
     private String content;
 
     private PostType type;
