@@ -32,9 +32,19 @@ public class ControllerAdvice {
 	}
 
 	@ExceptionHandler(BusinessException.class)
-	public ResponseEntity<ExceptionResponse> handleLevellogException(final BusinessException e) {
+	public ResponseEntity<ExceptionResponse> businessException(final BusinessException e) {
 		log.info("{} : {}", ((Exception)e).getClass().getSimpleName(), e.getMessage());
 		return toResponseEntity(e.getClientMessage(), e.getHttpStatus());
+	}
+
+	@ExceptionHandler(MethodArgumentNotValidException.class)
+	public Object handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+		String errorMessage = e.getBindingResult()
+			.getAllErrors()
+			.get(0)
+			.getDefaultMessage();
+
+		return toResponseEntity(errorMessage, HttpStatus.BAD_REQUEST);
 	}
 
 	@ExceptionHandler(MethodArgumentNotValidException.class)
