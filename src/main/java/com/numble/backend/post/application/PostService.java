@@ -19,6 +19,7 @@ import com.numble.backend.common.config.security.CustomUserDetails;
 import com.numble.backend.post.domain.Image;
 import com.numble.backend.post.domain.ImageRepository;
 import com.numble.backend.post.domain.Post;
+import com.numble.backend.post.domain.PostType;
 import com.numble.backend.post.domain.mapper.PostCreateMapper;
 import com.numble.backend.post.domain.mapper.PostMapper;
 import com.numble.backend.post.domain.PostRepository;
@@ -53,16 +54,16 @@ public class PostService {
 		User user =userRepository.findById(customUserDetails.getId())
 			.orElseThrow(() -> new UserNotFoundException());
 
-		Post post=PostCreateMapper.INSTANCE.ToEntity(postRequest,user);
+		Post post=PostCreateMapper.INSTANCE.toEntity(postRequest,user);
 
 		return postRepository.save(post).getId();
 	}
 
-	public PostResponses findAll() {
+	public PostResponses findAll(PostType type) {
 
-		final List<PostResponse> postResponses = postRepository.findAll()
+		final List<PostResponse> postResponses = postRepository.findAllByType(type)
 			.stream()
-			.map(PostMapper.INSTANCE::ToDto)
+			.map(PostMapper.INSTANCE::toDto)
 			.collect(Collectors.toList());
 
 		return new PostResponses(postResponses);
@@ -75,7 +76,7 @@ public class PostService {
 
 		final List<PostResponse> postResponses = postRepository.findAllByUser(user)
 			.stream()
-			.map(PostMapper.INSTANCE::ToDto)
+			.map(PostMapper.INSTANCE::toDto)
 			.collect(Collectors.toList());
 
 		return new PostResponses(postResponses);
@@ -86,7 +87,7 @@ public class PostService {
 			.orElseThrow(() -> new PostNotFoundException());
 
 
-		return PostMapper.INSTANCE.ToDto(post);
+		return PostMapper.INSTANCE.toDto(post);
 	}
 
 	@Transactional

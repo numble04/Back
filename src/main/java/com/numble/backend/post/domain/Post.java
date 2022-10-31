@@ -10,8 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
+import javax.validation.constraints.NotNull;
 
 import com.numble.backend.common.domain.BaseEntity;
 import com.numble.backend.common.exception.InvalidFieldException;
@@ -34,12 +33,11 @@ public class Post extends BaseEntity {
 
     @Column(nullable = false)
     private String title;
-
-    @Column
+    @Column(nullable = false)
     private String content;
 
     @Column(nullable = false)
-    private Integer type;
+    private PostType type;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "userId")

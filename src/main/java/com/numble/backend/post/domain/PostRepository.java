@@ -17,8 +17,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 	 List<Post> findAllById(Long id);
 	 List<Post> findAllByUser(User user);
 
-	// @Modifying
-	// @Query("update Post p set p.title = ?1, p.content = ?2, p.time = ?3, u.gameCate=?4 where p.id = ?5")
-	// void updateById(String img_url, String region, String time,String game_cate, Long id);
+	 List<Post> findAllByType(PostType type);
 
 }

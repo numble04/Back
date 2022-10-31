@@ -6,6 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotNull;
 
 import com.numble.backend.common.domain.BaseEntity;
 
@@ -22,7 +23,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class Image extends BaseEntity {
 
-	@Column(nullable = false)
+	@NotNull
 	private String url;
 
 	@ManyToOne(fetch = LAZY)

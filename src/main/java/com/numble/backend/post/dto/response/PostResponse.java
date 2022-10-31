@@ -1,5 +1,6 @@
 package com.numble.backend.post.dto.response;
 
+import com.numble.backend.post.domain.PostType;
 import com.numble.backend.user.dto.response.UserResponse;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,6 +11,6 @@ public class PostResponse {
     private Long id;
     private String title;
     private String content;
-    private Integer type;
+    private PostType type;
     private UserResponse userResponse;
 }

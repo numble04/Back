@@ -15,9 +15,9 @@ public interface PostMapper {
     PostMapper INSTANCE = Mappers.getMapper(PostMapper.class);
 
 
-	Post ToEntity(PostRequest dto,User user);
+	Post toEntity(PostRequest dto,User user);
 
 	@Mapping(source = "user", target = "userResponse")
-	PostResponse ToDto(Post post);
+	PostResponse toDto(Post post);
 
 }
