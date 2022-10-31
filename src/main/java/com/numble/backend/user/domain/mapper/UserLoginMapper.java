@@ -10,5 +10,5 @@ import org.mapstruct.factory.Mappers;
 public interface UserLoginMapper {
 	UserLoginMapper INSTANCE = Mappers.getMapper(UserLoginMapper.class);
 
-	UserTokenResponse ToDto(Token t);
+	UserTokenResponse toDto(Token t);
 }

@@ -1,6 +1,6 @@
-package com.numble.backend.user.domain;
+package com.numble.backend.user.domain.mapper;
 
-import com.numble.backend.user.dto.request.UserCreateRequest;
+import com.numble.backend.user.domain.User;
 import com.numble.backend.user.dto.response.UserResponse;
 
 import org.mapstruct.Mapper;
@@ -12,8 +12,8 @@ public interface UserMapper {
 	UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 
 	@Mapping(source = "name", target = "name")
-	User ToEntity(UserResponse dto);
+	User toEntity(UserResponse dto);
 
 	@Mapping(source = "name", target = "name")
-	UserResponse ToDto(User user);
+	UserResponse toDto(User user);
 }

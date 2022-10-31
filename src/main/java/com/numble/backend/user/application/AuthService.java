@@ -35,7 +35,7 @@ public class AuthService {
 			.refreshToken(refreshToken1.getRefreshToken())
 			.build();
 
-		return UserLoginMapper.INSTANCE.ToDto(t);
+		return UserLoginMapper.INSTANCE.toDto(t);
 	}
 
 	private void checkRefresh(String refreshToken) {

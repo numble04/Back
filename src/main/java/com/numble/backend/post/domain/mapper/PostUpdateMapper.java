@@ -13,7 +13,7 @@ public interface PostUpdateMapper {
 
 	PostUpdateMapper INSTANCE = Mappers.getMapper(PostUpdateMapper.class);
 
-	Post ToEntity(PostUpdateRequest dto);
+	Post toEntity(PostUpdateRequest dto);
 
 
 }
