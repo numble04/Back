@@ -38,12 +38,11 @@ public class ControllerAdvice {
 	public ResponseEntity<ExceptionResponse> handleValidationException(final MethodArgumentNotValidException e) {
 		final FieldError fieldError = e.getFieldErrors()
 			.get(0);
-		final String message = fieldError.getField() + " " + fieldError.getDefaultMessage();
+		final String message = fieldError.getField() + " :" + fieldError.getDefaultMessage();
 		return toResponseEntity(message, HttpStatus.BAD_REQUEST);
 	}
 
 	@ExceptionHandler(ConversionFailedException.class)
-	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public ResponseEntity<ExceptionResponse> conversionFailedException(
 		ConversionFailedException e) {
 		return toResponseEntity("ENUM 입력값이 올바르지 않습니다", HttpStatus.BAD_REQUEST);
