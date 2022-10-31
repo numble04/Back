@@ -36,6 +36,7 @@ public class Post extends BaseEntity {
     @Column(nullable = false)
     private String content;
 
+    @Column(nullable = false)
     private PostType type;
 
     @ManyToOne(fetch = LAZY)
