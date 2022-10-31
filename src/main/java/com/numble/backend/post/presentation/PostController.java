@@ -2,6 +2,8 @@ package com.numble.backend.post.presentation;
 
 import java.net.URI;
 
+import javax.validation.Valid;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -11,12 +13,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.numble.backend.common.config.security.CustomUserDetails;
 import com.numble.backend.post.application.PostService;
+import com.numble.backend.post.domain.PostType;
 import com.numble.backend.post.dto.request.PostCreateRequest;
 import com.numble.backend.post.dto.request.PostUpdateRequest;
 import com.numble.backend.post.dto.response.PostResponse;
@@ -34,7 +38,8 @@ public class PostController {
 
 	@PostMapping
 	public ResponseEntity<Void> save(@AuthenticationPrincipal CustomUserDetails customUserDetails,
-		@RequestBody PostCreateRequest postRequest) {
+
+		@RequestBody @Valid PostCreateRequest postRequest) {
 
 	    final Long id = postService.save(customUserDetails, postRequest);
 
@@ -49,8 +54,8 @@ public class PostController {
 	}
 
 	@GetMapping
-	public ResponseEntity<PostResponses> findAll() {
-		final PostResponses postResponses = postService.findAll();
+	public ResponseEntity<PostResponses> findAll(@RequestParam("type") PostType type) {
+		final PostResponses postResponses = postService.findAll(type);
 
 		return ResponseEntity.ok(postResponses);
 	}

@@ -19,6 +19,7 @@ import com.numble.backend.common.config.security.CustomUserDetails;
 import com.numble.backend.post.domain.Image;
 import com.numble.backend.post.domain.ImageRepository;
 import com.numble.backend.post.domain.Post;
+import com.numble.backend.post.domain.PostType;
 import com.numble.backend.post.domain.mapper.PostCreateMapper;
 import com.numble.backend.post.domain.mapper.PostMapper;
 import com.numble.backend.post.domain.PostRepository;
@@ -58,9 +59,9 @@ public class PostService {
 		return postRepository.save(post).getId();
 	}
 
-	public PostResponses findAll() {
+	public PostResponses findAll(PostType type) {
 
-		final List<PostResponse> postResponses = postRepository.findAll()
+		final List<PostResponse> postResponses = postRepository.findAllByType(type)
 			.stream()
 			.map(PostMapper.INSTANCE::toDto)
 			.collect(Collectors.toList());
