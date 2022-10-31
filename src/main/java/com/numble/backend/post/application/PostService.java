@@ -53,7 +53,7 @@ public class PostService {
 		User user =userRepository.findById(customUserDetails.getId())
 			.orElseThrow(() -> new UserNotFoundException());
 
-		Post post=PostCreateMapper.INSTANCE.ToEntity(postRequest,user);
+		Post post=PostCreateMapper.INSTANCE.toEntity(postRequest,user);
 
 		return postRepository.save(post).getId();
 	}
@@ -62,7 +62,7 @@ public class PostService {
 
 		final List<PostResponse> postResponses = postRepository.findAll()
 			.stream()
-			.map(PostMapper.INSTANCE::ToDto)
+			.map(PostMapper.INSTANCE::toDto)
 			.collect(Collectors.toList());
 
 		return new PostResponses(postResponses);
@@ -75,7 +75,7 @@ public class PostService {
 
 		final List<PostResponse> postResponses = postRepository.findAllByUser(user)
 			.stream()
-			.map(PostMapper.INSTANCE::ToDto)
+			.map(PostMapper.INSTANCE::toDto)
 			.collect(Collectors.toList());
 
 		return new PostResponses(postResponses);
@@ -86,7 +86,7 @@ public class PostService {
 			.orElseThrow(() -> new PostNotFoundException());
 
 
-		return PostMapper.INSTANCE.ToDto(post);
+		return PostMapper.INSTANCE.toDto(post);
 	}
 
 	@Transactional
