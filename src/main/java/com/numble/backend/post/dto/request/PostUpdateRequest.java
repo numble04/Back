@@ -1,5 +1,7 @@
 package com.numble.backend.post.dto.request;
 
+import com.numble.backend.post.domain.PostType;
+
 import lombok.Builder;
 import lombok.Getter;
 
@@ -8,6 +10,6 @@ import lombok.Getter;
 public class PostUpdateRequest {
 	private String title;
 	private String content;
-	private Integer type;
+	private PostType type;
 	private Long userId;
 }
