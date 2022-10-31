@@ -9,12 +9,14 @@ import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.core.codec.DecodingException;
+import org.springframework.core.convert.ConversionFailedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @Slf4j
@@ -33,21 +35,18 @@ public class ControllerAdvice {
 	}
 
 	@ExceptionHandler(MethodArgumentNotValidException.class)
-	public Object handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
-		String errorMessage = e.getBindingResult()
-			.getAllErrors()
-			.get(0)
-			.getDefaultMessage();
-
-		return toResponseEntity(errorMessage, HttpStatus.BAD_REQUEST);
-	}
-
-	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public ResponseEntity<ExceptionResponse> handleValidationException(final MethodArgumentNotValidException e) {
 		final FieldError fieldError = e.getFieldErrors()
 			.get(0);
 		final String message = fieldError.getField() + " " + fieldError.getDefaultMessage();
 		return toResponseEntity(message, HttpStatus.BAD_REQUEST);
+	}
+
+	@ExceptionHandler(ConversionFailedException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public ResponseEntity<ExceptionResponse> conversionFailedException(
+		ConversionFailedException e) {
+		return toResponseEntity("입력값이 올바르지 않습니다", HttpStatus.BAD_REQUEST);
 	}
 
 	@ExceptionHandler(HttpMessageNotReadableException.class)
