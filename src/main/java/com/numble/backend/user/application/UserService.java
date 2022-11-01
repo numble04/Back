@@ -21,6 +21,7 @@ import com.numble.backend.user.dto.request.UserUpdateRequest;
 import com.numble.backend.user.dto.response.UserResponse;
 import com.numble.backend.user.dto.response.UserTokenResponse;
 import com.numble.backend.user.exception.EmailExistsException;
+import com.numble.backend.user.exception.InvalidPasswordException;
 import com.numble.backend.user.exception.UserNotFoundException;
 
 import io.jsonwebtoken.io.DecodingException;
@@ -78,7 +79,7 @@ public class UserService {
 
 	private void checkPassword(String rawPassword, String findMemberPassword) {
 		if (!passwordEncoder.matches(rawPassword, findMemberPassword)) {
-			throw new IllegalArgumentException("비밀번호가 맞지 않습니다.");
+			throw new InvalidPasswordException();
 		}
 	}
 
@@ -105,15 +106,9 @@ public class UserService {
 
 	private void checkToken(String accessToken, String refreshToken) {
 		if (!(StringUtils.hasText(accessToken) && StringUtils.hasText(refreshToken) && accessToken.startsWith("Bearer "))) {
-			throw new DecodingException("토큰이 잘못됨");
+			throw new DecodingException("토큰 형식 오류");
 		}
 	}
-
-	// @Transactional
-	// public void updateById(Long id, UserUpdateRequest userUpdateRequest) {
-	// 	userRepository.updateById(userUpdateRequest.getImgUrl(), userUpdateRequest.getRegion(),
-	// 		userUpdateRequest.getTime(), userUpdateRequest.getGameCate(), id);
-	// }
 
 	@Transactional
 	public void updateById(Long id,UserUpdateRequest userUpdateRequest) {
