@@ -1,15 +1,29 @@
 version: '3'
 
 services:
+  nginx:
+    restart: always
+    container_name: boardker_nginx
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    image: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+    depends_on:
+      - backend
+
   redis:
     image: redis:alpine
-    container_name: redis
+    container_name: boardker_redis
     ports:
       - "6379:6379"
 
   database:
     restart: always
-    container_name: numble_mysql
+    container_name: boardker_mysql
     image: mysql/mysql-server:5.7
     environment:
       MYSQL_DATABASE: numble
@@ -25,7 +39,7 @@ services:
 
   backend:
     restart: always
-    container_name: numble_backend
+    container_name: boardker_backend
     build:
       context: ./
       dockerfile: Dockerfile
@@ -35,7 +49,7 @@ services:
       - 8080
     environment:
       SPRING_DATASOURCE_driver-class-name: com.mysql.cj.jdbc.Driver
-      SPRING_DATASOURCE_URL: jdbc:mysql://numble_mysql:3306/numble?useSSL=false
+      SPRING_DATASOURCE_URL: jdbc:mysql://boardker_mysql:3306/numble?useSSL=false
       SPRING_DATASOURCE_USERNAME: "root"
       SPRING_DATASOURCE_PASSWORD: "1234"
       SPRING_REDIS_HOST: redis
