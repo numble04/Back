@@ -10,7 +10,7 @@ import com.numble.backend.post.domain.Post;
 import com.numble.backend.post.exception.PostNotFoundException;
 import com.numble.backend.user.domain.Token;
 import com.numble.backend.user.domain.User;
-import com.numble.backend.user.domain.UserMapper;
+import com.numble.backend.user.domain.mapper.UserMapper;
 import com.numble.backend.user.domain.UserRepository;
 import com.numble.backend.user.domain.mapper.UserCreateMapper;
 import com.numble.backend.user.domain.mapper.UserLoginMapper;
@@ -52,7 +52,7 @@ public class UserService {
 	public Long save(final UserCreateRequest userCreateRequest) {
 		checkEmail(userCreateRequest.getEmail());
 		String password = passwordEncoder.encode(userCreateRequest.getPassword());
-		User user = UserCreateMapper.INSTANCE.ToEntity(userCreateRequest,password);
+		User user = UserCreateMapper.INSTANCE.toEntity(userCreateRequest,password);
 
 		return userRepository.save(user).getId();
 	}
