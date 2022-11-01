@@ -6,11 +6,6 @@ import lombok.Getter;
 @Getter
 @Builder
 public class UserUpdateRequest {
-	private String imgUrl;
-
+	private String img;
 	private String region;
-
-	private String time;
-
-	private String gameCate;
 }
