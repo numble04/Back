@@ -31,21 +31,16 @@ public class User extends BaseEntity {
 
 	@Column(nullable = false, length = 20)
 	private String phone;
-
-	private String imgUrl;
-
+	private String img;
 	private String region;
 
-	private String time;
 
-	private String gameCate;
 
 
 	public void updateUser(UserUpdateRequest userUpdateRequest) {
 
-		this.imgUrl = userUpdateRequest.getImgUrl();
+		this.img = userUpdateRequest.getImg();
 		this.region = userUpdateRequest.getRegion();
-		this.time = userUpdateRequest.getTime();
-		this.gameCate = userUpdateRequest.getGameCate();
+
 	}
 }
