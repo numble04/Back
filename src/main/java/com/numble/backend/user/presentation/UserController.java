@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
@@ -33,7 +35,7 @@ public class UserController {
 
 
 	@PostMapping
-	public ResponseEntity<Void> save(@RequestBody UserCreateRequest userCreateRequest) {
+	public ResponseEntity<Void> save(@RequestBody @Valid UserCreateRequest userCreateRequest) {
 		Long id = userService.save(userCreateRequest);
 
 		return ResponseEntity.created(URI.create("/api/users/" + id)).build();
@@ -41,7 +43,7 @@ public class UserController {
 
 
 	@PostMapping("/login")
-	public ResponseEntity<UserTokenResponse> login(@RequestBody UserLoginRequest userLoginRequest) {
+	public ResponseEntity<UserTokenResponse> login(@RequestBody @Valid UserLoginRequest userLoginRequest) {
 		UserTokenResponse response = userService.login(userLoginRequest);
 
 		return ResponseEntity.ok(response);
@@ -49,7 +51,7 @@ public class UserController {
 
 	@PutMapping
 	public ResponseEntity<Void> updateById(@AuthenticationPrincipal CustomUserDetails customUserDetails,
-		@RequestBody UserUpdateRequest userUpdateRequest) {
+		@RequestBody @Valid UserUpdateRequest userUpdateRequest) {
 		userService.updateById(customUserDetails.getId(),userUpdateRequest);
 
 		return ResponseEntity.noContent().build();

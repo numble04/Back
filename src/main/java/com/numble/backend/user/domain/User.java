@@ -1,6 +1,9 @@
 package com.numble.backend.user.domain;
 
 import com.numble.backend.common.domain.BaseEntity;
+import com.numble.backend.common.exception.InvalidFieldException;
+import com.numble.backend.user.dto.request.UserUpdateRequest;
+import com.numble.backend.user.exception.UserNotAuthorException;
 
 import lombok.*;
 
@@ -28,13 +31,16 @@ public class User extends BaseEntity {
 
 	@Column(nullable = false, length = 20)
 	private String phone;
-
-	private String imgUrl;
-
+	private String img;
 	private String region;
 
-	private String time;
 
-	private String gameCate;
 
+
+	public void updateUser(UserUpdateRequest userUpdateRequest) {
+
+		this.img = userUpdateRequest.getImg();
+		this.region = userUpdateRequest.getRegion();
+
+	}
 }

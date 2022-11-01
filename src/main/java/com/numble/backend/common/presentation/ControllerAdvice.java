@@ -23,11 +23,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class ControllerAdvice {
 
-	@ExceptionHandler(ExpiredJwtException.class)
-	public ResponseEntity<ExceptionResponse> handleExpiredJwtException(final ExpiredJwtException e) {
-		return toResponseEntity("access 토큰이 만료", HttpStatus.FORBIDDEN);
-	}
-
 	@ExceptionHandler(DecodingException.class)
 	public ResponseEntity<ExceptionResponse> handleDecodingException(final DecodingException e) {
 		return toResponseEntity(ExceptionCode.WRONG_TOKEN.getMessage(), HttpStatus.UNAUTHORIZED);
