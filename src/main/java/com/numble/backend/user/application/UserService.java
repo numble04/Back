@@ -13,12 +13,9 @@ import com.numble.backend.user.domain.User;
 import com.numble.backend.user.domain.mapper.UserMapper;
 import com.numble.backend.user.domain.UserRepository;
 import com.numble.backend.user.domain.mapper.UserCreateMapper;
-import com.numble.backend.user.domain.mapper.UserLoginMapper;
 import com.numble.backend.user.dto.request.UserCreateRequest;
 import com.numble.backend.user.dto.request.UserLoginRequest;
-import com.numble.backend.user.dto.request.UserRequest;
 import com.numble.backend.user.dto.request.UserUpdateRequest;
-import com.numble.backend.user.dto.response.UserResponse;
 import com.numble.backend.user.dto.response.UserTokenResponse;
 import com.numble.backend.user.exception.EmailExistsException;
 import com.numble.backend.user.exception.InvalidPasswordException;
@@ -32,8 +29,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
-
-import static java.rmi.server.LogStream.log;
 
 @Slf4j
 @Service
