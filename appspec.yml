@@ -1,0 +1,19 @@
+version: 0.0
+os: linux
+
+files:
+  - source: /
+    destination: /home/ubuntu/backend # 파일 배포 경로
+file_exists_behavior: OVERWRITE
+
+permissions:
+  - object: /home/ubuntu/
+    owner: ubuntu
+    group: ubuntu
+    mode: 755
+
+hooks:
+  AfterInstall:
+    - location: deploy.sh
+      timeout: 100
+      runas: root
