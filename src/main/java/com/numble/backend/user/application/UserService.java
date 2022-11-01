@@ -6,6 +6,8 @@ import com.numble.backend.common.domain.access.LogoutAccessToken;
 import com.numble.backend.common.domain.access.LogoutAccessTokenRedisRepository;
 import com.numble.backend.common.domain.refresh.RefreshToken;
 import com.numble.backend.common.domain.refresh.RefreshTokenRedisRepository;
+import com.numble.backend.post.domain.Post;
+import com.numble.backend.post.exception.PostNotFoundException;
 import com.numble.backend.user.domain.Token;
 import com.numble.backend.user.domain.User;
 import com.numble.backend.user.domain.UserMapper;
@@ -107,10 +109,18 @@ public class UserService {
 		}
 	}
 
+	// @Transactional
+	// public void updateById(Long id, UserUpdateRequest userUpdateRequest) {
+	// 	userRepository.updateById(userUpdateRequest.getImgUrl(), userUpdateRequest.getRegion(),
+	// 		userUpdateRequest.getTime(), userUpdateRequest.getGameCate(), id);
+	// }
+
 	@Transactional
-	public void updateById(Long id, UserUpdateRequest userUpdateRequest) {
-		userRepository.updateById(userUpdateRequest.getImgUrl(), userUpdateRequest.getRegion(),
-			userUpdateRequest.getTime(), userUpdateRequest.getGameCate(), id);
+	public void updateById(Long id,UserUpdateRequest userUpdateRequest) {
+		User user = userRepository.findById(id)
+			.orElseThrow(() -> new UserNotFoundException());
+
+		user.updateUser(userUpdateRequest);
 	}
 
 	@Transactional
