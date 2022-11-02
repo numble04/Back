@@ -19,36 +19,58 @@ public class JwtEntryPoint implements AuthenticationEntryPoint {
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
         String exception = (String) request.getAttribute("exception");
 
-        if(exception == null) {
-            setResponse(response, ExceptionCode.UNKNOWN_ERROR);
+        // 토큰이 없을 경우
+        if(exception.equals(ExceptionCode.NO_TOKEN.getCode())) {
+            set403Response(response, ExceptionCode.NO_TOKEN);
         }
         //잘못된 타입의 토큰인 경우
         else if(exception.equals(ExceptionCode.WRONG_TYPE_TOKEN.getCode())) {
-            setResponse(response, ExceptionCode.WRONG_TYPE_TOKEN);
+            set403Response(response, ExceptionCode.WRONG_TYPE_TOKEN);
         }
         //토큰 만료된 경우
         else if(exception.equals(ExceptionCode.EXPIRED_TOKEN.getCode())) {
-            setResponse(response, ExceptionCode.EXPIRED_TOKEN);
+            set401Response(response, ExceptionCode.EXPIRED_TOKEN);
         }
         //지원되지 않는 토큰인 경우
         else if(exception.equals(ExceptionCode.UNSUPPORTED_TOKEN.getCode())) {
-            setResponse(response, ExceptionCode.UNSUPPORTED_TOKEN);
+            set403Response(response, ExceptionCode.UNSUPPORTED_TOKEN);
         }
-        else {
-            setResponse(response, ExceptionCode.ACCESS_DENIED);
+        // 토큰이 잘못되었을 경우
+        else if (exception.equals(ExceptionCode.WRONG_TOKEN.getCode())) {
+            set403Response(response, ExceptionCode.WRONG_TOKEN);
         }
-
-//        response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
     }
 
 
-    private void setResponse(HttpServletResponse response, ExceptionCode exceptionCode) throws IOException {
+    private void set400Response(HttpServletResponse response, ExceptionCode exceptionCode) throws IOException {
+        response.setContentType("application/json;charset=UTF-8");
+        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+
+        JSONObject responseJson = new JSONObject();
+        responseJson.put("message", exceptionCode.getMessage());
+        responseJson.put("code", HttpStatus.BAD_REQUEST.value());
+
+        response.getWriter().print(responseJson);
+    }
+
+    private void set401Response(HttpServletResponse response, ExceptionCode exceptionCode) throws IOException {
         response.setContentType("application/json;charset=UTF-8");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
         JSONObject responseJson = new JSONObject();
         responseJson.put("message", exceptionCode.getMessage());
-        responseJson.put("code", exceptionCode.getCode());
+        responseJson.put("code", HttpStatus.UNAUTHORIZED.value());
+
+        response.getWriter().print(responseJson);
+    }
+
+    private void set403Response(HttpServletResponse response, ExceptionCode exceptionCode) throws IOException {
+        response.setContentType("application/json;charset=UTF-8");
+        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+
+        JSONObject responseJson = new JSONObject();
+        responseJson.put("message", exceptionCode.getMessage());
+        responseJson.put("code", HttpStatus.FORBIDDEN.value());
 
         response.getWriter().print(responseJson);
     }
