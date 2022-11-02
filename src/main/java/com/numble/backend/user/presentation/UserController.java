@@ -34,7 +34,7 @@ public class UserController {
 	}
 
 
-	@PostMapping
+	@PostMapping("/register")
 	public ResponseEntity<Void> save(@RequestBody @Valid UserCreateRequest userCreateRequest) {
 		Long id = userService.save(userCreateRequest);
 
