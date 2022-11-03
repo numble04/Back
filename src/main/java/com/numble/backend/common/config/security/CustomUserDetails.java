@@ -17,15 +17,13 @@ import java.util.Collection;
 @AllArgsConstructor
 @Builder
 public class CustomUserDetails implements UserDetails {
-	Long id;
 	String username;
 	String password;
 
 	// user 객체를 userdetails 객체로 반환해줌
 	public static UserDetails of(User user) {
 		return CustomUserDetails.builder()
-			.id(user.getId())
-			.username(user.getNickname())
+			.username(user.getId().toString())
 			.password(user.getPassword())
 			.build();
 	}
@@ -35,9 +33,7 @@ public class CustomUserDetails implements UserDetails {
 		return null;
 	}
 
-	public Long getId() {
-		return id;
-	}
+	public Long getId() {return Long.parseLong(getUsername());}
 
 	@Override
 	public String getPassword() {

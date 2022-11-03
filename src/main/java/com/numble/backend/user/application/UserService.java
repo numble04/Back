@@ -65,8 +65,8 @@ public class UserService {
 		checkPassword(userLoginRequest.getPassword(), user.getPassword());
 
 		UserTokenResponse response = UserTokenResponse.builder()
-			.accessToken(jwtTokenUtil.generateAccessToken(user.getNickname()))
-			.refreshToken(saveRefreshToken(user.getNickname()).getRefreshToken())
+			.accessToken(jwtTokenUtil.generateAccessToken(user.getId().toString()))
+			.refreshToken(saveRefreshToken(user.getId().toString()).getRefreshToken())
 			.build();
 
 		return response;
