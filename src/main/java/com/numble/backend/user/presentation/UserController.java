@@ -1,6 +1,7 @@
 package com.numble.backend.user.presentation;
 
 import com.numble.backend.common.config.security.CustomUserDetails;
+import com.numble.backend.common.dto.ResponseDto;
 import com.numble.backend.user.application.UserService;
 import com.numble.backend.user.dto.request.UserCreateRequest;
 import com.numble.backend.user.dto.request.UserLoginRequest;
@@ -26,14 +27,6 @@ import javax.validation.Valid;
 public class UserController {
 	private final UserService userService;
 
-	@GetMapping
-	public ResponseEntity<Long> findById(@AuthenticationPrincipal CustomUserDetails customUserDetails) throws
-		UserNotFoundException {
-
-		return ResponseEntity.ok(customUserDetails.getId());
-	}
-
-
 	@PostMapping("/register")
 	public ResponseEntity<Void> save(@RequestBody @Valid UserCreateRequest userCreateRequest) {
 		Long id = userService.save(userCreateRequest);
@@ -43,10 +36,10 @@ public class UserController {
 
 
 	@PostMapping("/login")
-	public ResponseEntity<UserTokenResponse> login(@RequestBody @Valid UserLoginRequest userLoginRequest) {
-		UserTokenResponse response = userService.login(userLoginRequest);
+	public ResponseEntity<ResponseDto> login(@RequestBody @Valid UserLoginRequest userLoginRequest) {
+		ResponseDto responseDto = ResponseDto.of(userService.login(userLoginRequest));
 
-		return ResponseEntity.ok(response);
+		return ResponseEntity.ok(responseDto);
 	}
 
 	@PutMapping
@@ -64,13 +57,6 @@ public class UserController {
 		userService.deleteById(accessToken,refreshToken,customUserDetails.getId());
 
 		return ResponseEntity.noContent().build();
-	}
-
-
-	@GetMapping("/health")
-	public ResponseEntity<String> health() {
-
-		return ResponseEntity.ok("authorize 확인");
 	}
 
 
