@@ -1,6 +1,5 @@
 package com.numble.backend.post.application;
 
-import java.awt.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -24,11 +23,9 @@ import com.numble.backend.post.domain.mapper.PostCreateMapper;
 import com.numble.backend.post.domain.mapper.PostMapper;
 import com.numble.backend.post.domain.PostRepository;
 
-import com.numble.backend.post.domain.mapper.PostUpdateMapper;
 import com.numble.backend.post.dto.request.PostCreateRequest;
 import com.numble.backend.post.dto.request.PostUpdateRequest;
 import com.numble.backend.post.dto.response.PostResponse;
-import com.numble.backend.post.dto.response.PostResponses;
 import com.numble.backend.post.exception.PostNotFoundException;
 import com.numble.backend.user.domain.User;
 import com.numble.backend.user.domain.UserRepository;
