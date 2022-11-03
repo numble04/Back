@@ -8,9 +8,7 @@ public enum ExceptionCode {
     WRONG_TOKEN("token is wrong"),
     EXPIRED_TOKEN("token is expired"),
     UNSUPPORTED_TOKEN("token unavailable"),
-    NO_TOKEN("no token"),
-    ACCESS_DENIED("access denied"),
-    UNKNOWN_ERROR("error is unknown");
+    NO_TOKEN("no token");
 
     private final String message;
 
