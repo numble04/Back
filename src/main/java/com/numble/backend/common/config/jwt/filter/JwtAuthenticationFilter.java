@@ -4,9 +4,9 @@ import com.numble.backend.common.config.jwt.JwtTokenUtil;
 import com.numble.backend.common.config.security.CustomUserDetailsService;
 import com.numble.backend.common.domain.access.LogoutAccessTokenRedisRepository;
 import com.numble.backend.common.exception.auth.ExceptionCode;
-import com.numble.backend.common.exception.auth.ExpiredJwtException;
 import com.numble.backend.common.exception.auth.NoAccessTokenException;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import lombok.RequiredArgsConstructor;
