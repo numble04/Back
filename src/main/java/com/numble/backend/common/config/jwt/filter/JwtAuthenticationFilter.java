@@ -3,10 +3,9 @@ package com.numble.backend.common.config.jwt.filter;
 import com.numble.backend.common.config.jwt.JwtTokenUtil;
 import com.numble.backend.common.config.security.CustomUserDetailsService;
 import com.numble.backend.common.domain.access.LogoutAccessTokenRedisRepository;
-import com.numble.backend.common.exception.ExceptionCode;
+import com.numble.backend.common.exception.auth.ExceptionCode;
 import com.numble.backend.common.exception.auth.ExpiredJwtException;
 import com.numble.backend.common.exception.auth.NoAccessTokenException;
-import com.numble.backend.user.exception.UserNotFoundException;
 
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
@@ -62,15 +61,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 				throw new NoAccessTokenException();
 			}
 		} catch (NoAccessTokenException e) {
-			request.setAttribute("exception", ExceptionCode.NO_TOKEN.getCode());
+			request.setAttribute("exception", ExceptionCode.NO_TOKEN);
 		} catch (SecurityException | MalformedJwtException e) {
-			request.setAttribute("exception", ExceptionCode.WRONG_TYPE_TOKEN.getCode());
+			request.setAttribute("exception", ExceptionCode.WRONG_TYPE_TOKEN);
 		} catch (ExpiredJwtException e) {
-			request.setAttribute("exception", ExceptionCode.EXPIRED_TOKEN.getCode());
+			request.setAttribute("exception", ExceptionCode.EXPIRED_TOKEN);
 		} catch (UnsupportedJwtException e) {
-			request.setAttribute("exception", ExceptionCode.UNSUPPORTED_TOKEN.getCode());
+			request.setAttribute("exception", ExceptionCode.UNSUPPORTED_TOKEN);
 		} catch (IllegalArgumentException e) {
-			request.setAttribute("exception", ExceptionCode.WRONG_TOKEN.getCode());
+			request.setAttribute("exception", ExceptionCode.WRONG_TOKEN);
 		}
 
 		filterChain.doFilter(request, response);
