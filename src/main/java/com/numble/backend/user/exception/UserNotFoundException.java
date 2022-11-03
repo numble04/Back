@@ -1,6 +1,6 @@
 package com.numble.backend.user.exception;
 
-import com.numble.backend.common.exception.BusinessException;
+import com.numble.backend.common.exception.business.BusinessException;
 
 import org.springframework.http.HttpStatus;
 

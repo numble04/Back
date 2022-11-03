@@ -1,11 +1,9 @@
 package com.numble.backend.common.presentation;
 
 import com.numble.backend.common.dto.ExceptionResponse;
-import com.numble.backend.common.exception.BusinessException;
-import com.numble.backend.common.exception.ExceptionCode;
-import com.numble.backend.user.exception.UserNotFoundException;
+import com.numble.backend.common.exception.business.BusinessException;
+import com.numble.backend.common.exception.auth.ExceptionCode;
 
-import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.core.codec.DecodingException;
@@ -16,7 +14,6 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @Slf4j

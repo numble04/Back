@@ -2,7 +2,7 @@ package com.numble.backend.comment.exception;
 
 import org.springframework.http.HttpStatus;
 
-import com.numble.backend.common.exception.BusinessException;
+import com.numble.backend.common.exception.business.BusinessException;
 
 public class CommentNotFoundException extends BusinessException {
 	private static final String CLIENT_MESSAGE = "댓글이 존재하지 않습니다.";

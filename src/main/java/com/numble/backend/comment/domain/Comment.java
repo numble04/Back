@@ -2,7 +2,6 @@ package com.numble.backend.comment.domain;
 
 import static javax.persistence.FetchType.LAZY;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -12,7 +11,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import com.numble.backend.common.domain.BaseEntity;
-import com.numble.backend.common.exception.InvalidFieldException;
+import com.numble.backend.common.exception.business.InvalidFieldException;
 import com.numble.backend.post.domain.Post;
 import com.numble.backend.user.domain.User;
 import com.numble.backend.user.exception.UserNotAuthorException;
