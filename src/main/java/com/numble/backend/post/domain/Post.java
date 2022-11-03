@@ -2,6 +2,7 @@ package com.numble.backend.post.domain;
 
 import static javax.persistence.FetchType.LAZY;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -12,6 +13,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 
+import com.numble.backend.comment.domain.Comment;
 import com.numble.backend.common.domain.BaseEntity;
 import com.numble.backend.common.exception.InvalidFieldException;
 import com.numble.backend.user.domain.User;
@@ -45,6 +47,9 @@ public class Post extends BaseEntity {
 
     @OneToMany(mappedBy = "post",cascade = CascadeType.ALL)
     private List<Image> images;
+
+    @OneToMany(mappedBy = "post", orphanRemoval = true)
+    private List<Comment> comments;
 
 
     private void validateContent(final String content) {
