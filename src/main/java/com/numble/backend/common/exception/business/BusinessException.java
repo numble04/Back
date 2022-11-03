@@ -1,4 +1,4 @@
-package com.numble.backend.common.exception;
+package com.numble.backend.common.exception.business;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;

@@ -1,9 +1,7 @@
 package com.numble.backend.user.domain;
 
 import com.numble.backend.common.domain.BaseEntity;
-import com.numble.backend.common.exception.InvalidFieldException;
 import com.numble.backend.user.dto.request.UserUpdateRequest;
-import com.numble.backend.user.exception.UserNotAuthorException;
 
 import lombok.*;
 
