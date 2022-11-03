@@ -49,29 +49,29 @@ public class PostService {
 	private String bucketName;
 
 	@Transactional
-	public Long save(CustomUserDetails customUserDetails, PostCreateRequest postRequest){
+	public Long save(CustomUserDetails customUserDetails, PostCreateRequest postRequest) {
 
-		User user =userRepository.findById(customUserDetails.getId())
+		User user = userRepository.findById(customUserDetails.getId())
 			.orElseThrow(() -> new UserNotFoundException());
 
-		Post post=PostCreateMapper.INSTANCE.toEntity(postRequest,user);
+		Post post = PostCreateMapper.INSTANCE.toEntity(postRequest, user);
 
 		return postRepository.save(post).getId();
 	}
 
-	public PostResponses findAll(PostType type) {
+	public List<PostResponse> findAll(PostType type) {
 
 		final List<PostResponse> postResponses = postRepository.findAllByType(type)
 			.stream()
 			.map(PostMapper.INSTANCE::toDto)
 			.collect(Collectors.toList());
 
-		return new PostResponses(postResponses);
+		return postResponses;
 	}
 
-	public PostResponses findAllByUserId(CustomUserDetails customUserDetails) {
+	public List<PostResponse> findAllByUserId(CustomUserDetails customUserDetails) {
 
-		User user =userRepository.findById(customUserDetails.getId())
+		User user = userRepository.findById(customUserDetails.getId())
 			.orElseThrow(() -> new UserNotFoundException());
 
 		final List<PostResponse> postResponses = postRepository.findAllByUser(user)
@@ -79,13 +79,12 @@ public class PostService {
 			.map(PostMapper.INSTANCE::toDto)
 			.collect(Collectors.toList());
 
-		return new PostResponses(postResponses);
+		return postResponses;
 	}
 
 	public PostResponse findById(Long postId) {
-		Post post =postRepository.findById(postId)
+		Post post = postRepository.findById(postId)
 			.orElseThrow(() -> new PostNotFoundException());
-
 
 		return PostMapper.INSTANCE.toDto(post);
 	}
@@ -106,8 +105,8 @@ public class PostService {
 			throw new RuntimeException();
 		}
 
-		String url =amazonS3Client.getUrl(bucketName, fileName).toString();
-		Post post =postRepository.findById(postId)
+		String url = amazonS3Client.getUrl(bucketName, fileName).toString();
+		Post post = postRepository.findById(postId)
 			.orElseThrow(() -> new PostNotFoundException());
 
 		Image image = Image.builder()
@@ -138,13 +137,14 @@ public class PostService {
 	}
 
 	@Transactional
-	public void updateById(CustomUserDetails customUserDetails,Long postId, PostUpdateRequest postUpdateRequest) {
+	public void updateById(CustomUserDetails customUserDetails, Long postId, PostUpdateRequest postUpdateRequest) {
 
 		Post post = postRepository.findById(postId)
 			.orElseThrow(() -> new PostNotFoundException());
 
-		post.updateContent(postUpdateRequest.getContent(),customUserDetails.getId());
+		post.updateContent(postUpdateRequest.getContent(), customUserDetails.getId());
 	}
+
 	@Transactional
 	public void deleteById(CustomUserDetails customUserDetails, Long postId) {
 		Post post = postRepository.findById(postId)
