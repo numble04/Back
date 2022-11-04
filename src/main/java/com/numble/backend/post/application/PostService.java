@@ -25,6 +25,7 @@ import com.numble.backend.post.domain.PostRepository;
 
 import com.numble.backend.post.dto.request.PostCreateRequest;
 import com.numble.backend.post.dto.request.PostUpdateRequest;
+import com.numble.backend.post.dto.response.PostOneResponse;
 import com.numble.backend.post.dto.response.PostResponse;
 import com.numble.backend.post.exception.PostNotFoundException;
 import com.numble.backend.user.domain.User;
@@ -52,7 +53,6 @@ public class PostService {
 			.orElseThrow(() -> new UserNotFoundException());
 
 		Post post = PostCreateMapper.INSTANCE.toEntity(postRequest, user);
-
 		return postRepository.save(post).getId();
 	}
 
@@ -79,12 +79,14 @@ public class PostService {
 		return postResponses;
 	}
 
-	public PostResponse findById(Long postId) {
-		Post post = postRepository.findById(postId)
-			.orElseThrow(() -> new PostNotFoundException());
 
-		return PostMapper.INSTANCE.toDto(post);
+	@Transactional
+	public PostOneResponse findById(Long postId, CustomUserDetails customUserDetails) {
+		PostOneResponse postOneResponse = postRepository.findOnePostById(postId, customUserDetails.getId())
+			.orElseThrow(() -> new PostNotFoundException());
+		return postOneResponse;
 	}
+
 
 	@Transactional
 	public String uploadFile(MultipartFile multipartFile, Long postId) {

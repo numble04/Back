@@ -10,6 +10,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.numble.backend.common.domain.BaseEntity;
 import com.numble.backend.common.exception.business.InvalidFieldException;
 import com.numble.backend.post.domain.Post;
@@ -19,8 +21,11 @@ import com.numble.backend.user.exception.UserNotAuthorException;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
+
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -31,12 +36,13 @@ public class Comment extends BaseEntity {
 	@Column(nullable = false)
 	private String content;
 
+
 	@ManyToOne(fetch = LAZY)
 	@JoinColumn(name = "parentId")
 	private Comment parent;
 
 	@OneToMany(mappedBy = "parent", orphanRemoval = true)
-	private List<Comment> children;
+	private List<Comment> children = new ArrayList<>();
 
 	@ManyToOne(fetch = LAZY)
 	@JoinColumn(name = "userId")
@@ -45,6 +51,7 @@ public class Comment extends BaseEntity {
 	@ManyToOne(fetch = LAZY)
 	@JoinColumn(name = "postId")
 	private Post post;
+
 
 	private void validateContent(final String content) {
 		if (content == null || content.isBlank()) {

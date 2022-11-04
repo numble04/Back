@@ -17,5 +17,4 @@ public class PostCreateRequest {
 	private String content;
 	@NotNull(message = "게시판 유형은 null일 수 없습니다")
 	private PostType type;
-	private Long userId;
 }
