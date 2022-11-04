@@ -9,7 +9,7 @@ on:
 
 env:
   PROJECT_NAME: boardker
-  BUCKET_NAME: numble-s3
+  BUCKET_NAME: boardker-codedeploy
   CODE_DEPLOY_APP_NAME: boardker
   DEPLOYMENT_GROUP_NAME: boardker
 
