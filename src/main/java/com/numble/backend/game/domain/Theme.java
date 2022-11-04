@@ -1,7 +1,10 @@
 package com.numble.backend.game.domain;
 
+import static javax.persistence.FetchType.LAZY;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
@@ -20,7 +23,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class Theme extends BaseEntity {
 
-	@ManyToOne
+	@ManyToOne(fetch = LAZY)
 	@JoinColumn(name="gameId")
 	private Game game;
 
