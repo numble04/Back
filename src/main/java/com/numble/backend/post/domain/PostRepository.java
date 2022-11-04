@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import com.numble.backend.user.domain.User;
 
-public interface PostRepository extends JpaRepository<Post, Long> {
+public interface PostRepository extends JpaRepository<Post, Long>,PostRepositoryCustom {
 	@EntityGraph(attributePaths = {"user"}, type = EntityGraph.EntityGraphType.LOAD)
 	Optional<Post> findById(Long id);
 

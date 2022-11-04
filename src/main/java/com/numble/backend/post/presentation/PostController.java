@@ -36,7 +36,6 @@ public class PostController {
 
 	@PostMapping
 	public ResponseEntity<Void> save(@AuthenticationPrincipal CustomUserDetails customUserDetails,
-
 		@RequestBody @Valid PostCreateRequest postRequest) {
 
 		final Long id = postService.save(customUserDetails, postRequest);
@@ -57,17 +56,18 @@ public class PostController {
 		return ResponseEntity.ok(responseDto);
 	}
 
-	@GetMapping("/2")
+	@GetMapping("/my")
 	public ResponseEntity<ResponseDto> findAllByUserId(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
 
 		ResponseDto responseDto = ResponseDto.of(postService.findAllByUserId(customUserDetails));
 		return ResponseEntity.ok(responseDto);
 	}
 
-	@GetMapping("/3/{postId}")
-	public ResponseEntity<ResponseDto> findById(@PathVariable final Long postId) {
+	@GetMapping("/{postId}")
+	public ResponseEntity<ResponseDto> findById(@PathVariable final Long postId,
+		@AuthenticationPrincipal CustomUserDetails customUserDetails) {
 
-		ResponseDto responseDto = ResponseDto.of(postService.findById(postId));
+		ResponseDto responseDto = ResponseDto.of(postService.findById(postId, customUserDetails));
 		return ResponseEntity.ok(responseDto);
 	}
 

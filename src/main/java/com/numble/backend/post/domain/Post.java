@@ -11,6 +11,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
+
 import com.numble.backend.comment.domain.Comment;
 import com.numble.backend.common.domain.BaseEntity;
 import com.numble.backend.common.exception.business.InvalidFieldException;
@@ -29,6 +33,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Getter
 @Builder
+@DynamicInsert
+@DynamicUpdate
 public class Post extends BaseEntity {
 
     @Column(nullable = false)
@@ -39,6 +45,10 @@ public class Post extends BaseEntity {
     @Column(nullable = false)
     private PostType type;
 
+    @ColumnDefault("0")
+    @Column(name = "view_count",nullable = false)
+    private Integer viewCount;
+
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "userId")
     private User user;
@@ -47,8 +57,10 @@ public class Post extends BaseEntity {
     private List<Image> images;
 
     @OneToMany(mappedBy = "post", orphanRemoval = true)
-    private List<Comment> comments;
+    private List<Comment> comments = new ArrayList<>();
 
+    @OneToMany(mappedBy = "post", orphanRemoval = true)
+    private List<PostLike> postLikes = new ArrayList<>();
 
     private void validateContent(final String content) {
         if (content == null || content.isBlank()) {

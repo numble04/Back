@@ -11,9 +11,11 @@ import com.numble.backend.comment.domain.CommentRepository;
 import com.numble.backend.comment.domain.mapper.CommentMapper;
 import com.numble.backend.comment.dto.request.CommentRequest;
 import com.numble.backend.comment.dto.response.CommentResponse;
+import com.numble.backend.comment.exception.CommentNotFoundException;
 import com.numble.backend.common.config.security.CustomUserDetails;
 import com.numble.backend.post.domain.Post;
 import com.numble.backend.post.domain.PostRepository;
+import com.numble.backend.post.domain.mapper.PostMapper;
 import com.numble.backend.post.exception.PostNotFoundException;
 import com.numble.backend.user.domain.User;
 import com.numble.backend.user.domain.UserRepository;
@@ -30,12 +32,11 @@ public class CommentService {
 	private final PostRepository postRepository;
 	private final UserRepository userRepository;
 
+	public List<CommentResponse> findAllByUserId(CustomUserDetails customUserDetails) {
+		User user = userRepository.findById(customUserDetails.getId())
+			.orElseThrow(() -> new UserNotFoundException());
 
-	public List<CommentResponse> findAllByPostId(Long postId) {
-		Post post =postRepository.findById(postId)
-			.orElseThrow(() -> new PostNotFoundException());
-
-		List<CommentResponse> commentResponses = commentRepository.findAllByPost(post)
+		List<CommentResponse> commentResponses = commentRepository.findAllByUser(user)
 			.stream()
 			.map(CommentMapper.INSTANCE::toDto)
 			.collect(Collectors.toList());
@@ -45,16 +46,30 @@ public class CommentService {
 
 	@Transactional
 	public Long saveByPostId(Long postId, CommentRequest commentRequest, CustomUserDetails customUserDetails) {
-
-		User user =userRepository.findById(customUserDetails.getId())
+		User user = userRepository.findById(customUserDetails.getId())
 			.orElseThrow(() -> new UserNotFoundException());
 
-		Post post =postRepository.findById(postId)
+		Post post = postRepository.findById(postId)
 			.orElseThrow(() -> new PostNotFoundException());
 
-		Comment comment = CommentMapper.INSTANCE.toEntity(commentRequest,post,user);
-
+		Comment comment = CommentMapper.INSTANCE.toEntity(commentRequest, post, user);
 
 		return commentRepository.save(comment).getId();
 	}
+
+	@Transactional
+	public Long saveChildById(Long id, CommentRequest commentRequest, CustomUserDetails customUserDetails) {
+		User user = userRepository.findById(customUserDetails.getId())
+			.orElseThrow(() -> new UserNotFoundException());
+
+		Comment parent = commentRepository.findById(id)
+			.orElseThrow(() -> new CommentNotFoundException());
+
+		Post post = parent.getPost();
+
+		Comment comment = CommentRequest.toEntity(commentRequest, post, parent, user);
+
+		return commentRepository.save(comment).getId();
+	}
+
 }
