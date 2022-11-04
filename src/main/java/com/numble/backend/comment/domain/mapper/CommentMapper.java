@@ -1,5 +1,6 @@
 package com.numble.backend.comment.domain.mapper;
 
+import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 
 import org.mapstruct.Mapping;
@@ -12,7 +13,9 @@ import com.numble.backend.comment.dto.response.CommentResponse;
 import com.numble.backend.post.domain.Post;
 import com.numble.backend.user.domain.User;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring",
+	injectionStrategy = InjectionStrategy.CONSTRUCTOR
+)
 public interface CommentMapper {
 	CommentMapper INSTANCE = Mappers.getMapper(CommentMapper.class);
 
@@ -21,7 +24,12 @@ public interface CommentMapper {
 	@Mapping(expression = "java(user)", target="user")
 	Comment toEntity(CommentRequest dto, Post post, User user);
 
-	@Mapping(expression = "java(comment.getUser().getId())", target="userId")
+	// @Mapping(expression = "java(dto.getContent())", target="content")
+	// @Mapping(expression = "java(comment)", target="parent")
+	// @Mapping(expression = "java(user)", target="user")
+	// Comment toEntity(CommentRequest dto, Comment comment, User user);
+
+	@Mapping(expression = "java(comment.getPost().getId())", target="postId")
 	CommentResponse toDto(Comment comment);
 
 }
