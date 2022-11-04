@@ -27,9 +27,9 @@ public class CommentController {
 
 	private final CommentService commentService;
 
-	@GetMapping("/{postId}")
-	public ResponseEntity<ResponseDto> findAllByPostId(@PathVariable final Long postId) {
-		ResponseDto responseDto=ResponseDto.of(commentService.findAllByPostId(postId));
+	@GetMapping("/my")
+	public ResponseEntity<ResponseDto> findAllByUserId(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+		ResponseDto responseDto=ResponseDto.of(commentService.findAllByUserId(customUserDetails));
 		return ResponseEntity.ok(responseDto);
 	}
 
@@ -37,9 +37,18 @@ public class CommentController {
 	public ResponseEntity<Void> saveByPostId(@PathVariable final Long postId, @AuthenticationPrincipal CustomUserDetails customUserDetails,
 		@RequestBody @Valid CommentRequest commentRequest) {
 
-
 		final Long id = commentService.saveByPostId(postId, commentRequest, customUserDetails);
 
 		return ResponseEntity.created(URI.create("/api/comments/" + id)).build();
+	}
+
+	@PostMapping("/child/{id}")
+	public ResponseEntity<Void> saveChildById(@PathVariable final Long id, @AuthenticationPrincipal CustomUserDetails customUserDetails,
+		@RequestBody @Valid CommentRequest commentRequest) {
+
+
+		final Long comentId = commentService.saveChildById(id, commentRequest, customUserDetails);
+
+		return ResponseEntity.created(URI.create("/api/comments/child/" + comentId)).build();
 	}
 }
