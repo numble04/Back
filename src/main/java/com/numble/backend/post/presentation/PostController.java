@@ -1,8 +1,10 @@
 package com.numble.backend.post.presentation;
 
 import java.net.URI;
+import java.util.List;
 
 import javax.validation.Valid;
+import javax.validation.Validator;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -36,19 +38,14 @@ public class PostController {
 
 	@PostMapping
 	public ResponseEntity<Void> save(@AuthenticationPrincipal CustomUserDetails customUserDetails,
-		@RequestBody @Valid PostCreateRequest postRequest) {
+		@RequestPart(value = "postRequest") @Valid PostCreateRequest postRequest,
+		@RequestPart(value = "files", required = false) List<MultipartFile> multipartFiles) {
 
-		final Long id = postService.save(customUserDetails, postRequest);
+		final Long id = postService.save(customUserDetails, postRequest, multipartFiles);
 
 		return ResponseEntity.created(URI.create("/api/posts/" + id)).build();
 	}
 
-	@PostMapping("/upload")
-	public String uploadFile(
-		@RequestPart(value = "file") MultipartFile multipartFile) {
-		Long postId = Long.valueOf(1);
-		return postService.uploadFile(multipartFile, postId);
-	}
 
 	@GetMapping
 	public ResponseEntity<ResponseDto> findAll(@RequestParam("type") PostType type) {

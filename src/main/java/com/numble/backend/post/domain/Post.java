@@ -2,6 +2,7 @@ package com.numble.backend.post.domain;
 
 import static javax.persistence.FetchType.LAZY;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -39,7 +40,7 @@ public class Post extends BaseEntity {
 
     @Column(nullable = false)
     private String title;
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
     @Column(nullable = false)
