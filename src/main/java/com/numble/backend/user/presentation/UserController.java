@@ -27,7 +27,7 @@ import javax.validation.Valid;
 public class UserController {
 	private final UserService userService;
 
-	@PostMapping("/register")
+	@PostMapping
 	public ResponseEntity<Void> save(@RequestBody @Valid UserCreateRequest userCreateRequest) {
 		Long id = userService.save(userCreateRequest);
 
