@@ -1,4 +1,4 @@
-package com.numble.backend.post.domain;
+package com.numble.backend.post.domain.repository;
 
 import java.util.Optional;
 

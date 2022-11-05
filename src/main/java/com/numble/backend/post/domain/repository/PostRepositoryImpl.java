@@ -1,4 +1,4 @@
-package com.numble.backend.post.domain;
+package com.numble.backend.post.domain.repository;
 
 import static com.numble.backend.comment.domain.QComment.comment;
 import static com.numble.backend.post.domain.QPost.post;
@@ -9,14 +9,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import com.numble.backend.comment.domain.QComment;
 import com.numble.backend.comment.dto.response.CommentsChildrenResponse;
 import com.numble.backend.comment.dto.response.PostOneCommentResponse;
 import com.numble.backend.comment.dto.response.QCommentsChildrenResponse;
 import com.numble.backend.comment.dto.response.QPostOneCommentResponse;
 import com.numble.backend.post.dto.response.PostOneResponse;
 import com.numble.backend.post.dto.response.QPostOneResponse;
-import com.numble.backend.user.domain.QUser;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
