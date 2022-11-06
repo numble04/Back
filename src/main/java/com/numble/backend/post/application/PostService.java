@@ -7,6 +7,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -51,56 +55,56 @@ public class PostService {
 
 	@Transactional
 	public Long save(CustomUserDetails customUserDetails, PostCreateRequest postRequest
-	,List<MultipartFile> multipartFiles) {
+		, List<MultipartFile> multipartFiles) {
 
 		User user = userRepository.findById(customUserDetails.getId())
 			.orElseThrow(() -> new UserNotFoundException());
 
 		Post post = PostCreateMapper.INSTANCE.toEntity(postRequest, user);
 
-		uploadFiles(multipartFiles,post);
+		uploadFiles(multipartFiles, post);
 
 		return postRepository.save(post).getId();
 	}
 
-	public List<PostResponse> findAll(PostType type) {
+	public Slice<PostResponse> findAllByType(PostType type, Pageable pageable, CustomUserDetails customUserDetails) {
 
-		final List<PostResponse> postResponses = postRepository.findAllByType(type)
-			.stream()
-			.map(PostMapper.INSTANCE::toDto)
-			.collect(Collectors.toList());
+		Slice<PostResponse> postResponses = postRepository.findAllByType(type, customUserDetails.getId(), pageable);
 
 		return postResponses;
 	}
 
 	public List<PostResponse> findAllByUserId(CustomUserDetails customUserDetails) {
 
-		User user = userRepository.findById(customUserDetails.getId())
-			.orElseThrow(() -> new UserNotFoundException());
-
-		final List<PostResponse> postResponses = postRepository.findAllByUser(user)
-			.stream()
-			.map(PostMapper.INSTANCE::toDto)
-			.collect(Collectors.toList());
-
-		return postResponses;
+		// User user = userRepository.findById(customUserDetails.getId())
+		// 	.orElseThrow(() -> new UserNotFoundException());
+		//
+		// final List<PostResponse> postResponses = postRepository.findAllByUser(user)
+		// 	.stream()
+		// 	.map((post) -> PostMapper.INSTANCE.toDto(post, customUserDetails.getId()))
+		// 	.collect(Collectors.toList());
+		//
+		// return postResponses;
+		return null;
 	}
-
 
 	@Transactional
 	public PostOneResponse findById(Long postId, CustomUserDetails customUserDetails) {
 		PostOneResponse postOneResponse = postRepository.findOnePostById(postId, customUserDetails.getId())
 			.orElseThrow(() -> new PostNotFoundException());
+		System.out.println("saaaaaaaaaaaaaaaaaa");
+
+		postOneResponse.setImages(
+			imageRepository.findByPostId(postId).stream().map(i -> i.getUrl()).collect(Collectors.toList()));
 		return postOneResponse;
 	}
 
-
 	@Transactional
-	public void uploadFiles(List<MultipartFile> multipartFiles,Post post) {
+	public void uploadFiles(List<MultipartFile> multipartFiles, Post post) {
 
 		List<Image> images = new ArrayList<>();
 
-		if(multipartFiles==null){
+		if (multipartFiles == null) {
 			return;
 		}
 
