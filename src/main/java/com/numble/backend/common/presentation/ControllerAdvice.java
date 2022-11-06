@@ -39,12 +39,6 @@ public class ControllerAdvice {
 		return toResponseEntity(message, HttpStatus.BAD_REQUEST);
 	}
 
-	@ExceptionHandler(ConversionFailedException.class)
-	public ResponseEntity<ExceptionResponse> conversionFailedException(
-		ConversionFailedException e) {
-		return toResponseEntity("ENUM 입력값이 올바르지 않습니다", HttpStatus.BAD_REQUEST);
-	}
-
 	@ExceptionHandler(HttpMessageNotReadableException.class)
 	public ResponseEntity<ExceptionResponse> handleHttpMessageNotReadableException(
 		final HttpMessageNotReadableException e) {
