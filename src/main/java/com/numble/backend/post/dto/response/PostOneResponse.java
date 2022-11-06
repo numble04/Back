@@ -26,14 +26,18 @@ public class PostOneResponse {
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
 	private LocalDateTime updateDate;
 	private Integer viewCount;
-	private String username;
+	private String nickname;
+	private String userImg;
 	private boolean myPost;
 	private boolean myLike;
 	private List<PostOneCommentResponse> comments = new ArrayList<>();
 
+	private List<String> images = new ArrayList<>();
+
 	@QueryProjection
 	public PostOneResponse(Long postId, String title, String content, int commentCount, int likeCount,
-		LocalDateTime createDate, LocalDateTime updateDate, Integer viewCount, String username, boolean myPost, boolean myLike) {
+		LocalDateTime createDate, LocalDateTime updateDate, Integer viewCount, String nickname, String userImg,
+		boolean myPost, boolean myLike) {
 		this.postId = postId;
 		this.title = title;
 		this.content = content;
@@ -42,7 +46,8 @@ public class PostOneResponse {
 		this.createDate = createDate;
 		this.updateDate = updateDate;
 		this.viewCount = viewCount;
-		this.username = username;
+		this.nickname = nickname;
+		this.userImg = userImg;
 		this.myPost = myPost;
 		this.myLike = myLike;
 	}

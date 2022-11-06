@@ -17,7 +17,6 @@ public interface PostMapper {
 
 	Post toEntity(PostRequest dto,User user);
 
-	@Mapping(source = "user", target = "userResponse")
-	PostResponse toDto(Post post);
-
+	// @Mapping(expression = "java(null)", target="thumbnail")
+	// PostResponse toDto(Post post, Long userId);
 }

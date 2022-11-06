@@ -6,6 +6,9 @@ import java.util.List;
 import javax.validation.Valid;
 import javax.validation.Validator;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -46,10 +49,15 @@ public class PostController {
 		return ResponseEntity.created(URI.create("/api/posts/" + id)).build();
 	}
 
-
 	@GetMapping
-	public ResponseEntity<ResponseDto> findAll(@RequestParam("type") PostType type) {
-		ResponseDto responseDto = ResponseDto.of(postService.findAll(type));
+	public ResponseEntity<ResponseDto> findAllByType(@RequestParam("type") PostType type,
+		@PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
+		@AuthenticationPrincipal CustomUserDetails customUserDetails
+		) {
+		System.out.println("-----------------------------------");
+		ResponseDto responseDto = ResponseDto.of(postService.findAllByType(type, pageable, customUserDetails)
+
+		);
 		return ResponseEntity.ok(responseDto);
 	}
 
@@ -63,7 +71,7 @@ public class PostController {
 	@GetMapping("/{postId}")
 	public ResponseEntity<ResponseDto> findById(@PathVariable final Long postId,
 		@AuthenticationPrincipal CustomUserDetails customUserDetails) {
-
+		System.out.println("dsfsdafdsfsdfdsfdsfdfs");
 		ResponseDto responseDto = ResponseDto.of(postService.findById(postId, customUserDetails));
 		return ResponseEntity.ok(responseDto);
 	}
