@@ -3,6 +3,8 @@ package com.numble.backend.post.domain.repository;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -14,13 +16,10 @@ public interface PostRepository extends JpaRepository<Post, Long>,PostRepository
 	@EntityGraph(attributePaths = {"user"}, type = EntityGraph.EntityGraphType.LOAD)
 	Optional<Post> findById(Long id);
 
-	@EntityGraph(attributePaths = {"user"}, type = EntityGraph.EntityGraphType.LOAD)
-	List<Post> findAllById(Long id);
 
 	@EntityGraph(attributePaths = {"user"}, type = EntityGraph.EntityGraphType.LOAD)
 	List<Post> findAllByUser(User user);
 
-	@EntityGraph(attributePaths = {"user"}, type = EntityGraph.EntityGraphType.LOAD)
-	List<Post> findAllByType(PostType type);
+
 
 }
