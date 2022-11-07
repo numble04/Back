@@ -28,6 +28,7 @@ import com.numble.backend.common.dto.ResponseDto;
 import com.numble.backend.post.application.PostService;
 import com.numble.backend.post.domain.PostType;
 import com.numble.backend.post.dto.request.PostCreateRequest;
+import com.numble.backend.post.dto.request.PostRequest;
 import com.numble.backend.post.dto.request.PostUpdateRequest;
 
 import lombok.RequiredArgsConstructor;
@@ -39,7 +40,7 @@ public class PostController {
 
 	private final PostService postService;
 
-	@PostMapping
+	@PostMapping // 게시글 등록
 	public ResponseEntity<Void> save(@AuthenticationPrincipal CustomUserDetails customUserDetails,
 		@RequestPart(value = "postRequest") @Valid PostCreateRequest postRequest,
 		@RequestPart(value = "files", required = false) List<MultipartFile> multipartFiles) {
@@ -49,47 +50,42 @@ public class PostController {
 		return ResponseEntity.created(URI.create("/api/posts/" + id)).build();
 	}
 
-	@GetMapping
+	@GetMapping // 게시글 조회
 	public ResponseEntity<ResponseDto> findAllByType(@RequestParam("type") PostType type,
 		@PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
-		@AuthenticationPrincipal CustomUserDetails customUserDetails
-		) {
-		System.out.println("-----------------------------------");
-		ResponseDto responseDto = ResponseDto.of(postService.findAllByType(type, pageable, customUserDetails)
-
-		);
+		@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+		ResponseDto responseDto = ResponseDto.of(postService.findAllByType(type, pageable, customUserDetails));
 		return ResponseEntity.ok(responseDto);
 	}
 
-	@GetMapping("/my")
+	@GetMapping("/{postId}") //게시글 상세 조회
+	public ResponseEntity<ResponseDto> findById(@PathVariable final Long postId,
+		@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+		ResponseDto responseDto = ResponseDto.of(postService.findById(postId, customUserDetails));
+		return ResponseEntity.ok(responseDto);
+	}
+
+	@GetMapping("/my") //내 게시글 조회
 	public ResponseEntity<ResponseDto> findAllByUserId(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
 
 		ResponseDto responseDto = ResponseDto.of(postService.findAllByUserId(customUserDetails));
 		return ResponseEntity.ok(responseDto);
 	}
 
-	@GetMapping("/{postId}")
-	public ResponseEntity<ResponseDto> findById(@PathVariable final Long postId,
-		@AuthenticationPrincipal CustomUserDetails customUserDetails) {
-		System.out.println("dsfsdafdsfsdfdsfdsfdfs");
-		ResponseDto responseDto = ResponseDto.of(postService.findById(postId, customUserDetails));
-		return ResponseEntity.ok(responseDto);
-	}
-
-	@PutMapping("/{postId}")
+	@PutMapping("/{postId}") //게시글 수정
 	public ResponseEntity<Void> updateById(@AuthenticationPrincipal CustomUserDetails customUserDetails,
-		@PathVariable final Long postId, @RequestBody PostUpdateRequest postUpdateRequest) {
+		@PathVariable final Long postId, @RequestPart(value = "postRequest") @Valid PostUpdateRequest postUpdateRequest,
+		@RequestPart(value = "files", required = false) List<MultipartFile> multipartFiles) {
 
-		postService.updateById(customUserDetails, postId, postUpdateRequest);
+		postService.updateById(customUserDetails, postId, postUpdateRequest, multipartFiles);
 
 		return ResponseEntity.noContent().build();
 	}
 
-	@PutMapping("/{postId}/like")
+	@PutMapping("/{postId}/like") //좋아요
 	public ResponseEntity<Void> updateLikeById(@AuthenticationPrincipal CustomUserDetails customUserDetails,
-		@PathVariable final Long postId, @RequestBody PostUpdateRequest postUpdateRequest) {
-
-		postService.updateLikeById(customUserDetails, postId, postUpdateRequest);
+		@PathVariable final Long postId) {
+		postService.updateLikeById(customUserDetails, postId);
 
 		return ResponseEntity.noContent().build();
 	}
