@@ -20,6 +20,7 @@ import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.numble.backend.common.config.security.CustomUserDetails;
+import com.numble.backend.common.utils.S3Utils;
 import com.numble.backend.post.domain.Image;
 import com.numble.backend.post.domain.repository.ImageRepository;
 import com.numble.backend.post.domain.Post;
@@ -92,7 +93,6 @@ public class PostService {
 	public PostOneResponse findById(Long postId, CustomUserDetails customUserDetails) {
 		PostOneResponse postOneResponse = postRepository.findOnePostById(postId, customUserDetails.getId())
 			.orElseThrow(() -> new PostNotFoundException());
-		System.out.println("saaaaaaaaaaaaaaaaaa");
 
 		postOneResponse.setImages(
 			imageRepository.findByPostId(postId).stream().map(i -> i.getUrl()).collect(Collectors.toList()));
@@ -101,40 +101,20 @@ public class PostService {
 
 	@Transactional
 	public void uploadFiles(List<MultipartFile> multipartFiles, Post post) {
-
-		List<Image> images = new ArrayList<>();
-
 		if (multipartFiles == null) {
 			return;
 		}
 
-		for (MultipartFile multipartFile : multipartFiles) {
-			validateFileExists(multipartFile);
+		List<String> fileNames = S3Utils.uploadMultiFilesS3(amazonS3Client, bucketName, multipartFiles, 5);
 
-			if (images.size() > 5) {
-				throw new FileCountExceedException();
-			}
-
-			String fileName = buildFileName(multipartFile.getOriginalFilename());
-			ObjectMetadata objectMetadata = new ObjectMetadata();
-			objectMetadata.setContentType(multipartFile.getContentType());
-
-			try (InputStream inputStream = multipartFile.getInputStream()) {
-				amazonS3Client.putObject(new PutObjectRequest(bucketName, fileName, inputStream, objectMetadata)
-					.withCannedAcl(CannedAccessControlList.PublicRead));
-			} catch (IOException e) {
-				throw new FileUploadFailedException();
-			}
-
+		for (String fileName : fileNames) {
 			Image image = Image.builder()
 				.url(amazonS3Client.getUrl(bucketName, fileName).toString())
 				.post(post)
 				.build();
 
-			images.add(image);
+			imageRepository.save(image);
 		}
-		imageRepository.saveAll(images);
-
 	}
 
 	@Transactional
@@ -163,20 +143,4 @@ public class PostService {
 
 	}
 
-	private void validateFileExists(MultipartFile multipartFile) {
-		if (multipartFile.isEmpty()) {
-			throw new FileUploadFailedException();
-		}
-	}
-
-	public static String buildFileName(String originalFileName) {
-		String FILE_EXTENSION_SEPARATOR = ".";
-
-		int fileExtensionIndex = originalFileName.lastIndexOf(FILE_EXTENSION_SEPARATOR);
-		String fileExtension = originalFileName.substring(fileExtensionIndex);
-		String fileName = originalFileName.substring(0, fileExtensionIndex);
-		String now = String.valueOf(System.currentTimeMillis());
-
-		return fileName + now + fileExtension;
-	}
 }
