@@ -16,7 +16,6 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
 @Getter
 public class PostLike extends BaseEntity {
 
@@ -28,4 +27,8 @@ public class PostLike extends BaseEntity {
 	@JoinColumn(name = "postId")
 	private Post post;
 
+	public PostLike(User user, Post post) {
+		this.user = user;
+		this.post = post;
+	}
 }
