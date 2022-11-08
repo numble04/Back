@@ -15,7 +15,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class PostOneResponse {
+public class PostDetailResponse {
 	private Long postId;
 	private String title;
 	private String content;
@@ -35,7 +35,7 @@ public class PostOneResponse {
 	private List<String> images = new ArrayList<>();
 
 	@QueryProjection
-	public PostOneResponse(Long postId, String title, String content, int commentCount, int likeCount,
+	public PostDetailResponse(Long postId, String title, String content, int commentCount, int likeCount,
 		LocalDateTime createDate, LocalDateTime updateDate, Integer viewCount, String nickname, String userImg,
 		boolean myPost, boolean myLike) {
 		this.postId = postId;

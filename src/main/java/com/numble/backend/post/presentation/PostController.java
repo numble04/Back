@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 import javax.validation.Validator;
+import javax.websocket.server.PathParam;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -28,7 +29,6 @@ import com.numble.backend.common.dto.ResponseDto;
 import com.numble.backend.post.application.PostService;
 import com.numble.backend.post.domain.PostType;
 import com.numble.backend.post.dto.request.PostCreateRequest;
-import com.numble.backend.post.dto.request.PostRequest;
 import com.numble.backend.post.dto.request.PostUpdateRequest;
 
 import lombok.RequiredArgsConstructor;
@@ -69,6 +69,18 @@ public class PostController {
 	public ResponseEntity<ResponseDto> findAllByUserId(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
 
 		ResponseDto responseDto = ResponseDto.of(postService.findAllByUserId(customUserDetails));
+		return ResponseEntity.ok(responseDto);
+	}
+
+	@GetMapping("/search")
+	public ResponseEntity<ResponseDto> findAllBySearch(@RequestParam("type") PostType type,
+		@RequestParam("searchWord") String searchWord,
+		@PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
+		@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+
+		ResponseDto responseDto = ResponseDto.of(
+			postService.findAllBySearch(type, searchWord, pageable, customUserDetails));
+
 		return ResponseEntity.ok(responseDto);
 	}
 

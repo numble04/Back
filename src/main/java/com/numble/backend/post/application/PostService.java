@@ -1,25 +1,17 @@
 package com.numble.backend.post.application;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.numble.backend.common.config.security.CustomUserDetails;
 import com.numble.backend.common.utils.S3Utils;
 import com.numble.backend.post.domain.Image;
@@ -28,16 +20,13 @@ import com.numble.backend.post.domain.repository.ImageRepository;
 import com.numble.backend.post.domain.Post;
 import com.numble.backend.post.domain.PostType;
 import com.numble.backend.post.domain.mapper.PostCreateMapper;
-import com.numble.backend.post.domain.mapper.PostMapper;
 import com.numble.backend.post.domain.repository.PostLikeRepository;
 import com.numble.backend.post.domain.repository.PostRepository;
 
 import com.numble.backend.post.dto.request.PostCreateRequest;
 import com.numble.backend.post.dto.request.PostUpdateRequest;
-import com.numble.backend.post.dto.response.PostOneResponse;
+import com.numble.backend.post.dto.response.PostDetailResponse;
 import com.numble.backend.post.dto.response.PostResponse;
-import com.numble.backend.post.exception.FileCountExceedException;
-import com.numble.backend.post.exception.FileUploadFailedException;
 import com.numble.backend.post.exception.PostNotFoundException;
 import com.numble.backend.user.domain.User;
 import com.numble.backend.user.domain.UserRepository;
@@ -79,14 +68,23 @@ public class PostService {
 		return postResponses;
 	}
 
+	public Slice<PostResponse> findAllBySearch(PostType type, String searchWord, Pageable pageable,
+		CustomUserDetails customUserDetails) {
+
+		Slice<PostResponse> postResponses = postRepository.findAllByTypeAndSearch(type, searchWord,
+			customUserDetails.getId(), pageable);
+
+		return postResponses;
+	}
+
 	@Transactional
-	public PostOneResponse findById(Long postId, CustomUserDetails customUserDetails) {
-		PostOneResponse postOneResponse = postRepository.findOnePostById(postId, customUserDetails.getId())
+	public PostDetailResponse findById(Long postId, CustomUserDetails customUserDetails) {
+		PostDetailResponse postDetailResponse = postRepository.findOnePostById(postId, customUserDetails.getId())
 			.orElseThrow(() -> new PostNotFoundException());
 
-		postOneResponse.setImages(
+		postDetailResponse.setImages(
 			imageRepository.findByPostId(postId).stream().map(i -> i.getUrl()).collect(Collectors.toList()));
-		return postOneResponse;
+		return postDetailResponse;
 	}
 
 	public List<PostResponse> findAllByUserId(CustomUserDetails customUserDetails) {
@@ -102,8 +100,6 @@ public class PostService {
 		// return postResponses;
 		return null;
 	}
-
-
 
 	@Transactional
 	public void updateById(CustomUserDetails customUserDetails, Long postId, PostUpdateRequest postUpdateRequest
