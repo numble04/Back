@@ -16,6 +16,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.numble.backend.common.domain.BaseEntity;
 import com.numble.backend.common.exception.business.InvalidFieldException;
 import com.numble.backend.post.domain.Post;
+import com.numble.backend.post.domain.PostLike;
 import com.numble.backend.user.domain.User;
 import com.numble.backend.user.exception.UserNotAuthorException;
 
@@ -37,13 +38,15 @@ public class Comment extends BaseEntity {
 	@Column(nullable = false)
 	private String content;
 
-
 	@ManyToOne(fetch = LAZY)
 	@JoinColumn(name = "parentId")
 	private Comment parent;
 
 	@OneToMany(mappedBy = "parent", orphanRemoval = true)
 	private List<Comment> children = new ArrayList<>();
+
+	@OneToMany(mappedBy = "comment", orphanRemoval = true)
+	private List<CommentLike> CommentLikes = new ArrayList<>();
 
 	@ManyToOne(fetch = LAZY)
 	@JoinColumn(name = "userId")

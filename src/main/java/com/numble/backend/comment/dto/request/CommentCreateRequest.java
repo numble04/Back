@@ -1,8 +1,5 @@
 package com.numble.backend.comment.dto.request;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.validation.constraints.NotNull;
 
 import com.numble.backend.comment.domain.Comment;
@@ -14,13 +11,13 @@ import lombok.Getter;
 
 @Builder
 @Getter
-public class CommentRequest {
+public class CommentCreateRequest {
 	private Long id;
 
-	@NotNull(message = "댓글은 null일 수 없습니다")
+	@NotNull(message = "댓글은 공백일 수 없습니다")
 	private String content;
 
-	public static Comment toEntity(CommentRequest dto, Post post, Comment comment, User user) {
+	public static Comment toEntity(CommentCreateRequest dto, Post post, Comment comment, User user) {
 		if (dto == null && post == null && comment == null && user == null) {
 			return null;
 		}
