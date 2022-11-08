@@ -1,6 +1,7 @@
 package com.numble.backend.post.domain.repository;
 
 import static com.numble.backend.comment.domain.QComment.comment;
+import static com.numble.backend.comment.domain.QCommentLike.commentLike;
 import static com.numble.backend.post.domain.QPost.post;
 import static com.numble.backend.post.domain.QPostLike.postLike;
 import static com.numble.backend.user.domain.QUser.user;
@@ -77,9 +78,15 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
 				comment.id,
 				comment.content,
 				user.nickname,
+				comment.CommentLikes.size(),
 				JPAExpressions
 					.selectFrom(comment)
 					.where(user.id.eq(userId))
+					.exists(),
+				JPAExpressions
+					.select()
+					.from(commentLike)
+					.where(commentLike.comment.eq(comment).and(user.id.eq(userId)))
 					.exists(),
 				comment.createdAt,
 				comment.updatedAt))
@@ -96,9 +103,15 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
 				comment.id,
 				comment.content,
 				user.nickname,
+				comment.CommentLikes.size(),
 				JPAExpressions
 					.selectFrom(comment)
 					.where(user.id.eq(userId))
+					.exists(),
+				JPAExpressions
+					.select()
+					.from(commentLike)
+					.where(commentLike.comment.eq(comment).and(user.id.eq(userId)))
 					.exists(),
 				comment.createdAt,
 				comment.updatedAt

@@ -22,9 +22,12 @@ public class CommentsChildrenResponse {
 
 	private String content;
 
-	private String username;
+	private String nickname;
 
+	private int likeCount;
 	private boolean myComment;
+
+	private boolean myLike;
 
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
 	private LocalDateTime createDate;
@@ -33,12 +36,15 @@ public class CommentsChildrenResponse {
 	private LocalDateTime updateDate;
 
 	@QueryProjection
-	public CommentsChildrenResponse(Long parentId, Long commentId, String content, String username, boolean myComment, LocalDateTime createDate, LocalDateTime updateDate) {
+	public CommentsChildrenResponse(Long parentId, Long commentId, String content, String nickname, int likeCount,
+		boolean myComment, boolean myLike, LocalDateTime createDate, LocalDateTime updateDate) {
 		this.parentId = parentId;
 		this.commentId = commentId;
 		this.content = content;
-		this.username = username;
+		this.nickname = nickname;
+		this.likeCount = likeCount;
 		this.myComment = myComment;
+		this.myLike = myLike;
 		this.createDate = createDate;
 		this.updateDate = updateDate;
 	}
