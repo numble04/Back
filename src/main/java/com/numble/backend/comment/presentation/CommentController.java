@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.numble.backend.comment.application.CommentService;
-import com.numble.backend.comment.dto.request.CommentRequest;
+import com.numble.backend.comment.dto.request.CommentCreateRequest;
 import com.numble.backend.common.config.security.CustomUserDetails;
 import com.numble.backend.common.dto.ResponseDto;
 
@@ -29,25 +29,26 @@ public class CommentController {
 
 	@GetMapping("/my")
 	public ResponseEntity<ResponseDto> findAllByUserId(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
-		ResponseDto responseDto=ResponseDto.of(commentService.findAllByUserId(customUserDetails));
+		ResponseDto responseDto = ResponseDto.of(commentService.findAllByUserId(customUserDetails));
 		return ResponseEntity.ok(responseDto);
 	}
 
 	@PostMapping("/{postId}")
-	public ResponseEntity<Void> saveByPostId(@PathVariable final Long postId, @AuthenticationPrincipal CustomUserDetails customUserDetails,
-		@RequestBody @Valid CommentRequest commentRequest) {
+	public ResponseEntity<Void> saveByPostId(@PathVariable final Long postId,
+		@AuthenticationPrincipal CustomUserDetails customUserDetails,
+		@RequestBody @Valid CommentCreateRequest commentCreateRequest) {
 
-		final Long id = commentService.saveByPostId(postId, commentRequest, customUserDetails);
+		final Long id = commentService.saveByPostId(postId, commentCreateRequest, customUserDetails);
 
 		return ResponseEntity.created(URI.create("/api/comments/" + id)).build();
 	}
 
 	@PostMapping("/child/{id}")
-	public ResponseEntity<Void> saveChildById(@PathVariable final Long id, @AuthenticationPrincipal CustomUserDetails customUserDetails,
-		@RequestBody @Valid CommentRequest commentRequest) {
+	public ResponseEntity<Void> saveChildById(@PathVariable final Long id,
+		@AuthenticationPrincipal CustomUserDetails customUserDetails,
+		@RequestBody @Valid CommentCreateRequest commentCreateRequest) {
 
-
-		final Long comentId = commentService.saveChildById(id, commentRequest, customUserDetails);
+		final Long comentId = commentService.saveChildById(id, commentCreateRequest, customUserDetails);
 
 		return ResponseEntity.created(URI.create("/api/comments/child/" + comentId)).build();
 	}

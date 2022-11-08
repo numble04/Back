@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.numble.backend.comment.domain.Comment;
 import com.numble.backend.comment.domain.CommentRepository;
 import com.numble.backend.comment.domain.mapper.CommentMapper;
-import com.numble.backend.comment.dto.request.CommentRequest;
+import com.numble.backend.comment.dto.request.CommentCreateRequest;
 import com.numble.backend.comment.dto.response.CommentResponse;
 import com.numble.backend.comment.exception.CommentNotFoundException;
 import com.numble.backend.common.config.security.CustomUserDetails;
@@ -44,20 +44,20 @@ public class CommentService {
 	}
 
 	@Transactional
-	public Long saveByPostId(Long postId, CommentRequest commentRequest, CustomUserDetails customUserDetails) {
+	public Long saveByPostId(Long postId, CommentCreateRequest commentCreateRequest, CustomUserDetails customUserDetails) {
 		User user = userRepository.findById(customUserDetails.getId())
 			.orElseThrow(() -> new UserNotFoundException());
 
 		Post post = postRepository.findById(postId)
 			.orElseThrow(() -> new PostNotFoundException());
 
-		Comment comment = CommentMapper.INSTANCE.toEntity(commentRequest, post, user);
+		Comment comment = CommentMapper.INSTANCE.toEntity(commentCreateRequest, post, user);
 
 		return commentRepository.save(comment).getId();
 	}
 
 	@Transactional
-	public Long saveChildById(Long id, CommentRequest commentRequest, CustomUserDetails customUserDetails) {
+	public Long saveChildById(Long id, CommentCreateRequest commentCreateRequest, CustomUserDetails customUserDetails) {
 		User user = userRepository.findById(customUserDetails.getId())
 			.orElseThrow(() -> new UserNotFoundException());
 
@@ -66,7 +66,7 @@ public class CommentService {
 
 		Post post = parent.getPost();
 
-		Comment comment = CommentRequest.toEntity(commentRequest, post, parent, user);
+		Comment comment = CommentCreateRequest.toEntity(commentCreateRequest, post, parent, user);
 
 		return commentRepository.save(comment).getId();
 	}
