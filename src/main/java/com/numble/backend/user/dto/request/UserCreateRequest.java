@@ -24,10 +24,10 @@ public class UserCreateRequest {
 	@NotBlank(message = "이름은 빈 칸일 수 없습니다")
 	private String name;
 
-	@NotNull(message = "전화번호는 빈 칸일 수 없습니다")
+	@NotBlank(message = "전화번호는 빈 칸일 수 없습니다")
 	private String phone;
 
-	@NotNull(message = "닉네임은 빈 칸일 수 없습니다")
+	@NotBlank(message = "닉네임은 빈 칸일 수 없습니다")
 	@Size(min=3, max=15, message = "닉네임은 3자 이상 15자 이하여야 합니다")
 	private String nickname;
 
