@@ -182,6 +182,50 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
 
 	}
 
+	@Override
+	public Slice<PostResponse> findAllByTypeAndSearch(PostType type, String searchWord, Long userId,
+		Pageable pageable) {
 
+		List<PostResponse> content = queryFactory
+			.select(new QPostResponse(
+				post.id,
+				post.title,
+				post.content,
+				post.type,
+				post,
+				post.viewCount,
+				post.postLikes.size(),
+				post.comments.size(),
+				JPAExpressions
+					.selectFrom(post)
+					.where(user.id.eq(userId))
+					.exists(),
+				JPAExpressions
+					.select()
+					.from(postLike)
+					.where(postLike.post.eq(post).and(user.id.eq(userId)))
+					.exists(),
+				user.nickname,
+				user.img,
+				post.createdAt,
+				post.updatedAt))
+			.from(post)
+			.innerJoin(post.user, user)
+			.where(post.type.eq(type).and(post.content.contains(searchWord).or(post.title.contains(searchWord))))
+			.offset(pageable.getOffset())
+			.limit(pageable.getPageSize() + 1)
+			.orderBy(post.createdAt.desc())
+			.fetch();
+
+
+
+
+		boolean hasNext = false;
+		if (content.size() > pageable.getPageSize()) {
+			content.remove(pageable.getPageSize());
+			hasNext = true;
+		}
+		return new SliceImpl<>(content, pageable, hasNext);
+	}
 
 }

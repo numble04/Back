@@ -79,6 +79,15 @@ public class PostService {
 		return postResponses;
 	}
 
+	public Slice<PostResponse> findAllBySearch(PostType type, String searchWord, Pageable pageable,
+		CustomUserDetails customUserDetails) {
+
+		Slice<PostResponse> postResponses = postRepository.findAllByTypeAndSearch(type, searchWord,
+			customUserDetails.getId(), pageable);
+
+		return postResponses;
+	}
+
 	@Transactional
 	public PostOneResponse findById(Long postId, CustomUserDetails customUserDetails) {
 		PostOneResponse postOneResponse = postRepository.findOnePostById(postId, customUserDetails.getId())
@@ -102,8 +111,6 @@ public class PostService {
 		// return postResponses;
 		return null;
 	}
-
-
 
 	@Transactional
 	public void updateById(CustomUserDetails customUserDetails, Long postId, PostUpdateRequest postUpdateRequest
