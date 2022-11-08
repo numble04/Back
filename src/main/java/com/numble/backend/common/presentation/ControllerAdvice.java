@@ -4,6 +4,9 @@ import com.numble.backend.common.dto.ExceptionResponse;
 import com.numble.backend.common.exception.business.BusinessException;
 import com.numble.backend.common.exception.auth.ExceptionCode;
 
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.security.SignatureException;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.core.codec.DecodingException;
@@ -22,13 +25,31 @@ public class ControllerAdvice {
 
 	@ExceptionHandler(DecodingException.class)
 	public ResponseEntity<ExceptionResponse> handleDecodingException(final DecodingException e) {
-		return toResponseEntity(ExceptionCode.WRONG_TOKEN.getMessage(), HttpStatus.UNAUTHORIZED);
+		return toResponseEntity(ExceptionCode.WRONG_TOKEN.getMessage(), HttpStatus.FORBIDDEN);
 	}
 
 	@ExceptionHandler(BusinessException.class)
 	public ResponseEntity<ExceptionResponse> businessException(final BusinessException e) {
 		log.info("{} : {}", ((Exception)e).getClass().getSimpleName(), e.getMessage());
 		return toResponseEntity(e.getClientMessage(), e.getHttpStatus());
+	}
+
+	@ExceptionHandler(ExpiredJwtException.class)
+	public ResponseEntity<ExceptionResponse> businessException(final ExpiredJwtException e) {
+		log.info("{} : {}", ((Exception)e).getClass().getSimpleName(), e.getMessage());
+		return toResponseEntity(ExceptionCode.EXPIRED_TOKEN.getMessage(), HttpStatus.UNAUTHORIZED);
+	}
+
+	@ExceptionHandler(MalformedJwtException.class)
+	public ResponseEntity<ExceptionResponse> businessException(final MalformedJwtException e) {
+		log.info("{} : {}", ((Exception)e).getClass().getSimpleName(), e.getMessage());
+		return toResponseEntity(ExceptionCode.WRONG_TYPE_TOKEN.getMessage(), HttpStatus.FORBIDDEN);
+	}
+
+	@ExceptionHandler(SignatureException.class)
+	public ResponseEntity<ExceptionResponse> businessException(final SignatureException e) {
+		log.info("{} : {}", ((Exception)e).getClass().getSimpleName(), e.getMessage());
+		return toResponseEntity(ExceptionCode.WRONG_TYPE_TOKEN.getMessage(), HttpStatus.FORBIDDEN);
 	}
 
 	@ExceptionHandler(MethodArgumentNotValidException.class)
