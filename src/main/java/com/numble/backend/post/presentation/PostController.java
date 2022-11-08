@@ -29,7 +29,6 @@ import com.numble.backend.common.dto.ResponseDto;
 import com.numble.backend.post.application.PostService;
 import com.numble.backend.post.domain.PostType;
 import com.numble.backend.post.dto.request.PostCreateRequest;
-import com.numble.backend.post.dto.request.PostRequest;
 import com.numble.backend.post.dto.request.PostUpdateRequest;
 
 import lombok.RequiredArgsConstructor;
