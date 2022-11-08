@@ -10,17 +10,20 @@ import com.numble.backend.post.domain.Post;
 import com.numble.backend.post.exception.PostNotFoundException;
 import com.numble.backend.user.domain.Token;
 import com.numble.backend.user.domain.User;
+import com.numble.backend.user.domain.mapper.UserInfoMapper;
 import com.numble.backend.user.domain.mapper.UserMapper;
 import com.numble.backend.user.domain.UserRepository;
 import com.numble.backend.user.domain.mapper.UserCreateMapper;
 import com.numble.backend.user.dto.request.UserCreateRequest;
 import com.numble.backend.user.dto.request.UserLoginRequest;
 import com.numble.backend.user.dto.request.UserUpdateRequest;
+import com.numble.backend.user.dto.response.UserInfoResponse;
 import com.numble.backend.user.dto.response.UserTokenResponse;
 import com.numble.backend.user.exception.EmailExistsException;
 import com.numble.backend.user.exception.EmailNotExistsException;
 import com.numble.backend.user.exception.InvalidPasswordException;
 import com.numble.backend.user.exception.NicknameExistsException;
+import com.numble.backend.user.exception.TokenErrorException;
 import com.numble.backend.user.exception.UserNotFoundException;
 
 import io.jsonwebtoken.io.DecodingException;
@@ -111,14 +114,26 @@ public class UserService {
 
 	private void checkToken(String accessToken, String refreshToken) {
 		if (!(StringUtils.hasText(accessToken) && StringUtils.hasText(refreshToken) && accessToken.startsWith("Bearer "))) {
-			throw new DecodingException("토큰 형식 오류");
+			throw new TokenErrorException();
 		}
+	}
+
+	public UserInfoResponse findById(Long id) {
+		User user = userRepository.findById(id)
+			.orElseThrow(() -> new UserNotFoundException());
+
+		return UserInfoMapper.INSTANCE.toDto(user);
 	}
 
 	@Transactional
 	public void updateById(Long id,UserUpdateRequest userUpdateRequest) {
 		User user = userRepository.findById(id)
 			.orElseThrow(() -> new UserNotFoundException());
+
+		if (userUpdateRequest.getNickname() != "" &&
+			userRepository.existsByNickname(userUpdateRequest.getNickname())) {
+			throw new NicknameExistsException();
+		}
 
 		user.updateUser(userUpdateRequest);
 	}

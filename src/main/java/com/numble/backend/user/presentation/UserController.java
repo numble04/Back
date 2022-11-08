@@ -41,6 +41,13 @@ public class UserController {
 		return ResponseEntity.ok(responseDto);
 	}
 
+	@GetMapping
+	public ResponseEntity<ResponseDto> findById(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+		ResponseDto responseDto = ResponseDto.of(userService.findById(customUserDetails.getId()));
+
+		return ResponseEntity.ok(responseDto);
+	}
+
 	@PutMapping
 	public ResponseEntity<Void> updateById(@AuthenticationPrincipal CustomUserDetails customUserDetails,
 		@RequestBody @Valid UserUpdateRequest userUpdateRequest) {
@@ -64,6 +71,6 @@ public class UserController {
 		@RequestHeader("RefreshToken") String refreshToken) {
 		Long id = userService.logout(accessToken, refreshToken);
 
-		return ResponseEntity.created(URI.create("/api/users/register/" + id)).build();
+		return ResponseEntity.created(URI.create("/api/users/logout/" + id)).build();
 	}
 }
