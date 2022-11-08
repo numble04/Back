@@ -8,6 +8,7 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.numble.backend.common.domain.BaseEntity;
 
 import lombok.AccessLevel;
@@ -23,6 +24,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class Theme extends BaseEntity {
 
+	@JsonBackReference
 	@ManyToOne(fetch = LAZY)
 	@JoinColumn(name="gameId")
 	private Game game;
