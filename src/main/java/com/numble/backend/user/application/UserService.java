@@ -18,7 +18,9 @@ import com.numble.backend.user.dto.request.UserLoginRequest;
 import com.numble.backend.user.dto.request.UserUpdateRequest;
 import com.numble.backend.user.dto.response.UserTokenResponse;
 import com.numble.backend.user.exception.EmailExistsException;
+import com.numble.backend.user.exception.EmailNotExistsException;
 import com.numble.backend.user.exception.InvalidPasswordException;
+import com.numble.backend.user.exception.NicknameExistsException;
 import com.numble.backend.user.exception.UserNotFoundException;
 
 import io.jsonwebtoken.io.DecodingException;
@@ -46,6 +48,7 @@ public class UserService {
 	@Transactional
 	public Long save(final UserCreateRequest userCreateRequest) {
 		checkEmail(userCreateRequest.getEmail());
+		checkNickname(userCreateRequest.getNickname());
 		String password = passwordEncoder.encode(userCreateRequest.getPassword());
 		User user = UserCreateMapper.INSTANCE.toEntity(userCreateRequest,password);
 
@@ -58,13 +61,20 @@ public class UserService {
 		}
 	}
 
+	private void checkNickname(final String nickname) {
+		if (userRepository.existsByNickname(nickname)) {
+			throw new NicknameExistsException();
+		}
+	}
+
 	// 한 자리 변수명 금지, dto 빌드 직접
 	public UserTokenResponse login(final UserLoginRequest userLoginRequest) {
 		User user = userRepository.findByemail(userLoginRequest.getEmail())
-			.orElseThrow(() -> new UserNotFoundException());
+			.orElseThrow(() -> new EmailNotExistsException());
 		checkPassword(userLoginRequest.getPassword(), user.getPassword());
 
 		UserTokenResponse response = UserTokenResponse.builder()
+			.userResponse(UserMapper.INSTANCE.toDto(user))
 			.accessToken(jwtTokenUtil.generateAccessToken(user.getId().toString()))
 			.refreshToken(saveRefreshToken(user.getId().toString()).getRefreshToken())
 			.build();
