@@ -5,7 +5,6 @@ import com.numble.backend.common.dto.ResponseDto;
 import com.numble.backend.user.application.UserService;
 import com.numble.backend.user.dto.request.UserCreateRequest;
 import com.numble.backend.user.dto.request.UserLoginRequest;
-import com.numble.backend.user.dto.request.UserRequest;
 import com.numble.backend.user.dto.request.UserUpdateRequest;
 import com.numble.backend.user.dto.response.UserResponse;
 import com.numble.backend.user.dto.response.UserTokenResponse;
@@ -27,11 +26,11 @@ import javax.validation.Valid;
 public class UserController {
 	private final UserService userService;
 
-	@PostMapping("/register")
+	@PostMapping("/signup")
 	public ResponseEntity<Void> save(@RequestBody @Valid UserCreateRequest userCreateRequest) {
 		Long id = userService.save(userCreateRequest);
 
-		return ResponseEntity.created(URI.create("/api/users/" + id)).build();
+		return ResponseEntity.created(URI.create("/api/users/signup" + id)).build();
 	}
 
 
