@@ -7,6 +7,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.numble.backend.common.domain.BaseEntity;
 
 import lombok.AccessLevel;
@@ -33,6 +34,7 @@ public class Game extends BaseEntity {
 	private Double rate;
 	private Double level;
 
+	@JsonManagedReference
 	@OneToMany(mappedBy = "game",cascade = CascadeType.ALL)
 	private List<Theme> themeList;
  }
