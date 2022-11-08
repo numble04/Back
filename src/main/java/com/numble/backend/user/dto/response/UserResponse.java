@@ -1,16 +1,14 @@
 package com.numble.backend.user.dto.response;
 
-import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-
-@Builder
 @Getter
+@Builder
 public class UserResponse {
-	private String userId;
+	private Long id;
+	private String email;
 	private String name;
-	private String password;
+	private String nickname;
+	private String phone;
 }
