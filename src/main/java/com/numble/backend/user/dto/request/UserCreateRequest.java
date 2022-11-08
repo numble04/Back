@@ -3,7 +3,9 @@ package com.numble.backend.user.dto.request;
 
 
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -11,20 +13,22 @@ import lombok.Getter;
 @Builder
 @Getter
 public class UserCreateRequest {
-	@NotNull
-	@Email
+	@NotBlank(message = "이메일은 빈 칸일 수 없습니다")
+	@Email(message = "이메일 형식이 맞지 않습니다")
 	private String email;
 
-	@NotNull
+	@NotBlank(message = "비밀번호는 빈 칸일 수 없습니다")
+	@Size(min=8,max=32,message = "비밀번호는 8자 이상 32자 이하로 작성해야 합니다")
 	private String password;
 
-	@NotNull
+	@NotBlank(message = "이름은 빈 칸일 수 없습니다")
 	private String name;
 
-	@NotNull
+	@NotNull(message = "전화번호는 빈 칸일 수 없습니다")
 	private String phone;
 
-	@NotNull
+	@NotNull(message = "닉네임은 빈 칸일 수 없습니다")
+	@Size(min=3, max=15, message = "닉네임은 3자 이상 15자 이하여야 합니다")
 	private String nickname;
 
 }
