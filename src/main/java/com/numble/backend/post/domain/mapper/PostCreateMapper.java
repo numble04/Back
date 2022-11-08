@@ -14,9 +14,4 @@ public interface PostCreateMapper {
 	PostCreateMapper INSTANCE = Mappers.getMapper(PostCreateMapper.class);
 
 	Post toEntity(PostCreateRequest dto, User user);
-
-	// @Mapping(expression = "java(post.getUser().getNickname())", target="nickname")
-	// @Mapping(expression = "java(null)", target="thumbnail")
-	// PostResponse toDto(Post post);
-
 }
