@@ -40,9 +40,6 @@ public class User extends BaseEntity {
 		if (userUpdateRequest.getName() != "") {
 			this.name = userUpdateRequest.getName();
 		}
-		if (userUpdateRequest.getImg() != "") {
-			this.img = userUpdateRequest.getImg();
-		}
 		// if (userUpdateRequest.getRegion() != "") {
 		// 	this.region = userUpdateRequest.getRegion();
 		// }
@@ -53,5 +50,9 @@ public class User extends BaseEntity {
 			this.nickname = userUpdateRequest.getNickname();
 		}
 
+	}
+
+	public void updateImg(String img) {
+		this.img = img;
 	}
 }

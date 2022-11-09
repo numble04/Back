@@ -15,8 +15,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.net.URI;
+import java.util.List;
 
 import javax.validation.Valid;
 
@@ -52,6 +54,14 @@ public class UserController {
 	public ResponseEntity<Void> updateById(@AuthenticationPrincipal CustomUserDetails customUserDetails,
 		@RequestBody @Valid UserUpdateRequest userUpdateRequest) {
 		userService.updateById(customUserDetails.getId(),userUpdateRequest);
+
+		return ResponseEntity.noContent().build();
+	}
+
+	@PutMapping("/profile")
+	public ResponseEntity<Void> updateImg(@AuthenticationPrincipal CustomUserDetails customUserDetails,
+		MultipartFile multipartFile) {
+		userService.updateImg(customUserDetails.getId(),multipartFile);
 
 		return ResponseEntity.noContent().build();
 	}
