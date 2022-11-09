@@ -40,9 +40,9 @@ public class User extends BaseEntity {
 		if (userUpdateRequest.getName() != "") {
 			this.name = userUpdateRequest.getName();
 		}
-		// if (userUpdateRequest.getRegion() != "") {
-		// 	this.region = userUpdateRequest.getRegion();
-		// }
+		if (userUpdateRequest.getRegion() != "") {
+			this.region = userUpdateRequest.getRegion();
+		}
 		if (userUpdateRequest.getPhone() != "") {
 			this.phone = userUpdateRequest.getPhone();
 		}
