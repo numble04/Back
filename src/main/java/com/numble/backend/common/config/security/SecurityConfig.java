@@ -38,14 +38,15 @@ public class SecurityConfig {
 	public WebSecurityCustomizer webSecurityCustomizer() {
 		// 해당 주소들은 인증 무시
 		return (web) -> web.ignoring()
-			.antMatchers("/api/users/login", "/api/users/register", "/api/auth/reissue","/api/healthCheck");
+			.antMatchers("/api/users/login", "/api/users/register", "/api/auth/reissue", "/api/healthCheck");
 	}
 
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http.cors()
 			.and()
-			.csrf().disable()
+			.csrf()
+			.disable()
 			// 스프링 시큐리티에 jwt가 추가되었으므로
 			// custom한 jwt exception handler를 추가
 			.exceptionHandling()
@@ -58,7 +59,8 @@ public class SecurityConfig {
 			.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 			.and()
 			.authorizeRequests()
-			.antMatchers("/api/users","/api/users/logout","/api/auth/**","/api/posts/**").authenticated()
+			.antMatchers("/api/users", "/api/users/logout", "/api/auth/**", "/api/posts/**", "/api/comments/**")
+			.authenticated()
 			.and()
 			.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 		return http.build();
