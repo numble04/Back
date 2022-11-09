@@ -22,6 +22,25 @@ import lombok.RequiredArgsConstructor;
 @Service
 public class S3Utils {
 
+	public static String uploadFileS3(AmazonS3Client amazonS3Client, String bucketName,
+		MultipartFile multipartFile) {
+
+		validateFileExists(multipartFile);
+		String fileName = buildFileName(multipartFile.getOriginalFilename());
+
+		ObjectMetadata objectMetadata = new ObjectMetadata();
+		objectMetadata.setContentType(multipartFile.getContentType());
+
+		try (InputStream inputStream = multipartFile.getInputStream()) {
+			amazonS3Client.putObject(new PutObjectRequest(bucketName, fileName, inputStream, objectMetadata)
+				.withCannedAcl(CannedAccessControlList.PublicRead));
+		} catch (IOException e) {
+			throw new FileUploadFailedException();
+		}
+
+		return fileName;
+	}
+
 
 	public static List<String> uploadMultiFilesS3(AmazonS3Client amazonS3Client, String bucketName,
 		List<MultipartFile> multipartFiles, int size) {
