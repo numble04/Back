@@ -52,6 +52,12 @@ public class ControllerAdvice {
 		return toResponseEntity(ExceptionCode.WRONG_TYPE_TOKEN.getMessage(), HttpStatus.FORBIDDEN);
 	}
 
+	@ExceptionHandler(NullPointerException.class)
+	public ResponseEntity<ExceptionResponse> businessException(final NullPointerException e) {
+		log.info("{} : {}", ((Exception)e).getClass().getSimpleName(), e.getMessage());
+		return toResponseEntity("유저 정보가 주어지지 않았습니다", HttpStatus.FORBIDDEN);
+	}
+
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public ResponseEntity<ExceptionResponse> handleValidationException(final MethodArgumentNotValidException e) {
 		final FieldError fieldError = e.getFieldErrors()
