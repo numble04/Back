@@ -1,5 +1,6 @@
 package com.numble.backend.comment.dto.request;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 import com.numble.backend.comment.domain.Comment;
@@ -14,7 +15,7 @@ import lombok.Getter;
 public class CommentCreateRequest {
 	private Long id;
 
-	@NotNull(message = "댓글은 공백일 수 없습니다")
+	@NotEmpty(message = "댓글은 공백일 수 없습니다")
 	private String content;
 
 	public static Comment toEntity(CommentCreateRequest dto, Post post, Comment comment, User user) {

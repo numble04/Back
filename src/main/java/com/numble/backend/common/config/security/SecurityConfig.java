@@ -45,7 +45,8 @@ public class SecurityConfig {
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http.cors()
 			.and()
-			.csrf().disable()
+			.csrf()
+			.disable()
 			// 스프링 시큐리티에 jwt가 추가되었으므로
 			// custom한 jwt exception handler를 추가
 			.exceptionHandling()
