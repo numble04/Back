@@ -28,21 +28,6 @@ import javax.validation.Valid;
 public class UserController {
 	private final UserService userService;
 
-	@PostMapping("/signup")
-	public ResponseEntity<Void> save(@RequestBody @Valid UserCreateRequest userCreateRequest) {
-		Long id = userService.save(userCreateRequest);
-
-		return ResponseEntity.created(URI.create("/api/users/signup" + id)).build();
-	}
-
-
-	@PostMapping("/login")
-	public ResponseEntity<ResponseDto> login(@RequestBody @Valid UserLoginRequest userLoginRequest) {
-		ResponseDto responseDto = ResponseDto.of(userService.login(userLoginRequest));
-
-		return ResponseEntity.ok(responseDto);
-	}
-
 	@GetMapping
 	public ResponseEntity<ResponseDto> findById(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
 		ResponseDto responseDto = ResponseDto.of(userService.findById(customUserDetails.getId()));

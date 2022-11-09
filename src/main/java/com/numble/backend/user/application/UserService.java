@@ -52,62 +52,11 @@ public class UserService {
 	private final RefreshTokenRedisRepository refreshTokenRedisRepository;
 	private final LogoutAccessTokenRedisRepository logoutAccessTokenRedisRepository;
 	private final JwtTokenUtil jwtTokenUtil;
-	private final PasswordEncoder passwordEncoder;
-	private final ImageRepository imageRepository;
 	private final AmazonS3Client amazonS3Client;
 	@Value("${cloud.aws.s3.bucket}")
 	private String bucketName;
 
 
-	// 중복 검사 실시
-	@Transactional
-	public Long save(final UserCreateRequest userCreateRequest) {
-		checkEmail(userCreateRequest.getEmail());
-		checkNickname(userCreateRequest.getNickname());
-		String password = passwordEncoder.encode(userCreateRequest.getPassword());
-		User user = UserCreateMapper.INSTANCE.toEntity(userCreateRequest,password);
-
-		return userRepository.save(user).getId();
-	}
-
-	private void checkEmail(final String email) {
-		if (userRepository.existsByEmail(email)){
-			throw new EmailExistsException();
-		}
-	}
-
-	private void checkNickname(final String nickname) {
-		if (userRepository.existsByNickname(nickname)) {
-			throw new NicknameExistsException();
-		}
-	}
-
-	// 한 자리 변수명 금지, dto 빌드 직접
-	public UserTokenResponse login(final UserLoginRequest userLoginRequest) {
-		User user = userRepository.findByemail(userLoginRequest.getEmail())
-			.orElseThrow(() -> new EmailNotExistsException());
-		checkPassword(userLoginRequest.getPassword(), user.getPassword());
-
-		UserTokenResponse response = UserTokenResponse.builder()
-			.userResponse(UserMapper.INSTANCE.toDto(user))
-			.accessToken(jwtTokenUtil.generateAccessToken(user.getId().toString()))
-			.refreshToken(saveRefreshToken(user.getId().toString()).getRefreshToken())
-			.build();
-
-		return response;
-	}
-
-	private void checkPassword(String rawPassword, String findMemberPassword) {
-		if (!passwordEncoder.matches(rawPassword, findMemberPassword)) {
-			throw new InvalidPasswordException();
-		}
-	}
-
-	private RefreshToken saveRefreshToken(String username) {
-
-		return refreshTokenRedisRepository.save(RefreshToken.createRefreshToken(username,
-			jwtTokenUtil.generateRefreshToken(username), JwtExpirationEnums.REFRESH_TOKEN_EXPIRATION_TIME.getValue()));
-	}
 
 	public Long logout(String accessToken, String refreshToken) {
 		checkToken(accessToken, refreshToken);
