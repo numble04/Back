@@ -13,6 +13,7 @@ import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.numble.backend.comment.dto.request.CommentUpdateRequest;
 import com.numble.backend.common.domain.BaseEntity;
 import com.numble.backend.common.exception.business.InvalidFieldException;
 import com.numble.backend.post.domain.Post;
@@ -35,7 +36,7 @@ import lombok.ToString;
 @Getter
 @Builder
 public class Comment extends BaseEntity {
-	@Column(nullable = false)
+	@Column(nullable = false, columnDefinition = "TEXT")
 	private String content;
 
 	@ManyToOne(fetch = LAZY)
@@ -70,9 +71,10 @@ public class Comment extends BaseEntity {
 		}
 	}
 
-	public void updateContent(final String content, final Long userId) {
-		validateContent(content);
+
+	public void update(CommentUpdateRequest commentUpdateRequest, Long userId) {
+		validateContent(commentUpdateRequest.getContent());
 		validateMemberIsAuthor(userId);
-		this.content = content;
+		this.content = commentUpdateRequest.getContent();
 	}
 }

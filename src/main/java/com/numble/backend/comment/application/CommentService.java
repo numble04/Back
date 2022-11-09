@@ -10,9 +10,11 @@ import com.numble.backend.comment.domain.Comment;
 import com.numble.backend.comment.domain.CommentRepository;
 import com.numble.backend.comment.domain.mapper.CommentMapper;
 import com.numble.backend.comment.dto.request.CommentCreateRequest;
+import com.numble.backend.comment.dto.request.CommentUpdateRequest;
 import com.numble.backend.comment.dto.response.CommentResponse;
 import com.numble.backend.comment.exception.CommentNotFoundException;
 import com.numble.backend.common.config.security.CustomUserDetails;
+import com.numble.backend.post.domain.Image;
 import com.numble.backend.post.domain.Post;
 import com.numble.backend.post.domain.repository.PostRepository;
 import com.numble.backend.post.exception.PostNotFoundException;
@@ -71,4 +73,20 @@ public class CommentService {
 		return commentRepository.save(comment).getId();
 	}
 
+	@Transactional
+	public void updateById(Long id, CommentUpdateRequest commentUpdateRequest, CustomUserDetails customUserDetails) {
+		Comment comment = commentRepository.findById(id)
+			.orElseThrow(() -> new CommentNotFoundException());
+
+		comment.update(commentUpdateRequest, customUserDetails.getId());
+	}
+
+	@Transactional
+	public void deleteById(Long id, CustomUserDetails customUserDetails) {
+		Comment comment = commentRepository.findById(id)
+			.orElseThrow(() -> new CommentNotFoundException());
+
+		comment.validateMemberIsAuthor(customUserDetails.getId());
+		commentRepository.deleteById(id);
+	}
 }
