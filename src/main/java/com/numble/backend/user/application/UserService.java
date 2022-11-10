@@ -1,5 +1,6 @@
 package com.numble.backend.user.application;
 
+import java.io.FileNotFoundException;
 import java.util.List;
 
 import com.amazonaws.services.s3.AmazonS3Client;
@@ -9,6 +10,7 @@ import com.numble.backend.common.domain.access.LogoutAccessToken;
 import com.numble.backend.common.domain.access.LogoutAccessTokenRedisRepository;
 import com.numble.backend.common.domain.refresh.RefreshToken;
 import com.numble.backend.common.domain.refresh.RefreshTokenRedisRepository;
+import com.numble.backend.common.exception.business.FileUploadFailedException;
 import com.numble.backend.common.utils.S3Utils;
 import com.numble.backend.post.domain.Image;
 import com.numble.backend.post.domain.Post;
@@ -104,15 +106,25 @@ public class UserService {
 		User user = userRepository.findById(id)
 			.orElseThrow(() -> new UserNotFoundException());
 
-		uploadFile(multipartFile,user);
+		if (multipartFile == null) {
+			deleteFile(user);
+		}
+		else{
+			if (multipartFile.isEmpty()) {
+				throw new FileUploadFailedException();
+			}
+			uploadFile(multipartFile,user);
+		}
+
+	}
+
+	@Transactional
+	public void deleteFile(User user) {
+		user.deleteImg();
 	}
 
 	@Transactional
 	public void uploadFile(MultipartFile multipartFile, User user) {
-		if (multipartFile == null) {
-			return;
-		}
-
 		String fileName = S3Utils.uploadFileS3(amazonS3Client, bucketName, multipartFile);
 		user.updateImg(amazonS3Client.getUrl(bucketName, fileName).toString());
 

@@ -45,7 +45,7 @@ public class UserController {
 
 	@PutMapping("/profile")
 	public ResponseEntity<Void> updateImg(@AuthenticationPrincipal CustomUserDetails customUserDetails,
-		MultipartFile multipartFile) {
+		@RequestPart(value = "file", required = false) MultipartFile multipartFile) {
 		userService.updateImg(customUserDetails.getId(),multipartFile);
 
 		return ResponseEntity.noContent().build();
