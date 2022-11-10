@@ -1,4 +1,4 @@
-package com.numble.backend.post.exception;
+package com.numble.backend.common.exception.business;
 
 import org.springframework.http.HttpStatus;
 
