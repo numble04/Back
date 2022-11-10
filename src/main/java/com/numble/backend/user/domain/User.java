@@ -37,8 +37,22 @@ public class User extends BaseEntity {
 
 	public void updateUser(UserUpdateRequest userUpdateRequest) {
 
-		this.img = userUpdateRequest.getImg();
-		this.region = userUpdateRequest.getRegion();
+		if (userUpdateRequest.getName() != "") {
+			this.name = userUpdateRequest.getName();
+		}
+		if (userUpdateRequest.getRegion() != "") {
+			this.region = userUpdateRequest.getRegion();
+		}
+		if (userUpdateRequest.getPhone() != "") {
+			this.phone = userUpdateRequest.getPhone();
+		}
+		if (userUpdateRequest.getNickname() != "") {
+			this.nickname = userUpdateRequest.getNickname();
+		}
 
+	}
+
+	public void updateImg(String img) {
+		this.img = img;
 	}
 }

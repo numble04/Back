@@ -3,15 +3,23 @@ package com.numble.backend.user.application;
 import java.util.Optional;
 
 import com.numble.backend.common.config.jwt.JwtTokenUtil;
+import com.numble.backend.common.config.jwt.enums.JwtExpirationEnums;
 import com.numble.backend.common.config.security.CustomUserDetailsService;
 import com.numble.backend.common.domain.refresh.RefreshToken;
 import com.numble.backend.common.domain.refresh.RefreshTokenRedisRepository;
 import com.numble.backend.user.domain.Token;
 import com.numble.backend.user.domain.User;
 import com.numble.backend.user.domain.UserRepository;
+import com.numble.backend.user.domain.mapper.UserCreateMapper;
 import com.numble.backend.user.domain.mapper.UserMapper;
 import com.numble.backend.user.domain.mapper.UserTokenMapper;
+import com.numble.backend.user.dto.request.UserCreateRequest;
+import com.numble.backend.user.dto.request.UserLoginRequest;
 import com.numble.backend.user.dto.response.UserTokenResponse;
+import com.numble.backend.user.exception.EmailExistsException;
+import com.numble.backend.user.exception.EmailNotExistsException;
+import com.numble.backend.user.exception.InvalidPasswordException;
+import com.numble.backend.user.exception.NicknameExistsException;
 import com.numble.backend.user.exception.RefreshTokenNotFoundException;
 import com.numble.backend.user.exception.TokenErrorException;
 import com.numble.backend.user.exception.TokenNotExistsException;
@@ -21,6 +29,7 @@ import io.jsonwebtoken.io.DecodingException;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -34,6 +43,30 @@ public class AuthService {
 	private final RefreshTokenRedisRepository refreshTokenRedisRepository;
 	private final UserRepository userRepository;
 	private final CustomUserDetailsService customUserDetailsService;
+
+	private final PasswordEncoder passwordEncoder;
+
+	@Transactional
+	public Long save(final UserCreateRequest userCreateRequest) {
+		checkEmail(userCreateRequest.getEmail());
+		checkNickname(userCreateRequest.getNickname());
+		String password = passwordEncoder.encode(userCreateRequest.getPassword());
+		User user = UserCreateMapper.INSTANCE.toEntity(userCreateRequest,password);
+
+		return userRepository.save(user).getId();
+	}
+
+	private void checkEmail(final String email) {
+		if (userRepository.existsByEmail(email)){
+			throw new EmailExistsException();
+		}
+	}
+
+	private void checkNickname(final String nickname) {
+		if (userRepository.existsByNickname(nickname)) {
+			throw new NicknameExistsException();
+		}
+	}
 
 	@Transactional
 	public UserTokenResponse reissue(String refreshToken) {
@@ -55,6 +88,32 @@ public class AuthService {
 
 
 		return UserTokenMapper.INSTANCE.toDto(token, UserMapper.INSTANCE.toDto(user));
+	}
+
+	public UserTokenResponse login(final UserLoginRequest userLoginRequest) {
+		User user = userRepository.findByemail(userLoginRequest.getEmail())
+			.orElseThrow(() -> new EmailNotExistsException());
+		checkPassword(userLoginRequest.getPassword(), user.getPassword());
+
+		UserTokenResponse response = UserTokenResponse.builder()
+			.userResponse(UserMapper.INSTANCE.toDto(user))
+			.accessToken(jwtTokenUtil.generateAccessToken(user.getId().toString()))
+			.refreshToken(saveRefreshToken(user.getId().toString()).getRefreshToken())
+			.build();
+
+		return response;
+	}
+
+	private RefreshToken saveRefreshToken(String username) {
+
+		return refreshTokenRedisRepository.save(RefreshToken.createRefreshToken(username,
+			jwtTokenUtil.generateRefreshToken(username), JwtExpirationEnums.REFRESH_TOKEN_EXPIRATION_TIME.getValue()));
+	}
+
+	private void checkPassword(String rawPassword, String findMemberPassword) {
+		if (!passwordEncoder.matches(rawPassword, findMemberPassword)) {
+			throw new InvalidPasswordException();
+		}
 	}
 
 	private void checkRefresh(String refreshToken) {

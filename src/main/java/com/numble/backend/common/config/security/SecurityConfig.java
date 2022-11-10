@@ -38,7 +38,7 @@ public class SecurityConfig {
 	public WebSecurityCustomizer webSecurityCustomizer() {
 		// 해당 주소들은 인증 무시
 		return (web) -> web.ignoring()
-			.antMatchers("/api/users/login", "/api/users/register", "/api/auth/reissue", "/api/healthCheck");
+			.antMatchers("/api/auth/**","/api/healthCheck");
 	}
 
 	@Bean
@@ -59,8 +59,7 @@ public class SecurityConfig {
 			.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 			.and()
 			.authorizeRequests()
-			.antMatchers("/api/users", "/api/users/logout", "/api/auth/**", "/api/posts/**", "/api/comments/**")
-			.authenticated()
+			.antMatchers("/api/users/**","/api/auth/reissue","/api/posts/**","/api/comments/**").authenticated()
 			.and()
 			.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 		return http.build();
