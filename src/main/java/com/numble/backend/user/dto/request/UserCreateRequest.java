@@ -31,4 +31,7 @@ public class UserCreateRequest {
 	@Size(min=3, max=15, message = "닉네임은 3자 이상 15자 이하여야 합니다")
 	private String nickname;
 
+	@NotBlank(message = "지역은 빈 칸일 수 없습니다")
+	private String region;
+
 }
