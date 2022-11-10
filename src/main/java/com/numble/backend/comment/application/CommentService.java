@@ -1,12 +1,15 @@
 package com.numble.backend.comment.application;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.numble.backend.comment.domain.Comment;
+import com.numble.backend.comment.domain.CommentLike;
+import com.numble.backend.comment.domain.CommentLikeRepository;
 import com.numble.backend.comment.domain.CommentRepository;
 import com.numble.backend.comment.domain.mapper.CommentMapper;
 import com.numble.backend.comment.dto.request.CommentCreateRequest;
@@ -16,6 +19,7 @@ import com.numble.backend.comment.exception.CommentNotFoundException;
 import com.numble.backend.common.config.security.CustomUserDetails;
 import com.numble.backend.post.domain.Image;
 import com.numble.backend.post.domain.Post;
+import com.numble.backend.post.domain.PostLike;
 import com.numble.backend.post.domain.repository.PostRepository;
 import com.numble.backend.post.exception.PostNotFoundException;
 import com.numble.backend.user.domain.User;
@@ -32,6 +36,7 @@ public class CommentService {
 	private final CommentRepository commentRepository;
 	private final PostRepository postRepository;
 	private final UserRepository userRepository;
+	private final CommentLikeRepository commentLikeRepository;
 
 	public List<CommentResponse> findAllByUserId(CustomUserDetails customUserDetails) {
 		User user = userRepository.findById(customUserDetails.getId())
@@ -46,7 +51,8 @@ public class CommentService {
 	}
 
 	@Transactional
-	public Long saveByPostId(Long postId, CommentCreateRequest commentCreateRequest, CustomUserDetails customUserDetails) {
+	public Long saveByPostId(Long postId, CommentCreateRequest commentCreateRequest,
+		CustomUserDetails customUserDetails) {
 		User user = userRepository.findById(customUserDetails.getId())
 			.orElseThrow(() -> new UserNotFoundException());
 
@@ -88,5 +94,23 @@ public class CommentService {
 
 		comment.validateMemberIsAuthor(customUserDetails.getId());
 		commentRepository.deleteById(id);
+	}
+
+	@Transactional
+	public void updateLikeById(CustomUserDetails customUserDetails, Long id) {
+		Comment comment = commentRepository.findById(id)
+			.orElseThrow(() -> new CommentNotFoundException());
+
+		User user = userRepository.findById(customUserDetails.getId())
+			.orElseThrow(() -> new UserNotFoundException());
+
+		Optional<CommentLike> commentLike = commentLikeRepository.findByCommentIdAndUserId(id,
+			customUserDetails.getId());
+
+		if (commentLike.isPresent()) {
+			commentLikeRepository.delete(commentLike.get());
+		} else {
+			commentLikeRepository.save(new CommentLike(user, comment));
+		}
 	}
 }

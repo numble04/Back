@@ -74,4 +74,12 @@ public class CommentController {
 
 		return ResponseEntity.noContent().build();
 	}
+
+	@PutMapping("/{id}/like") //좋아요
+	public ResponseEntity<Void> updateLikeById(@AuthenticationPrincipal CustomUserDetails customUserDetails,
+		@PathVariable final Long id) {
+		commentService.updateLikeById(customUserDetails, id);
+
+		return ResponseEntity.noContent().build();
+	}
 }
