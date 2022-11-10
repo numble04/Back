@@ -11,4 +11,5 @@ public class UserResponse {
 	private String name;
 	private String nickname;
 	private String phone;
+	private String region;
 }
