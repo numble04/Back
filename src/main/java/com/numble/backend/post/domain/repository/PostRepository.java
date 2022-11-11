@@ -13,13 +13,7 @@ import com.numble.backend.post.domain.PostType;
 import com.numble.backend.user.domain.User;
 
 public interface PostRepository extends JpaRepository<Post, Long>,PostRepositoryCustom {
-	@EntityGraph(attributePaths = {"user"}, type = EntityGraph.EntityGraphType.LOAD)
-	Optional<Post> findById(Long id);
 
-
-	@EntityGraph(attributePaths = {"user"}, type = EntityGraph.EntityGraphType.LOAD)
-	List<Post> findAllByUser(User user);
-
-
+	Slice<Post> findAllByUser(User user, Pageable pageable);
 
 }
