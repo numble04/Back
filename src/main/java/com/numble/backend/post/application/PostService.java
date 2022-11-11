@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,6 +26,7 @@ import com.numble.backend.post.domain.repository.PostRepository;
 
 import com.numble.backend.post.dto.request.PostCreateRequest;
 import com.numble.backend.post.dto.request.PostUpdateRequest;
+import com.numble.backend.post.dto.response.MyPostResponse;
 import com.numble.backend.post.dto.response.PostDetailResponse;
 import com.numble.backend.post.dto.response.PostResponse;
 import com.numble.backend.post.exception.PostNotFoundException;
@@ -87,18 +89,25 @@ public class PostService {
 		return postDetailResponse;
 	}
 
-	public List<PostResponse> findAllByUserId(CustomUserDetails customUserDetails) {
+	public Slice<MyPostResponse> findAllByUserId(CustomUserDetails customUserDetails, Pageable pageable) {
 
-		// User user = userRepository.findById(customUserDetails.getId())
-		// 	.orElseThrow(() -> new UserNotFoundException());
-		//
-		// final List<PostResponse> postResponses = postRepository.findAllByUser(user)
-		// 	.stream()
-		// 	.map((post) -> PostMapper.INSTANCE.toDto(post, customUserDetails.getId()))
-		// 	.collect(Collectors.toList());
-		//
-		// return postResponses;
-		return null;
+		User user = userRepository.findById(customUserDetails.getId())
+			.orElseThrow(() -> new UserNotFoundException());
+
+		final List<MyPostResponse> postResponses = postRepository.findAllByUser(user, pageable)
+			.stream()
+			.map(MyPostResponse::toDto)
+			.collect(Collectors.toList());
+
+		return new SliceImpl<>(postResponses,pageable,checkHasNext(postResponses, pageable));
+	}
+
+	private boolean checkHasNext(List<MyPostResponse> postResponses, Pageable pageable) {
+
+		if (postResponses.size() > pageable.getPageSize()) {
+			return true;
+		}
+		return false;
 	}
 
 	@Transactional

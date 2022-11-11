@@ -66,9 +66,9 @@ public class PostController {
 	}
 
 	@GetMapping("/my") //내 게시글 조회
-	public ResponseEntity<ResponseDto> findAllByUserId(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
-
-		ResponseDto responseDto = ResponseDto.of(postService.findAllByUserId(customUserDetails));
+	public ResponseEntity<ResponseDto> findAllByUserId(@AuthenticationPrincipal CustomUserDetails customUserDetails,
+	@PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+		ResponseDto responseDto = ResponseDto.of(postService.findAllByUserId(customUserDetails, pageable));
 		return ResponseEntity.ok(responseDto);
 	}
 
