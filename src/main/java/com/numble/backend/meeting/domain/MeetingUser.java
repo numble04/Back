@@ -34,4 +34,11 @@ public class MeetingUser extends BaseEntity {
 
 	@Column(nullable = false, columnDefinition = "boolean default false")
 	private Boolean isApproved;
+
+	public MeetingUser(User user, Meeting meeting, Boolean isLeader, Boolean isApproved) {
+		this.user = user;
+		this.meeting = meeting;
+		this.isLeader = isLeader;
+		this.isApproved = isApproved;
+	}
 }
