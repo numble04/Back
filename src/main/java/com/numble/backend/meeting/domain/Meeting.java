@@ -3,13 +3,21 @@ package com.numble.backend.meeting.domain;
 import static javax.persistence.FetchType.LAZY;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
 import com.numble.backend.cafe.domain.Cafe;
 import com.numble.backend.common.domain.BaseEntity;
+import com.numble.backend.post.domain.PostLike;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -22,6 +30,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Getter
 @Builder
+@DynamicInsert
+@DynamicUpdate
 public class Meeting extends BaseEntity {
 
 	@Column(nullable = false)
@@ -46,8 +56,14 @@ public class Meeting extends BaseEntity {
 	@Column(nullable = false)
 	private Integer cost;
 
+	@Column(columnDefinition="tinyint(1) default 0")
+	private Boolean isFull;
+
 	@ManyToOne(fetch = LAZY)
 	private Cafe cafe;
+
+	@OneToMany(mappedBy = "meeting", orphanRemoval = true)
+	private List<MeetingLike> meetingLikes = new ArrayList<>();
 
 
 
