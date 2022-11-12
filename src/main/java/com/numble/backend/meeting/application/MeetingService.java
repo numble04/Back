@@ -1,6 +1,10 @@
 package com.numble.backend.meeting.application;
 
+import java.time.LocalDate;
+
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,6 +21,7 @@ import com.numble.backend.meeting.domain.repository.MeetingRepository;
 import com.numble.backend.meeting.domain.mapper.MeetingCreateMapper;
 import com.numble.backend.meeting.domain.repository.MeetingUserRepository;
 import com.numble.backend.meeting.dto.request.MeetingCreateRequest;
+import com.numble.backend.meeting.dto.response.MeetingResponse;
 import com.numble.backend.user.domain.User;
 import com.numble.backend.user.domain.UserRepository;
 import com.numble.backend.user.exception.UserNotFoundException;
@@ -49,12 +54,18 @@ public class MeetingService {
 
 		String img = uploadFile(multipartFile);
 
-		Meeting meeting = MeetingCreateMapper.INSTANCE.toEntity(meetingCreateRequest,img,cafe);
+		Meeting meeting = MeetingCreateMapper.INSTANCE.toEntity(meetingCreateRequest, img, cafe);
 
-		MeetingUser meetingUser = new MeetingUser(user,meeting,true,true);
+		MeetingUser meetingUser = new MeetingUser(user, meeting, true, true);
 		meetingUserRepository.save(meetingUser);
 
 		return meetingRepository.save(meeting).getId();
+	}
+
+	public Slice<MeetingResponse> findAllByDong(String city, String dong, Double latitude, Double longitude,
+		LocalDate startDate, LocalDate endDate, Pageable pageable) {
+
+		return meetingRepository.findAllByDong(city, dong,latitude,longitude, startDate, endDate, pageable);
 	}
 
 	@Transactional
@@ -62,4 +73,5 @@ public class MeetingService {
 		String fileName = S3Utils.uploadFileS3(amazonS3Client, bucketName, multipartFile);
 		return amazonS3Client.getUrl(bucketName, fileName).toString();
 	}
+
 }
