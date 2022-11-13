@@ -1,22 +1,34 @@
 package com.numble.backend.meeting.domain.repository;
 
 import static com.numble.backend.meeting.domain.QMeeting.meeting;
+import static com.numble.backend.meeting.domain.QMeetingLike.meetingLike;
 import static com.numble.backend.meeting.domain.QMeetingUser.meetingUser;
+import static com.numble.backend.post.domain.QPost.post;
+import static com.numble.backend.post.domain.QPostLike.postLike;
+import static com.numble.backend.user.domain.QUser.user;
 import static com.querydsl.core.types.ExpressionUtils.count;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.data.domain.Sort;
 
-
+import com.numble.backend.meeting.domain.QMeetingLike;
+import com.numble.backend.meeting.domain.QMeetingUser;
+import com.numble.backend.meeting.dto.response.MeetingDetailResponse;
 import com.numble.backend.meeting.dto.response.MeetingResponse;
+import com.numble.backend.meeting.dto.response.MeetingUserResponse;
+import com.numble.backend.meeting.dto.response.QMeetingDetailResponse;
 import com.numble.backend.meeting.dto.response.QMeetingResponse;
 
+import com.numble.backend.meeting.dto.response.QMeetingUserResponse;
+import com.numble.backend.post.dto.response.PostDetailResponse;
+import com.numble.backend.post.dto.response.QPostDetailResponse;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -68,6 +80,59 @@ public class MeetingRepositoryImpl implements MeetingRepositoryCustom {
 		return new SliceImpl<>(content, pageable, hasNext);
 	}
 
+	@Override
+	public Optional<MeetingDetailResponse> findDetailById(Long id, Long userId, boolean isLeader) {
+
+		Optional<MeetingDetailResponse> response = Optional.ofNullable(queryFactory
+			.select(new QMeetingDetailResponse(
+				meeting.id,
+				meeting.title,
+				meeting.content,
+				meeting.kakaoUrl,
+				meeting.img,
+				meeting.time,
+				meeting.cost,
+				meeting.capacity,
+				JPAExpressions
+					.select(count(meetingUser))
+					.from(meetingUser)
+					.where(meetingUser.isApproved.eq(Boolean.TRUE)),
+				meeting.meetingLikes.size(),
+				meeting.day,
+				meeting.isFull,
+				meeting.cafe,
+				JPAExpressions
+					.select()
+					.from(meetingLike)
+					.where(meetingLike.meeting.eq(meeting).and(user.id.eq(userId)))
+					.exists()
+			))
+			.from(meetingUser)
+			.innerJoin(meetingUser.meeting, meeting).on(meeting.id.eq(id))
+			.fetchOne());
+
+		List<MeetingUserResponse> meetingUserResponses = queryFactory
+			.select(new QMeetingUserResponse(
+					meetingUser.user.id,
+					meetingUser.user.nickname,
+					meetingUser.user.img,
+					meetingUser.user.region,
+					meetingUser.isApproved,
+					meetingUser.isLeader
+				)
+			)
+			.from(meetingUser)
+			.where(meetingUser.meeting.id.eq(id)
+				.and(eqApproved(isLeader)))
+			.orderBy(meetingUser.isLeader.desc(), meetingUser.isApproved.desc())
+			.fetch();
+
+		response.get().setUsers(meetingUserResponses);
+		response.get().setMyMeeting(isLeader);
+
+		return response;
+	}
+
 	private OrderSpecifier<?> meetingSort(Pageable page, Double latitude, Double longitude) {
 
 		if (!page.getSort().isEmpty()) {
@@ -99,6 +164,15 @@ public class MeetingRepositoryImpl implements MeetingRepositoryCustom {
 		}
 
 		return meeting.day.between(startDate.atStartOfDay(), endDate.plusDays(1).atStartOfDay());
+	}
+
+	private BooleanExpression eqApproved(boolean isLeader) {
+
+		if (isLeader) {
+			return null;
+		}
+
+		return meetingUser.isApproved.eq(Boolean.TRUE);
 	}
 
 }

@@ -1,6 +1,7 @@
 package com.numble.backend.meeting.application;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
@@ -21,7 +22,11 @@ import com.numble.backend.meeting.domain.repository.MeetingRepository;
 import com.numble.backend.meeting.domain.mapper.MeetingCreateMapper;
 import com.numble.backend.meeting.domain.repository.MeetingUserRepository;
 import com.numble.backend.meeting.dto.request.MeetingCreateRequest;
+import com.numble.backend.meeting.dto.response.MeetingDetailResponse;
 import com.numble.backend.meeting.dto.response.MeetingResponse;
+import com.numble.backend.meeting.exception.MeetingNotFoundException;
+import com.numble.backend.meeting.exception.MeetingUserNotFoundException;
+import com.numble.backend.post.dto.response.PostDetailResponse;
 import com.numble.backend.user.domain.User;
 import com.numble.backend.user.domain.UserRepository;
 import com.numble.backend.user.exception.UserNotFoundException;
@@ -65,7 +70,7 @@ public class MeetingService {
 	public Slice<MeetingResponse> findAllByDong(String city, String dong, Double latitude, Double longitude,
 		LocalDate startDate, LocalDate endDate, Pageable pageable) {
 
-		return meetingRepository.findAllByDong(city, dong,latitude,longitude, startDate, endDate, pageable);
+		return meetingRepository.findAllByDong(city, dong, latitude, longitude, startDate, endDate, pageable);
 	}
 
 	@Transactional
@@ -74,4 +79,16 @@ public class MeetingService {
 		return amazonS3Client.getUrl(bucketName, fileName).toString();
 	}
 
+	public MeetingDetailResponse findById(Long id, CustomUserDetails customUserDetails) {
+
+
+		MeetingUser meetingUser = meetingUserRepository.findByUserIdAndMeetingId(customUserDetails.getId(), id)
+			.orElseThrow(() -> new MeetingUserNotFoundException());
+
+		MeetingDetailResponse response = meetingRepository.findDetailById(id, customUserDetails.getId(),
+				meetingUser.getIsLeader())
+			.orElseThrow(() -> new MeetingNotFoundException());
+
+		return response;
+	}
 }

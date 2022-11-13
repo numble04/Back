@@ -10,9 +10,10 @@ spring:
     database-platform: org.hibernate.spatial.dialect.mysql.MySQL56InnoDBSpatialDialect
     open-in-view: false
     show-sql: true
-    hibernate:
-      format_sql: true
-      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: false
+        ddl-auto: update
 
   redis:
     host: localhost
