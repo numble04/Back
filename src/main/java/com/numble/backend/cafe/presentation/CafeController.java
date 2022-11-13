@@ -26,7 +26,7 @@ public class CafeController {
 		@PageableDefault(size = 10, sort = "name", direction = Sort.Direction.ASC) Pageable pageable) {
 
 		ResponseDto responseDto = ResponseDto.of(
-			cafeService.findCafe(keyword,pageable));
+			cafeService.findByKeyword(keyword,pageable));
 
 		return ResponseEntity.ok(responseDto);
 
