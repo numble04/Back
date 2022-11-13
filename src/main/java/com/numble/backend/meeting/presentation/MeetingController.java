@@ -15,6 +15,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -61,4 +62,14 @@ public class MeetingController {
 
 		return ResponseEntity.ok(responseDto);
 	}
+
+	@GetMapping("/{id}") // 모임 상세 조회
+	public ResponseEntity<ResponseDto> findById(
+		@PathVariable Long id, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+
+		ResponseDto responseDto = ResponseDto.of(meetingService.findById(id, customUserDetails));
+
+		return ResponseEntity.ok(responseDto);
+	}
+
 }
