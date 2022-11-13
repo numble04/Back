@@ -21,7 +21,7 @@ public class CafeService {
 
 	private final CafeRepository cafeRepository;
 
-	public Slice<CafeResponse> findCafe(String keyword, Pageable pageable) {
+	public Slice<CafeResponse> findByKeyword(String keyword, Pageable pageable) {
 		Slice<CafeResponse> responses = cafeRepository
 			.findByNameContainingOrDongContaining(keyword,keyword, pageable)
 			.map(CafeResponseMapper.INSTANCE::toDto);
