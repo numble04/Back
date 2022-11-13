@@ -51,9 +51,9 @@ public class CommentController {
 		@AuthenticationPrincipal CustomUserDetails customUserDetails,
 		@RequestBody @Valid CommentCreateRequest commentCreateRequest) {
 
-		final Long comentId = commentService.saveChildById(id, commentCreateRequest, customUserDetails);
+		final Long commentId = commentService.saveChildById(id, commentCreateRequest, customUserDetails);
 
-		return ResponseEntity.created(URI.create("/api/comments/child/" + comentId)).build();
+		return ResponseEntity.created(URI.create("/api/comments/child/" + commentId)).build();
 	}
 
 	@PutMapping("/{id}") //댓글 수정

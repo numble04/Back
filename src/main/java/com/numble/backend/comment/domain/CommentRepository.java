@@ -13,6 +13,6 @@ public interface CommentRepository extends JpaRepository<Comment,Long> {
 
 	// @EntityGraph(attributePaths = {"user"}, type = EntityGraph.EntityGraphType.LOAD)
 	// List<Comment> findAllByPostAndParentIsNull(Post post);
-	List<Comment> findAllByUser(User uesr);
+	List<Comment> findAllByUser(User user);
 
 }
