@@ -9,5 +9,6 @@ import lombok.Getter;
 @Getter
 @Builder
 public class CafeResponse {
+	private Long id;
 	private String name;
 }
