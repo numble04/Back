@@ -1,6 +1,8 @@
 package com.numble.backend.cafe.presentation;
 
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,14 +15,15 @@ import com.numble.backend.common.dto.ResponseDto;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/cafe")
+@RequestMapping("/api/cafes")
 @RequiredArgsConstructor
 public class CafeController {
 
 	private final CafeService cafeService;
 
 	@GetMapping // 카페 조회
-	public ResponseEntity<ResponseDto> findCafe(@RequestParam String keyword, Pageable pageable) {
+	public ResponseEntity<ResponseDto> findByKeyword(@RequestParam String keyword,
+		@PageableDefault(size = 10, sort = "name", direction = Sort.Direction.ASC) Pageable pageable) {
 
 		ResponseDto responseDto = ResponseDto.of(
 			cafeService.findCafe(keyword,pageable));
