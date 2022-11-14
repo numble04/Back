@@ -18,6 +18,7 @@ import org.hibernate.annotations.DynamicUpdate;
 import com.numble.backend.cafe.domain.Cafe;
 import com.numble.backend.common.domain.BaseEntity;
 import com.numble.backend.post.domain.PostLike;
+import com.numble.backend.user.exception.UserNotAuthorException;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -65,6 +66,9 @@ public class Meeting extends BaseEntity {
 	@OneToMany(mappedBy = "meeting", orphanRemoval = true)
 	private List<MeetingLike> meetingLikes = new ArrayList<>();
 
-
-
+	public void updateIsFull(int nowPersonnel) {
+		if (this.capacity.equals(nowPersonnel)){
+			this.isFull=true;
+		}
+	}
 }
