@@ -65,11 +65,11 @@ public class MeetingRepositoryImpl implements MeetingRepositoryCustom {
 			.innerJoin(meetingUser.meeting, meeting)
 			.where(meeting.cafe.city.eq(city)
 				.and(meeting.cafe.dong.eq(dong))
-				.and(meeting.day.after(LocalDateTime.now().minusDays(1)))
 				.and(dateBetween(startDate, endDate)))
+			.groupBy(meeting)
 			.offset(pageable.getOffset())
 			.limit(pageable.getPageSize() + 1)
-			.orderBy(meeting.isFull.desc(), meetingSort(pageable, latitude, longitude))
+			.orderBy(meeting.isFull.asc(), meetingSort(pageable, latitude, longitude))
 			.fetch();
 
 		boolean hasNext = false;
