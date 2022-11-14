@@ -17,6 +17,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
@@ -70,6 +71,35 @@ public class MeetingController {
 		ResponseDto responseDto = ResponseDto.of(meetingService.findById(id, customUserDetails));
 
 		return ResponseEntity.ok(responseDto);
+	}
+
+	@PostMapping("/{id}/register") //모임 신청
+	public ResponseEntity<ResponseDto> saveMeetingUser(
+		@PathVariable Long id, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+
+		final Long meetingUserId = meetingService.saveMeetingUser(id, customUserDetails);
+
+		return ResponseEntity.created(URI.create("/api/meetings/" + meetingUserId)).build();
+	}
+
+	@PutMapping("/{id}/approve/{userId}") //모임 신청 승인
+	public ResponseEntity<ResponseDto> updateMeetingUserApprove(
+		@PathVariable Long id, @PathVariable Long userId,
+		@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+
+		meetingService.updateMeetingUserApprove(id, userId, customUserDetails);
+
+		return ResponseEntity.noContent().build();
+	}
+
+	@PutMapping("/{id}/reject/{userId}") //모임 신청 거절
+	public ResponseEntity<ResponseDto> updateMeetingUserReject(
+		@PathVariable Long id, @PathVariable Long userId,
+		@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+
+		meetingService.updateMeetingUserReject(id, userId, customUserDetails);
+
+		return ResponseEntity.noContent().build();
 	}
 
 }

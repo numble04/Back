@@ -24,11 +24,14 @@ import com.numble.backend.meeting.domain.repository.MeetingUserRepository;
 import com.numble.backend.meeting.dto.request.MeetingCreateRequest;
 import com.numble.backend.meeting.dto.response.MeetingDetailResponse;
 import com.numble.backend.meeting.dto.response.MeetingResponse;
+import com.numble.backend.meeting.exception.DuplicateMeetingUserException;
+import com.numble.backend.meeting.exception.MeetingFullException;
 import com.numble.backend.meeting.exception.MeetingNotFoundException;
 import com.numble.backend.meeting.exception.MeetingUserNotFoundException;
 import com.numble.backend.post.dto.response.PostDetailResponse;
 import com.numble.backend.user.domain.User;
 import com.numble.backend.user.domain.UserRepository;
+import com.numble.backend.user.exception.UserNotAuthorException;
 import com.numble.backend.user.exception.UserNotFoundException;
 
 import lombok.RequiredArgsConstructor;
@@ -61,7 +64,7 @@ public class MeetingService {
 
 		Meeting meeting = MeetingCreateMapper.INSTANCE.toEntity(meetingCreateRequest, img, cafe);
 
-		MeetingUser meetingUser = new MeetingUser(user, meeting, true, true);
+		MeetingUser meetingUser = new MeetingUser(user, meeting, true, true, false);
 		meetingUserRepository.save(meetingUser);
 
 		return meetingRepository.save(meeting).getId();
@@ -81,7 +84,6 @@ public class MeetingService {
 
 	public MeetingDetailResponse findById(Long id, CustomUserDetails customUserDetails) {
 
-
 		MeetingUser meetingUser = meetingUserRepository.findByUserIdAndMeetingId(customUserDetails.getId(), id)
 			.orElseThrow(() -> new MeetingUserNotFoundException());
 
@@ -90,5 +92,73 @@ public class MeetingService {
 			.orElseThrow(() -> new MeetingNotFoundException());
 
 		return response;
+	}
+
+	@Transactional
+	public Long saveMeetingUser(Long id, CustomUserDetails customUserDetails) {
+
+		validateDuplicateMeetingUser(customUserDetails.getId(), id);
+
+		User user = userRepository.findById(customUserDetails.getId())
+			.orElseThrow(() -> new UserNotFoundException());
+
+		Meeting meeting = meetingRepository.findById(id)
+			.orElseThrow(() -> new MeetingNotFoundException());
+
+		if (meeting.getIsFull()){
+			throw new MeetingFullException();
+		}
+
+		MeetingUser meetingUser = new MeetingUser(user, meeting, false, false, false);
+
+		return meetingUserRepository.save(meetingUser).getId();
+	}
+
+	@Transactional
+	public void updateMeetingUserApprove(Long id, Long userId, CustomUserDetails customUserDetails) {
+
+		validateUserIsAuthor(customUserDetails.getId(), id);
+
+		MeetingUser meetingUser = meetingUserRepository.findByUserIdAndMeetingId(userId, id).
+			orElseThrow(() -> new MeetingUserNotFoundException());
+
+		meetingUser.updateApprove();
+
+		checkIsFull(id);
+	}
+
+	@Transactional
+	public void updateMeetingUserReject(Long id, Long userId, CustomUserDetails customUserDetails) {
+
+		validateUserIsAuthor(customUserDetails.getId(), id);
+
+		MeetingUser meetingUser = meetingUserRepository.findByUserIdAndMeetingId(userId, id).
+			orElseThrow(() -> new MeetingUserNotFoundException());
+
+		meetingUser.updateReject();
+	}
+
+	private void validateDuplicateMeetingUser(Long userId, Long id) {
+		if (meetingUserRepository.findByUserIdAndMeetingId(userId, id).isPresent()) {
+			throw new DuplicateMeetingUserException();
+		}
+	}
+
+	private void validateUserIsAuthor(Long userId, Long id) {
+		MeetingUser myMeetingUser = meetingUserRepository.findByUserIdAndMeetingId(userId, id).
+			orElseThrow(() -> new MeetingUserNotFoundException());
+
+		if (!myMeetingUser.getIsLeader()) {
+			throw new UserNotAuthorException();
+		}
+	}
+
+	@Transactional
+	private void checkIsFull(Long id) {
+		Meeting meeting = meetingRepository.findById(id)
+			.orElseThrow(() -> new MeetingNotFoundException());
+
+		int nowPersonnel = meetingUserRepository.countByMeetingId(id);
+		meeting.updateIsFull(nowPersonnel);
 	}
 }

@@ -65,11 +65,11 @@ public class MeetingRepositoryImpl implements MeetingRepositoryCustom {
 			.innerJoin(meetingUser.meeting, meeting)
 			.where(meeting.cafe.city.eq(city)
 				.and(meeting.cafe.dong.eq(dong))
-				.and(meeting.day.after(LocalDateTime.now().minusDays(1)))
 				.and(dateBetween(startDate, endDate)))
+			.groupBy(meeting)
 			.offset(pageable.getOffset())
 			.limit(pageable.getPageSize() + 1)
-			.orderBy(meeting.isFull.desc(), meetingSort(pageable, latitude, longitude))
+			.orderBy(meeting.isFull.asc(), meetingSort(pageable, latitude, longitude))
 			.fetch();
 
 		boolean hasNext = false;
@@ -96,7 +96,9 @@ public class MeetingRepositoryImpl implements MeetingRepositoryCustom {
 				JPAExpressions
 					.select(count(meetingUser))
 					.from(meetingUser)
-					.where(meetingUser.isApproved.eq(Boolean.TRUE)),
+					.where(meetingUser.meeting.id.eq(id)
+						.and(meetingUser.isApproved.eq(Boolean.TRUE))
+						.and(meetingUser.isRejected.eq(Boolean.FALSE))),
 				meeting.meetingLikes.size(),
 				meeting.day,
 				meeting.isFull,
@@ -105,10 +107,16 @@ public class MeetingRepositoryImpl implements MeetingRepositoryCustom {
 					.select()
 					.from(meetingLike)
 					.where(meetingLike.meeting.eq(meeting).and(user.id.eq(userId)))
+					.exists(),
+				JPAExpressions
+					.select()
+					.from(meetingUser)
+					.where(meetingUser.meeting.eq(meeting).and(user.id.eq(userId)))
 					.exists()
 			))
 			.from(meetingUser)
 			.innerJoin(meetingUser.meeting, meeting).on(meeting.id.eq(id))
+			.groupBy(meetingUser.meeting)
 			.fetchOne());
 
 		List<MeetingUserResponse> meetingUserResponses = queryFactory
@@ -123,12 +131,13 @@ public class MeetingRepositoryImpl implements MeetingRepositoryCustom {
 			)
 			.from(meetingUser)
 			.where(meetingUser.meeting.id.eq(id)
+				.and(meetingUser.isRejected.eq(Boolean.FALSE))
 				.and(eqApproved(isLeader)))
 			.orderBy(meetingUser.isLeader.desc(), meetingUser.isApproved.desc())
 			.fetch();
 
 		response.get().setUsers(meetingUserResponses);
-		response.get().setMyMeeting(isLeader);
+		response.get().setIsLeader(isLeader);
 
 		return response;
 	}

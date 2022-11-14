@@ -41,13 +41,14 @@ public class MeetingDetailResponse {
 
 	private List<MeetingUserResponse> users = new ArrayList<>();
 
-	private boolean myLike;
-	private boolean myMeeting;
+	private Boolean myLike;
+	private Boolean isLeader;
+	private Boolean isRegistered;
 
 	@QueryProjection
 	public MeetingDetailResponse(Long id, String title, String content, String kakaoUrl, String img,
 		Integer time, Integer cost, Integer maxPersonnel, Long nowPersonnel, Integer likeCount, LocalDateTime day,
-		Boolean isFull, Cafe cafe, boolean myLike) {
+		Boolean isFull, Cafe cafe, boolean myLike, boolean isRegistered) {
 		this.id = id;
 		this.title = title;
 		this.content = content;
@@ -65,5 +66,6 @@ public class MeetingDetailResponse {
 		this.latitude = cafe.getPoint().getY();
 		this.longitude = cafe.getPoint().getX();
 		this.myLike = myLike;
+		this.isRegistered = isRegistered;
 	}
 }
