@@ -10,7 +10,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.numble.backend.game.domain.GameReview;
 
-public interface GameReviewRepository extends JpaRepository<GameReview,Long> {
-
-	Slice<GameReview> findAllByGameId(Long gameId,Pageable pageable);
+public interface GameReviewRepository extends JpaRepository<GameReview,Long>,GameReviewRepositoryCustom {
 }
