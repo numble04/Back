@@ -64,7 +64,6 @@ public class GameController {
 	public ResponseEntity<ResponseDto> findReviewsById(@AuthenticationPrincipal CustomUserDetails customUserDetails,
 		@PathVariable("gameId") final Long gameId,
 		@PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
-		System.out.println(customUserDetails);
 		ResponseDto responseDto = ResponseDto.of(
 			gameReviewService.findReviewsByGameId(customUserDetails.getId(),gameId,pageable));
 
