@@ -39,17 +39,16 @@ public class GameController {
 	private final GameReviewService gameReviewService;
 
 	@GetMapping
-	public ResponseEntity<ResponseDto> findAll(@PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
-		@RequestParam(defaultValue = "오름차순") String type) {
-		ResponseDto responseDto = ResponseDto.of(gameService.findAll(pageable,type));
+	public ResponseEntity<ResponseDto> findAll(@PageableDefault(size = 10, sort = "title", direction = Sort.Direction.ASC) Pageable pageable) {
+		ResponseDto responseDto = ResponseDto.of(gameService.findAll(pageable));
 
 		return ResponseEntity.ok(responseDto);
 	}
 
 	@GetMapping("/search")
-	public ResponseEntity<ResponseDto> findAllBySearch(@PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
-		@RequestParam String title, @RequestParam(defaultValue = "오름차순") String type) {
-		ResponseDto responseDto = ResponseDto.of(gameService.findAllBySearch(pageable,'%'+title+'%',type));
+	public ResponseEntity<ResponseDto> findAllBySearch(@PageableDefault(size = 10, sort = "title", direction = Sort.Direction.ASC) Pageable pageable,
+		@RequestParam("title") String title) {
+		ResponseDto responseDto = ResponseDto.of(gameService.findAllBySearch(pageable,title));
 
 		return ResponseEntity.ok(responseDto);
 	}
