@@ -19,7 +19,8 @@ public interface MeetingUserRepository extends JpaRepository<MeetingUser, Long> 
 	Optional<MeetingUser> findByUserIdAndMeetingId(
 		@Param("userId") Long userId, @Param("meetingId") Long meetingId);
 
-	@Query("select count(mu) from MeetingUser mu where mu.meeting.id = :meetingId and mu.isApproved = TRUE")
+	@Query("select count(mu) from MeetingUser mu where mu.meeting.id = :meetingId and mu.isApproved = TRUE "
+		+ "and mu.isRejected = False")
 	int countByMeetingId(
 		@Param("meetingId") Long meetingId);
 }

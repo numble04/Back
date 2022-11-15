@@ -17,6 +17,7 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import com.numble.backend.cafe.domain.Cafe;
 import com.numble.backend.common.domain.BaseEntity;
+import com.numble.backend.meeting.dto.request.MeetingUpdateRequest;
 import com.numble.backend.post.domain.PostLike;
 import com.numble.backend.user.exception.UserNotAuthorException;
 
@@ -66,9 +67,28 @@ public class Meeting extends BaseEntity {
 	@OneToMany(mappedBy = "meeting", orphanRemoval = true)
 	private List<MeetingLike> meetingLikes = new ArrayList<>();
 
+	@OneToMany(mappedBy = "meeting", orphanRemoval = true)
+	private List<MeetingUser> meetingUsers = new ArrayList<>();
+
 	public void updateIsFull(int nowPersonnel) {
 		if (this.capacity.equals(nowPersonnel)){
 			this.isFull=true;
+		} else {
+			this.isFull=false;
 		}
 	}
+
+	public void update(MeetingUpdateRequest meetingUpdateRequest, Cafe cafe, String img) {
+		this.title = meetingUpdateRequest.getTitle();
+		this.content = meetingUpdateRequest.getContent();
+		this.capacity = meetingUpdateRequest.getCapacity();
+		this.kakaoUrl = meetingUpdateRequest.getKakaoUrl();
+		this.img = img;
+		this.day = meetingUpdateRequest.getDay();
+		this.time = meetingUpdateRequest.getTime();
+		this.cost = meetingUpdateRequest.getCost();
+		this.cafe = cafe;
+	}
+
+
 }
