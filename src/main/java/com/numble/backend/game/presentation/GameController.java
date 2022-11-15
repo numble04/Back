@@ -60,10 +60,13 @@ public class GameController {
 		return ResponseEntity.ok(responseDto);
 	}
 
-	@GetMapping("/{Id}/reviews")
-	public ResponseEntity<ResponseDto> findReviewsById(@PathVariable("Id") final Long id,
+	@GetMapping("/{gameId}/reviews")
+	public ResponseEntity<ResponseDto> findReviewsById(@AuthenticationPrincipal CustomUserDetails customUserDetails,
+		@PathVariable("gameId") final Long gameId,
 		@PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
-		ResponseDto responseDto = ResponseDto.of(gameReviewService.findReviewsByGameId(id,pageable));
+		System.out.println(customUserDetails);
+		ResponseDto responseDto = ResponseDto.of(
+			gameReviewService.findReviewsByGameId(customUserDetails.getId(),gameId,pageable));
 
 		return ResponseEntity.ok(responseDto);
 	}

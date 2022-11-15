@@ -7,5 +7,5 @@ import com.numble.backend.game.domain.GameReview;
 import com.numble.backend.game.dto.response.GetReviewsResponse;
 
 public interface GameReviewRepositoryCustom {
-	Slice<GetReviewsResponse> findAllByGameId(Long gameId, Pageable pageable);
+	Slice<GetReviewsResponse> findAllByGameId(Long userId, Long gameId, Pageable pageable);
 }

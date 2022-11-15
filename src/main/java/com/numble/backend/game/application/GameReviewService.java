@@ -46,8 +46,8 @@ public class GameReviewService {
 		return gameReviewRepository.save(gameReview).getId();
 	}
 
-	public Slice<GetReviewsResponse> findReviewsByGameId(Long id, Pageable pageable) {
-		Slice<GetReviewsResponse> responses = gameReviewRepository.findAllByGameId(id,pageable);
+	public Slice<GetReviewsResponse> findReviewsByGameId(Long userId, Long gameId, Pageable pageable) {
+		Slice<GetReviewsResponse> responses = gameReviewRepository.findAllByGameId(userId,gameId,pageable);
 
 		return responses;
 	}
