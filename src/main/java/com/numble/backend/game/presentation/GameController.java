@@ -53,8 +53,8 @@ public class GameController {
 		return ResponseEntity.ok(responseDto);
 	}
 
-	@GetMapping("/{Id}")
-	public ResponseEntity<ResponseDto> findById(@PathVariable("Id") final Long id) {
+	@GetMapping("/{gameId}")
+	public ResponseEntity<ResponseDto> findById(@PathVariable("gameId") final Long id) {
 		ResponseDto responseDto = ResponseDto.of(gameService.findById(id));
 
 		return ResponseEntity.ok(responseDto);
@@ -70,9 +70,9 @@ public class GameController {
 		return ResponseEntity.ok(responseDto);
 	}
 
-	@PostMapping("/{Id}/review")
+	@PostMapping("/{gameId}/review")
 	public ResponseEntity<Void> findReviewsById(@AuthenticationPrincipal CustomUserDetails customUserDetails,
-		@PathVariable("Id") Long gameId,
+		@PathVariable("gameId") Long gameId,
 		@RequestBody PostGameReviewRequest postGameReviewRequest) {
 		Long userId = customUserDetails.getId();
 		Long id = gameReviewService.save(gameId,userId,postGameReviewRequest);
@@ -80,9 +80,9 @@ public class GameController {
 		return ResponseEntity.created(URI.create("/api/games/"+gameId+"/review/" + id)).build();
 	}
 
-	@PutMapping("/{Id}/review/{reviewId}")
+	@PutMapping("/{gameId}/review/{reviewId}")
 	public ResponseEntity<Void> UpdateReviewById(@AuthenticationPrincipal CustomUserDetails customUserDetails,
-		@PathVariable("Id") Long gameId, @PathVariable("reviewId") Long reviewId,
+		@PathVariable("gameId") Long gameId, @PathVariable("reviewId") Long reviewId,
 		@RequestBody UpdateGameReviewRequest updateGameReviewRequest) {
 		Long userId = customUserDetails.getId();
 		gameReviewService.updateById(userId,reviewId,updateGameReviewRequest);
@@ -90,9 +90,9 @@ public class GameController {
 		return ResponseEntity.noContent().build();
 	}
 
-	@DeleteMapping("/{Id}/review/{reviewId}")
+	@DeleteMapping("/{gameId}/review/{reviewId}")
 	public ResponseEntity<Void> DeleteReviewById(@AuthenticationPrincipal CustomUserDetails customUserDetails,
-		@PathVariable("Id") Long gameId, @PathVariable("reviewId") Long reviewId) {
+		@PathVariable("gameId") Long gameId, @PathVariable("reviewId") Long reviewId) {
 		Long userId = customUserDetails.getId();
 		gameReviewService.deleteById(userId,reviewId);
 
