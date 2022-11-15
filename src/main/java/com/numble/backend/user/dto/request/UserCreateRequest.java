@@ -34,4 +34,10 @@ public class UserCreateRequest {
 	@NotBlank(message = "지역은 빈 칸일 수 없습니다")
 	private String region;
 
+	@NotBlank(message = "거주 시를 선택하십시오")
+	private String city;
+
+	@NotBlank(message = "거주 동을 선택하십시오")
+	private String dong;
+
 }

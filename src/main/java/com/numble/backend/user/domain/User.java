@@ -30,7 +30,15 @@ public class User extends BaseEntity {
 	@Column(nullable = false, length = 20)
 	private String phone;
 	private String img;
+
+	@Column(nullable = false)
 	private String region;
+
+	@Column(nullable = false)
+	private String city;
+
+	@Column(nullable = false)
+	private String dong;
 
 
 
@@ -40,8 +48,12 @@ public class User extends BaseEntity {
 		if (userUpdateRequest.getName() != "") {
 			this.name = userUpdateRequest.getName();
 		}
-		if (userUpdateRequest.getRegion() != "") {
+		if (userUpdateRequest.getRegion() != ""
+		&& userUpdateRequest.getCity() != ""
+		&& userUpdateRequest.getDong() != "") {
 			this.region = userUpdateRequest.getRegion();
+			this.city = userUpdateRequest.getCity();
+			this.dong = userUpdateRequest.getDong();
 		}
 		if (userUpdateRequest.getPhone() != "") {
 			this.phone = userUpdateRequest.getPhone();
