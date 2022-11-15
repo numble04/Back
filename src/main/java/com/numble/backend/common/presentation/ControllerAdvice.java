@@ -1,5 +1,7 @@
 package com.numble.backend.common.presentation;
 
+import javax.validation.ConstraintViolationException;
+
 import com.numble.backend.common.dto.ExceptionResponse;
 import com.numble.backend.common.exception.business.BusinessException;
 import com.numble.backend.common.exception.auth.ExceptionCode;
@@ -64,6 +66,12 @@ public class ControllerAdvice {
 	public ResponseEntity<ExceptionResponse> handleHttpMessageNotReadableException(
 		final HttpMessageNotReadableException e) {
 		return toResponseEntity("요청값이 올바르지 않습니다.", HttpStatus.BAD_REQUEST);
+	}
+
+	@ExceptionHandler(ConstraintViolationException.class)
+	public ResponseEntity<ExceptionResponse> handleConstraintViolationException(
+		final ConstraintViolationException e) {
+		return toResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
 	}
 
 	@ExceptionHandler(Exception.class)
