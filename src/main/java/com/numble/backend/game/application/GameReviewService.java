@@ -9,7 +9,6 @@ import com.numble.backend.game.domain.Game;
 import com.numble.backend.game.domain.repository.GameRepository;
 import com.numble.backend.game.domain.GameReview;
 import com.numble.backend.game.domain.repository.GameReviewRepository;
-import com.numble.backend.game.domain.mapper.GetReviewsResponseMapper;
 import com.numble.backend.game.domain.mapper.PostGameReviewRequestMapper;
 import com.numble.backend.game.dto.request.PostGameReviewRequest;
 import com.numble.backend.game.dto.request.UpdateGameReviewRequest;
@@ -48,8 +47,7 @@ public class GameReviewService {
 	}
 
 	public Slice<GetReviewsResponse> findReviewsByGameId(Long id, Pageable pageable) {
-		Slice<GetReviewsResponse> responses = gameReviewRepository.findAllByGameId(id,pageable)
-				.map(GetReviewsResponseMapper.INSTANCE::toDto);
+		Slice<GetReviewsResponse> responses = gameReviewRepository.findAllByGameId(id,pageable);
 
 		return responses;
 	}
