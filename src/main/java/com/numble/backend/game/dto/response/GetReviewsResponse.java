@@ -29,6 +29,10 @@ public class GetReviewsResponse {
 
 	private String nickname;
 
+	private String profileImg;
+
+	private Boolean myReview;
+
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
 	private LocalDateTime createDate;
 
@@ -36,12 +40,14 @@ public class GetReviewsResponse {
 	private LocalDateTime updateDate;
 
 	@QueryProjection
-	public GetReviewsResponse(Long id,String content,Double rate,String nickname,
+	public GetReviewsResponse(Long id,String content,Double rate,String nickname,String profileImg,Boolean myReview,
 		LocalDateTime createDate, LocalDateTime updateDate) {
 		this.id = id;
 		this.content = content;
 		this.rate = rate;
 		this.nickname = nickname;
+		this.profileImg = profileImg;
+		this.myReview = myReview;
 		this.createDate = createDate;
 		this.updateDate = updateDate;
 	}

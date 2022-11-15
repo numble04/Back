@@ -24,13 +24,15 @@ public class GameReviewRepositoryImpl implements GameReviewRepositoryCustom{
 
 	private final JPAQueryFactory queryFactory;
 	@Override
-	public Slice<GetReviewsResponse> findAllByGameId(Long gameId, Pageable pageable) {
+	public Slice<GetReviewsResponse> findAllByGameId(Long userId, Long gameId, Pageable pageable) {
 		List<GetReviewsResponse> content = queryFactory
 			.select(new QGetReviewsResponse(
 				gameReview.id,
 				gameReview.content,
 				gameReview.rate,
 				gameReview.user.nickname,
+				gameReview.user.img,
+				gameReview.user.id.eq(userId),
 				gameReview.createdAt,
 				gameReview.updatedAt
 			))
