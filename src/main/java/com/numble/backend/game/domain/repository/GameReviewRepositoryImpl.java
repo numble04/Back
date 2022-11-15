@@ -64,7 +64,7 @@ public class GameReviewRepositoryImpl implements GameReviewRepositoryCustom{
 				switch (order.getProperty()){
 					case "rate":
 						return new OrderSpecifier(direction, gameReview.rate);
-					case "level":
+					case "createdAt":
 						return new OrderSpecifier(direction, gameReview.createdAt);
 				}
 			}
