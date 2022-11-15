@@ -54,4 +54,8 @@ public class MeetingUser extends BaseEntity {
 	public void updateReject() {
 		this.isRejected = true;
 	}
+
+	public void updateBan() {
+		this.isRejected = true;
+	}
 }

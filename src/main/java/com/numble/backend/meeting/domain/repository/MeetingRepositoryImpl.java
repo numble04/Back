@@ -55,7 +55,9 @@ public class MeetingRepositoryImpl implements MeetingRepositoryCustom {
 				JPAExpressions
 					.select(count(meetingUser))
 					.from(meetingUser)
-					.where(meetingUser.meeting.eq(meeting).and(meetingUser.isApproved.eq(Boolean.TRUE))),
+					.where(meetingUser.meeting.eq(meeting)
+						.and(meetingUser.isApproved.eq(Boolean.TRUE))
+						.and(meetingUser.isRejected.eq(Boolean.FALSE))),
 				meeting.day,
 				meeting.img,
 				meeting.cafe,

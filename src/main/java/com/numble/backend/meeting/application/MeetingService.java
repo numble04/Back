@@ -1,7 +1,6 @@
 package com.numble.backend.meeting.application;
 
 import java.time.LocalDate;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
@@ -22,13 +21,15 @@ import com.numble.backend.meeting.domain.repository.MeetingRepository;
 import com.numble.backend.meeting.domain.mapper.MeetingCreateMapper;
 import com.numble.backend.meeting.domain.repository.MeetingUserRepository;
 import com.numble.backend.meeting.dto.request.MeetingCreateRequest;
+import com.numble.backend.meeting.dto.request.MeetingUpdateRequest;
 import com.numble.backend.meeting.dto.response.MeetingDetailResponse;
 import com.numble.backend.meeting.dto.response.MeetingResponse;
 import com.numble.backend.meeting.exception.DuplicateMeetingUserException;
 import com.numble.backend.meeting.exception.MeetingFullException;
+import com.numble.backend.meeting.exception.MeetingLeaderException;
 import com.numble.backend.meeting.exception.MeetingNotFoundException;
+import com.numble.backend.meeting.exception.MeetingUserNotApprovedException;
 import com.numble.backend.meeting.exception.MeetingUserNotFoundException;
-import com.numble.backend.post.dto.response.PostDetailResponse;
 import com.numble.backend.user.domain.User;
 import com.numble.backend.user.domain.UserRepository;
 import com.numble.backend.user.exception.UserNotAuthorException;
@@ -70,6 +71,25 @@ public class MeetingService {
 		return meetingRepository.save(meeting).getId();
 	}
 
+	@Transactional
+	public void updateMeeting(Long id, MeetingUpdateRequest meetingUpdateRequest, MultipartFile multipartFile,
+		CustomUserDetails customUserDetails) {
+
+		Cafe cafe = cafeRepository.findById(meetingUpdateRequest.getCafeId())
+			.orElseThrow(() -> new CafeNotFoundException());
+
+		String img = uploadFile(multipartFile);
+
+		Meeting meeting = meetingRepository.findById(id)
+			.orElseThrow(() -> new MeetingNotFoundException());
+
+		int nowPersonnel = meetingUserRepository.countByMeetingId(id);
+
+		meeting.update(meetingUpdateRequest, cafe, img);
+		meeting.updateIsFull(nowPersonnel);
+
+	}
+
 	public Slice<MeetingResponse> findAllByDong(String city, String dong, Double latitude, Double longitude,
 		LocalDate startDate, LocalDate endDate, Pageable pageable) {
 
@@ -105,7 +125,7 @@ public class MeetingService {
 		Meeting meeting = meetingRepository.findById(id)
 			.orElseThrow(() -> new MeetingNotFoundException());
 
-		if (meeting.getIsFull()){
+		if (meeting.getIsFull()) {
 			throw new MeetingFullException();
 		}
 
@@ -138,6 +158,48 @@ public class MeetingService {
 		meetingUser.updateReject();
 	}
 
+	@Transactional
+	public void deleteMeetingUserByUserId(Long id, CustomUserDetails customUserDetails) {
+		MeetingUser meetingUser = meetingUserRepository.findByUserIdAndMeetingId(customUserDetails.getId(), id).
+			orElseThrow(() -> new MeetingUserNotFoundException());
+
+		if (meetingUser.getIsLeader()) {
+			throw new MeetingLeaderException();
+		}
+		meetingUserRepository.delete(meetingUser);
+
+		checkIsFull(id);
+	}
+
+	@Transactional
+	public void updateMeetingUserBan(Long id, Long userId, CustomUserDetails customUserDetails) {
+
+		MeetingUser meetingUser = meetingUserRepository.findByUserIdAndMeetingId(userId, id).
+			orElseThrow(() -> new MeetingUserNotFoundException());
+
+		if (meetingUser.getIsLeader()) {
+			throw new MeetingLeaderException();
+		}
+
+		validateUserIsAuthor(customUserDetails.getId(), id);
+
+		if (!meetingUser.getIsApproved()) {
+			throw new MeetingUserNotApprovedException();
+		}
+
+		meetingUser.updateBan();
+		checkIsFull(id);
+	}
+
+	@Transactional
+	private void checkIsFull(Long id) {
+		Meeting meeting = meetingRepository.findById(id)
+			.orElseThrow(() -> new MeetingNotFoundException());
+
+		int nowPersonnel = meetingUserRepository.countByMeetingId(id);
+		meeting.updateIsFull(nowPersonnel);
+	}
+
 	private void validateDuplicateMeetingUser(Long userId, Long id) {
 		if (meetingUserRepository.findByUserIdAndMeetingId(userId, id).isPresent()) {
 			throw new DuplicateMeetingUserException();
@@ -153,12 +215,4 @@ public class MeetingService {
 		}
 	}
 
-	@Transactional
-	private void checkIsFull(Long id) {
-		Meeting meeting = meetingRepository.findById(id)
-			.orElseThrow(() -> new MeetingNotFoundException());
-
-		int nowPersonnel = meetingUserRepository.countByMeetingId(id);
-		meeting.updateIsFull(nowPersonnel);
-	}
 }

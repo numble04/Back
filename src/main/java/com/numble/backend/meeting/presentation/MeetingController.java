@@ -14,6 +14,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,6 +29,7 @@ import com.numble.backend.common.dto.ResponseDto;
 import com.numble.backend.meeting.application.MeetingService;
 import com.numble.backend.meeting.domain.Meeting;
 import com.numble.backend.meeting.dto.request.MeetingCreateRequest;
+import com.numble.backend.meeting.dto.request.MeetingUpdateRequest;
 import com.numble.backend.post.application.PostService;
 import com.numble.backend.post.dto.request.PostCreateRequest;
 
@@ -73,6 +75,17 @@ public class MeetingController {
 		return ResponseEntity.ok(responseDto);
 	}
 
+	@PutMapping("/{id}") //모임 수정
+	public ResponseEntity<ResponseDto> updateMeeting(@PathVariable Long id,
+		@RequestPart(value = "meetingRequest") @Valid MeetingUpdateRequest meetingUpdateRequest,
+		@RequestPart(value = "file", required = false) MultipartFile multipartFile,
+		@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+
+		meetingService.updateMeeting(id, meetingUpdateRequest, multipartFile, customUserDetails);
+
+		return ResponseEntity.noContent().build();
+	}
+
 	@PostMapping("/{id}/register") //모임 신청
 	public ResponseEntity<ResponseDto> saveMeetingUser(
 		@PathVariable Long id, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
@@ -93,11 +106,28 @@ public class MeetingController {
 	}
 
 	@PutMapping("/{id}/reject/{userId}") //모임 신청 거절
-	public ResponseEntity<ResponseDto> updateMeetingUserReject(
-		@PathVariable Long id, @PathVariable Long userId,
+	public ResponseEntity<ResponseDto> updateMeetingUserReject(@PathVariable Long id, @PathVariable Long userId,
 		@AuthenticationPrincipal CustomUserDetails customUserDetails) {
 
 		meetingService.updateMeetingUserReject(id, userId, customUserDetails);
+
+		return ResponseEntity.noContent().build();
+	}
+
+	@DeleteMapping("/{id}/leave") //모임 나가기
+	public ResponseEntity<ResponseDto> deleteMeetingUserByUserId(
+		@PathVariable Long id, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+
+		meetingService.deleteMeetingUserByUserId(id, customUserDetails);
+
+		return ResponseEntity.noContent().build();
+	}
+
+	@PutMapping("/{id}/ban/{userId}") //모임 강퇴
+	public ResponseEntity<ResponseDto> updateMeetingUserBan(@PathVariable Long id, @PathVariable Long userId,
+		@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+
+		meetingService.updateMeetingUserBan(id, userId, customUserDetails);
 
 		return ResponseEntity.noContent().build();
 	}
