@@ -22,4 +22,10 @@ public class UserUpdateRequest {
 
 	@NotNull(message = "지역은 null일 수 없습니다")
 	private String region;
+
+	@NotNull(message = "시는 null일 수 없습니다")
+	private String city;
+
+	@NotNull(message = "동은 null일 수 없습니다")
+	private String dong;
 }
