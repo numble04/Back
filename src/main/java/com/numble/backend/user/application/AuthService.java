@@ -56,6 +56,14 @@ public class AuthService {
 		return userRepository.save(user).getId();
 	}
 
+	public void findEmailExists(final String email) {
+		checkEmail(email);
+	}
+
+	public void findNicknameExists(final String nickname) {
+		checkNickname(nickname);
+	}
+
 	private void checkEmail(final String email) {
 		if (userRepository.existsByEmail(email)){
 			throw new EmailExistsException();
