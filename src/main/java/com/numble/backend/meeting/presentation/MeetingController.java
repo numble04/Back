@@ -76,12 +76,21 @@ public class MeetingController {
 	}
 
 	@PutMapping("/{id}") //모임 수정
-	public ResponseEntity<ResponseDto> updateMeeting(@PathVariable Long id,
+	public ResponseEntity<ResponseDto> update(@PathVariable Long id,
 		@RequestPart(value = "meetingRequest") @Valid MeetingUpdateRequest meetingUpdateRequest,
 		@RequestPart(value = "file", required = false) MultipartFile multipartFile,
 		@AuthenticationPrincipal CustomUserDetails customUserDetails) {
 
-		meetingService.updateMeeting(id, meetingUpdateRequest, multipartFile, customUserDetails);
+		meetingService.update(id, meetingUpdateRequest, multipartFile, customUserDetails);
+
+		return ResponseEntity.noContent().build();
+	}
+
+	@DeleteMapping("/{id}") //모임 삭제
+	public ResponseEntity<ResponseDto> delete(@PathVariable Long id,
+		@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+
+		meetingService.delete(id, customUserDetails);
 
 		return ResponseEntity.noContent().build();
 	}
@@ -128,6 +137,15 @@ public class MeetingController {
 		@AuthenticationPrincipal CustomUserDetails customUserDetails) {
 
 		meetingService.updateMeetingUserBan(id, userId, customUserDetails);
+
+		return ResponseEntity.noContent().build();
+	}
+
+	@PutMapping("/{id}/like") //모임 좋아요
+	public ResponseEntity<ResponseDto> updateMeetingLike(@PathVariable Long id,
+		@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+
+		meetingService.updateMeetingLike(id, customUserDetails);
 
 		return ResponseEntity.noContent().build();
 	}
