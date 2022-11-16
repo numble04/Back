@@ -10,6 +10,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.validation.Valid;
 
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
@@ -78,7 +79,7 @@ public class Meeting extends BaseEntity {
 		}
 	}
 
-	public void update(MeetingUpdateRequest meetingUpdateRequest, Cafe cafe, String img) {
+	public void update(@Valid MeetingUpdateRequest meetingUpdateRequest, Cafe cafe, String img) {
 		this.title = meetingUpdateRequest.getTitle();
 		this.content = meetingUpdateRequest.getContent();
 		this.capacity = meetingUpdateRequest.getCapacity();
@@ -89,6 +90,7 @@ public class Meeting extends BaseEntity {
 		this.cost = meetingUpdateRequest.getCost();
 		this.cafe = cafe;
 	}
+
 
 
 }

@@ -1,6 +1,7 @@
 package com.numble.backend.meeting.application;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
@@ -16,7 +17,9 @@ import com.numble.backend.cafe.exception.CafeNotFoundException;
 import com.numble.backend.common.config.security.CustomUserDetails;
 import com.numble.backend.common.utils.S3Utils;
 import com.numble.backend.meeting.domain.Meeting;
+import com.numble.backend.meeting.domain.MeetingLike;
 import com.numble.backend.meeting.domain.MeetingUser;
+import com.numble.backend.meeting.domain.repository.MeetingLikeRepository;
 import com.numble.backend.meeting.domain.repository.MeetingRepository;
 import com.numble.backend.meeting.domain.mapper.MeetingCreateMapper;
 import com.numble.backend.meeting.domain.repository.MeetingUserRepository;
@@ -28,8 +31,12 @@ import com.numble.backend.meeting.exception.DuplicateMeetingUserException;
 import com.numble.backend.meeting.exception.MeetingFullException;
 import com.numble.backend.meeting.exception.MeetingLeaderException;
 import com.numble.backend.meeting.exception.MeetingNotFoundException;
+import com.numble.backend.meeting.exception.MeetingUpdateException;
 import com.numble.backend.meeting.exception.MeetingUserNotApprovedException;
 import com.numble.backend.meeting.exception.MeetingUserNotFoundException;
+import com.numble.backend.post.domain.Post;
+import com.numble.backend.post.domain.PostLike;
+import com.numble.backend.post.exception.PostNotFoundException;
 import com.numble.backend.user.domain.User;
 import com.numble.backend.user.domain.UserRepository;
 import com.numble.backend.user.exception.UserNotAuthorException;
@@ -44,6 +51,7 @@ public class MeetingService {
 
 	private final MeetingRepository meetingRepository;
 	private final MeetingUserRepository meetingUserRepository;
+	private final MeetingLikeRepository meetingLikeRepository;
 	private final UserRepository userRepository;
 	private final CafeRepository cafeRepository;
 	private final AmazonS3Client amazonS3Client;
@@ -72,22 +80,31 @@ public class MeetingService {
 	}
 
 	@Transactional
-	public void updateMeeting(Long id, MeetingUpdateRequest meetingUpdateRequest, MultipartFile multipartFile,
+	public void update(Long id, MeetingUpdateRequest meetingUpdateRequest, MultipartFile multipartFile,
 		CustomUserDetails customUserDetails) {
+		validateUserIsAuthor(customUserDetails.getId(), id);
 
 		Cafe cafe = cafeRepository.findById(meetingUpdateRequest.getCafeId())
 			.orElseThrow(() -> new CafeNotFoundException());
 
+		Meeting meeting = meetingRepository.findById(id)
+			.orElseThrow(() -> new MeetingNotFoundException());
+
 		String img = uploadFile(multipartFile);
+
+		meeting.update(meetingUpdateRequest, cafe, img);
+
+		checkCapacity(id, meetingUpdateRequest, meeting);
+	}
+
+	@Transactional
+	public void delete(Long id, CustomUserDetails customUserDetails) {
+		validateUserIsAuthor(customUserDetails.getId(), id);
 
 		Meeting meeting = meetingRepository.findById(id)
 			.orElseThrow(() -> new MeetingNotFoundException());
 
-		int nowPersonnel = meetingUserRepository.countByMeetingId(id);
-
-		meeting.update(meetingUpdateRequest, cafe, img);
-		meeting.updateIsFull(nowPersonnel);
-
+		meetingRepository.delete(meeting);
 	}
 
 	public Slice<MeetingResponse> findAllByDong(String city, String dong, Double latitude, Double longitude,
@@ -98,6 +115,10 @@ public class MeetingService {
 
 	@Transactional
 	public String uploadFile(MultipartFile multipartFile) {
+		if (multipartFile ==null){
+			return null;
+		}
+
 		String fileName = S3Utils.uploadFileS3(amazonS3Client, bucketName, multipartFile);
 		return amazonS3Client.getUrl(bucketName, fileName).toString();
 	}
@@ -215,4 +236,31 @@ public class MeetingService {
 		}
 	}
 
+	@Transactional
+	private void checkCapacity(Long id, MeetingUpdateRequest meetingUpdateRequest, Meeting meeting) {
+		int nowPersonnel = meetingUserRepository.countByMeetingId(id);
+
+		if (nowPersonnel > meetingUpdateRequest.getCapacity()) {
+			throw new MeetingUpdateException("최대 인원 수는 현재 인원 보다 적으면 안됩니다.");
+		}
+		meeting.updateIsFull(nowPersonnel);
+	}
+
+	@Transactional
+	public void updateMeetingLike(Long id, CustomUserDetails customUserDetails) {
+		Meeting meeting = meetingRepository.findById(id)
+			.orElseThrow(() -> new MeetingNotFoundException());
+
+		User user = userRepository.findById(customUserDetails.getId())
+			.orElseThrow(() -> new UserNotFoundException());
+
+		Optional<MeetingLike> meetingLike = meetingLikeRepository.findByMeetingAndUser(meeting,user);
+
+		if (meetingLike.isPresent()) {
+			meetingLikeRepository.delete(meetingLike.get());
+		} else {
+			MeetingLike meetingLike1 = new MeetingLike(user, meeting);
+			meetingLikeRepository.save(meetingLike1);
+		}
+	}
 }
