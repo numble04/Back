@@ -79,6 +79,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
 				comment.content,
 				user.nickname,
 				comment.CommentLikes.size(),
+				user.img,
 				JPAExpressions
 					.selectFrom(comment)
 					.where(user.id.eq(userId))
@@ -104,6 +105,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
 				comment.content,
 				user.nickname,
 				comment.CommentLikes.size(),
+				user.img,
 				JPAExpressions
 					.selectFrom(comment)
 					.where(user.id.eq(userId))
