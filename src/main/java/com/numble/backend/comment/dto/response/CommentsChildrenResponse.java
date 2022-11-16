@@ -25,6 +25,7 @@ public class CommentsChildrenResponse {
 	private String nickname;
 
 	private int likeCount;
+	private String userImg;
 	private boolean myComment;
 
 	private boolean myLike;
@@ -37,11 +38,12 @@ public class CommentsChildrenResponse {
 
 	@QueryProjection
 	public CommentsChildrenResponse(Long parentId, Long commentId, String content, String nickname, int likeCount,
-		boolean myComment, boolean myLike, LocalDateTime createDate, LocalDateTime updateDate) {
+		String userImg, boolean myComment, boolean myLike, LocalDateTime createDate, LocalDateTime updateDate) {
 		this.parentId = parentId;
 		this.commentId = commentId;
 		this.content = content;
 		this.nickname = nickname;
+		this.likeCount = likeCount;
 		this.likeCount = likeCount;
 		this.myComment = myComment;
 		this.myLike = myLike;

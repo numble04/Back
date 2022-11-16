@@ -26,6 +26,7 @@ public class PostOneCommentResponse {
 	private String nickname;
 
 	private int likeCount;
+	private String userImg;
 	private boolean myComment;
 
 	private boolean myLike;
@@ -40,12 +41,13 @@ public class PostOneCommentResponse {
 
 	@QueryProjection
 	public PostOneCommentResponse(Long parentId, Long commentId, String content, String nickname, int likeCount,
-		boolean myComment, boolean myLike, LocalDateTime createDate, LocalDateTime updateDate) {
+		String userImg, boolean myComment, boolean myLike, LocalDateTime createDate, LocalDateTime updateDate) {
 		this.parentId = parentId;
 		this.commentId = commentId;
 		this.content = content;
 		this.nickname = nickname;
 		this.likeCount = likeCount;
+		this.userImg = userImg;
 		this.myComment = myComment;
 		this.myLike = myLike;
 		this.createDate = createDate;
