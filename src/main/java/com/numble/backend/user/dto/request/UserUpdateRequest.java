@@ -28,4 +28,7 @@ public class UserUpdateRequest {
 
 	@NotNull(message = "동은 null일 수 없습니다")
 	private String dong;
+
+	@NotNull(message = "자기소개는 null일 수 없습니다")
+	private String introduction;
 }
