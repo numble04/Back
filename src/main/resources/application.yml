@@ -39,11 +39,11 @@ jwt:
 cloud:
   aws:
     credentials:
-      accessKey: ${AWS_ACCESS_KEY_ID}       # AWS IAM AccessKey 적기
-      secretKey: ${AWS_SECRET_ACCESS_KEY}   # AWS IAM SecretKey 적기
+      accessKey: ${AWS_ACCESS_KEY_ID}
+      secretKey: ${AWS_SECRET_ACCESS_KEY}
     s3:
-      bucket: numble-s3    # ex) marryting-gyunny
-      dir: /img         # ex) /gyunny
+      bucket: numble-s3
+      dir: /img
     region:
       static: ap-northeast-2
     stack:
