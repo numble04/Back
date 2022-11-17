@@ -40,6 +40,9 @@ public class User extends BaseEntity {
 	@Column(nullable = false)
 	private String dong;
 
+	@Column(columnDefinition = "TEXT")
+	private String introduction;
+
 
 
 
@@ -60,6 +63,9 @@ public class User extends BaseEntity {
 		}
 		if (userUpdateRequest.getNickname() != "") {
 			this.nickname = userUpdateRequest.getNickname();
+		}
+		if (userUpdateRequest.getIntroduction() != "") {
+			this.introduction = userUpdateRequest.getIntroduction();
 		}
 
 	}

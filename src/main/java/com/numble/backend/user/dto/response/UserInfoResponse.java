@@ -15,4 +15,5 @@ public class UserInfoResponse {
 	private String region;
 	private String city;
 	private String dong;
+	private String introduction;
 }
