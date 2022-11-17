@@ -9,4 +9,8 @@ public class FileUploadFailedException extends BusinessException {
 	public FileUploadFailedException() {
 		super(CLIENT_MESSAGE, HttpStatus.BAD_REQUEST);
 	}
+
+	public FileUploadFailedException(String CLIENT_MESSAGE) {
+		super(CLIENT_MESSAGE, HttpStatus.BAD_REQUEST);
+	}
 }
