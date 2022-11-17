@@ -1,4 +1,4 @@
 # Back
 
 ##시스템 구조
-https://user-images.githubusercontent.com/79401359/202400152-e68eedc4-a2a3-4df4-b314-1dc6dc5d4036.jpg
+https://user-images.githubusercontent.com/79401359/202400579-eb5e001d-bda0-4f6c-9aad-b1edbed60023.jpg
