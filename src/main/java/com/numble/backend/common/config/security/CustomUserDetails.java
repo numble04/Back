@@ -1,5 +1,6 @@
 package com.numble.backend.common.config.security;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.numble.backend.user.domain.User;
 
 import lombok.AllArgsConstructor;
@@ -16,6 +17,7 @@ import java.util.Collection;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class CustomUserDetails implements UserDetails {
 	String username;
 	String password;
