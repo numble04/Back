@@ -6,6 +6,8 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import org.hibernate.validator.constraints.Range;
+
 import lombok.Builder;
 import lombok.Getter;
 
@@ -21,7 +23,7 @@ public class MeetingUpdateRequest {
 	private String content;
 
 	@NotNull(message = "인원수를 입력해 주세요")
-	@Size(min = 2, max=100, message = "최소 2명 부터 100명까지 가능합니다.")
+	@Range(min = 2, max=100, message = "최소 2명 부터 100명까지 가능합니다.")
 	private Integer capacity;
 
 	private String kakaoUrl;
