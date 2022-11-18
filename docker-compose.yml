@@ -21,22 +21,6 @@ services:
     ports:
       - "6379:6379"
 
-  database:
-    restart: always
-    container_name: boardker_mysql
-    image: mysql/mysql-server:5.7
-    environment:
-      MYSQL_DATABASE: numble
-      MYSQL_ROOT_HOST: '%'
-      MYSQL_ROOT_PASSWORD: 1234
-      TZ: 'Asia/Seoul'
-    ports:
-      - "3307:3307"
-    command:
-      - "mysqld"
-      - "--character-set-server=utf8mb4"
-      - "--collation-server=utf8mb4_unicode_ci"
-
   backend:
     restart: always
     container_name: boardker_backend

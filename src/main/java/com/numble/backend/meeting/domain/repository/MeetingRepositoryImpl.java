@@ -23,10 +23,12 @@ import com.numble.backend.meeting.domain.QMeetingUser;
 import com.numble.backend.meeting.dto.response.MeetingDetailResponse;
 import com.numble.backend.meeting.dto.response.MeetingResponse;
 import com.numble.backend.meeting.dto.response.MeetingUserResponse;
+import com.numble.backend.meeting.dto.response.MyMeetingResponse;
 import com.numble.backend.meeting.dto.response.QMeetingDetailResponse;
 import com.numble.backend.meeting.dto.response.QMeetingResponse;
 
 import com.numble.backend.meeting.dto.response.QMeetingUserResponse;
+import com.numble.backend.meeting.dto.response.QMyMeetingResponse;
 import com.numble.backend.post.dto.response.PostDetailResponse;
 import com.numble.backend.post.dto.response.QPostDetailResponse;
 import com.querydsl.core.types.Order;
@@ -71,6 +73,44 @@ public class MeetingRepositoryImpl implements MeetingRepositoryCustom {
 			.offset(pageable.getOffset())
 			.limit(pageable.getPageSize() + 1)
 			.orderBy(meeting.isFull.asc(), meetingSort(pageable, latitude, longitude))
+			.fetch();
+
+		boolean hasNext = false;
+		if (content.size() > pageable.getPageSize()) {
+			content.remove(pageable.getPageSize());
+			hasNext = true;
+		}
+		return new SliceImpl<>(content, pageable, hasNext);
+	}
+
+	@Override
+	public Slice<MyMeetingResponse> findAllByUserId(Long userId, Pageable pageable) {
+
+		List<MyMeetingResponse> content = queryFactory
+			.select(new QMyMeetingResponse(
+				meeting.id,
+				meeting.title,
+				meeting.capacity,
+				JPAExpressions
+					.select(count(meetingUser))
+					.from(meetingUser)
+					.where(meetingUser.meeting.eq(meeting)
+						.and(meetingUser.isApproved.eq(Boolean.TRUE))
+						.and(meetingUser.isRejected.eq(Boolean.FALSE))),
+				meeting.day,
+				meeting.img,
+				meeting.cafe,
+				meeting.isFull
+			))
+			.from(meetingUser)
+			.innerJoin(meetingUser.meeting, meeting)
+			.where(meetingUser.user.id.eq(userId)
+				.and(meetingUser.isApproved.eq(Boolean.TRUE))
+				.and(meeting.day.after(LocalDateTime.now().minusDays(1))))
+			.groupBy(meeting)
+			.offset(pageable.getOffset())
+			.limit(pageable.getPageSize() + 1)
+			.orderBy(meeting.isFull.asc(), meeting.createdAt.desc())
 			.fetch();
 
 		boolean hasNext = false;

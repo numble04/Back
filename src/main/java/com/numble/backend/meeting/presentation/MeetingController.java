@@ -95,6 +95,15 @@ public class MeetingController {
 		return ResponseEntity.noContent().build();
 	}
 
+	@GetMapping("/my") //자신의 모임 조회
+	public ResponseEntity<ResponseDto> findAllByUserId(@AuthenticationPrincipal CustomUserDetails customUserDetails,
+		@PageableDefault(size = 10) Pageable pageable) {
+
+		ResponseDto responseDto = ResponseDto.of(meetingService.findAllByUserId(customUserDetails, pageable));
+
+		return ResponseEntity.ok(responseDto);
+	}
+
 	@PostMapping("/{id}/register") //모임 신청
 	public ResponseEntity<ResponseDto> saveMeetingUser(
 		@PathVariable Long id, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
