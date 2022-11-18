@@ -60,7 +60,7 @@ public class SecurityConfig {
 			.and()
 			.authorizeRequests()
 			.antMatchers("/api/users/**","/api/auth/reissue","/api/posts/**","/api/comments/**",
-				"/api/meetings/**", "/api/cafes/**").authenticated()
+				"/api/meetings/**", "/api/cafes/**", "/api/games/**").authenticated()
 			.and()
 			.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 		return http.build();
