@@ -7,10 +7,12 @@ import lombok.Getter;
 
 @Builder
 @Getter
-public class UpdateGameReviewRequest {
+public class GameReviewCreateRequest {
+
 	@NotBlank(message = "내용을 입력해 주세요")
 	private String content;
 
 	@NotBlank(message = "별점을 입력해 주세요")
 	private Double rate;
+
 }

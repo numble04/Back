@@ -9,7 +9,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import com.numble.backend.game.domain.Game;
-import com.numble.backend.game.dto.response.GetGameResponse;
 
 public interface GameRepository extends JpaRepository<Game,Long>,GameRepositoryCustom {
 }

@@ -11,8 +11,8 @@ import org.springframework.data.domain.SliceImpl;
 import org.springframework.data.domain.Sort;
 
 import com.numble.backend.game.domain.GameReview;
-import com.numble.backend.game.dto.response.GetReviewsResponse;
-import com.numble.backend.game.dto.response.QGetReviewsResponse;
+import com.numble.backend.game.dto.response.QReviewResponse;
+import com.numble.backend.game.dto.response.ReviewResponse;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -24,9 +24,9 @@ public class GameReviewRepositoryImpl implements GameReviewRepositoryCustom{
 
 	private final JPAQueryFactory queryFactory;
 	@Override
-	public Slice<GetReviewsResponse> findAllByGameId(Long userId, Long gameId, Pageable pageable) {
-		List<GetReviewsResponse> content = queryFactory
-			.select(new QGetReviewsResponse(
+	public Slice<ReviewResponse> findAllByGameId(Long userId, Long gameId, Pageable pageable) {
+		List<ReviewResponse> content = queryFactory
+			.select(new QReviewResponse(
 				gameReview.id,
 				gameReview.content,
 				gameReview.rate,

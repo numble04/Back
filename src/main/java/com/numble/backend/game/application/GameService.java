@@ -5,10 +5,10 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.numble.backend.game.domain.mapper.GameDetailMapper;
 import com.numble.backend.game.domain.repository.GameRepository;
-import com.numble.backend.game.domain.mapper.GetDetailGameResponseMapper;
-import com.numble.backend.game.dto.response.GetDetailGameResponse;
-import com.numble.backend.game.dto.response.GetGameResponse;
+import com.numble.backend.game.dto.response.GameDetailResponse;
+import com.numble.backend.game.dto.response.GameResponse;
 import com.numble.backend.game.exception.GameNotFoundException;
 import com.numble.backend.game.exception.GameTypeErrorException;
 
@@ -20,21 +20,21 @@ import lombok.RequiredArgsConstructor;
 public class GameService {
 	private final GameRepository gameRepository;
 
-	public Slice<GetGameResponse> findAll(Pageable pageable) {
+	public Slice<GameResponse> findAll(Pageable pageable) {
 
-		Slice<GetGameResponse> responses = gameRepository.findAllByNone(pageable);
-
-		return responses;
-	}
-
-	public Slice<GetGameResponse> findAllBySearch(Pageable pageable, String title) {
-		Slice<GetGameResponse> responses = gameRepository.findAllBySearch(pageable,title);
+		Slice<GameResponse> responses = gameRepository.findAllByNone(pageable);
 
 		return responses;
 	}
 
-	public GetDetailGameResponse findById(Long id) {
-		GetDetailGameResponse responses = GetDetailGameResponseMapper.INSTANCE.toDto(
+	public Slice<GameResponse> findAllBySearch(Pageable pageable, String title) {
+		Slice<GameResponse> responses = gameRepository.findAllBySearch(pageable,title);
+
+		return responses;
+	}
+
+	public GameDetailResponse findById(Long id) {
+		GameDetailResponse responses = GameDetailMapper.INSTANCE.toDto(
 			gameRepository.findById(id)
 			.orElseThrow(() ->  new GameNotFoundException()));
 

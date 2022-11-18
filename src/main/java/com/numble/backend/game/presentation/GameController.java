@@ -26,8 +26,8 @@ import com.numble.backend.common.config.security.CustomUserDetails;
 import com.numble.backend.common.dto.ResponseDto;
 import com.numble.backend.game.application.GameReviewService;
 import com.numble.backend.game.application.GameService;
-import com.numble.backend.game.dto.request.PostGameReviewRequest;
-import com.numble.backend.game.dto.request.UpdateGameReviewRequest;
+import com.numble.backend.game.dto.request.GameReviewCreateRequest;
+import com.numble.backend.game.dto.request.GameReviewUpdateRequest;
 
 import lombok.RequiredArgsConstructor;
 
@@ -76,9 +76,9 @@ public class GameController {
 	@PostMapping("/{gameId}/review")
 	public ResponseEntity<Void> findReviewsById(@AuthenticationPrincipal CustomUserDetails customUserDetails,
 		@PathVariable("gameId") Long gameId,
-		@RequestBody PostGameReviewRequest postGameReviewRequest) {
+		@RequestBody GameReviewCreateRequest gameReviewCreateRequest) {
 		Long userId = customUserDetails.getId();
-		Long id = gameReviewService.save(gameId,userId,postGameReviewRequest);
+		Long id = gameReviewService.save(gameId,userId,gameReviewCreateRequest);
 
 		return ResponseEntity.created(URI.create("/api/games/"+gameId+"/review/" + id)).build();
 	}
@@ -86,9 +86,9 @@ public class GameController {
 	@PutMapping("/{gameId}/review/{reviewId}")
 	public ResponseEntity<Void> UpdateReviewById(@AuthenticationPrincipal CustomUserDetails customUserDetails,
 		@PathVariable("gameId") Long gameId, @PathVariable("reviewId") Long reviewId,
-		@RequestBody UpdateGameReviewRequest updateGameReviewRequest) {
+		@RequestBody GameReviewUpdateRequest gameReviewUpdateRequest) {
 		Long userId = customUserDetails.getId();
-		gameReviewService.updateById(userId,reviewId,updateGameReviewRequest);
+		gameReviewService.updateById(userId,reviewId,gameReviewUpdateRequest);
 
 		return ResponseEntity.noContent().build();
 	}

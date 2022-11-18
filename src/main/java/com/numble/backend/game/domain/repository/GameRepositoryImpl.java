@@ -11,8 +11,8 @@ import org.springframework.data.domain.SliceImpl;
 import org.springframework.data.domain.Sort;
 
 import com.numble.backend.game.domain.Theme;
-import com.numble.backend.game.dto.response.GetGameResponse;
-import com.numble.backend.game.dto.response.QGetGameResponse;
+import com.numble.backend.game.dto.response.GameResponse;
+import com.numble.backend.game.dto.response.QGameResponse;
 import com.numble.backend.game.dto.response.QThemeResponse;
 import com.numble.backend.game.dto.response.ThemeResponse;
 import com.querydsl.core.types.Order;
@@ -27,9 +27,9 @@ public class GameRepositoryImpl implements GameRepositoryCustom{
 
 	private final JPAQueryFactory queryFactory;
 	@Override
-	public Slice<GetGameResponse> findAllByNone(Pageable pageable) {
-		List<GetGameResponse> content = queryFactory
-			.select(new QGetGameResponse(
+	public Slice<GameResponse> findAllByNone(Pageable pageable) {
+		List<GameResponse> content = queryFactory
+			.select(new QGameResponse(
 				game.id,
 				game.title,
 				game.img,
@@ -45,16 +45,16 @@ public class GameRepositoryImpl implements GameRepositoryCustom{
 			.orderBy(gameSort(pageable))
 			.fetch();
 
-		for (GetGameResponse getGameResponse : content) {
+		for (GameResponse GameResponse : content) {
 			List<ThemeResponse> themes = queryFactory
 				.select(new QThemeResponse(
 					theme.name
 				))
 				.from(theme)
-				.where(theme.game.id.eq(getGameResponse.getId()))
+				.where(theme.game.id.eq(GameResponse.getId()))
 				.fetch();
 
-			getGameResponse.setThemeList(themes);
+			GameResponse.setThemeList(themes);
 		}
 
 		boolean hasNext = false;
@@ -68,9 +68,9 @@ public class GameRepositoryImpl implements GameRepositoryCustom{
 	}
 
 	@Override
-	public Slice<GetGameResponse> findAllBySearch(Pageable pageable, String title) {
-		List<GetGameResponse> content = queryFactory
-			.select(new QGetGameResponse(
+	public Slice<GameResponse> findAllBySearch(Pageable pageable, String title) {
+		List<GameResponse> content = queryFactory
+			.select(new QGameResponse(
 				game.id,
 				game.title,
 				game.img,
@@ -87,16 +87,16 @@ public class GameRepositoryImpl implements GameRepositoryCustom{
 			.orderBy(gameSort(pageable))
 			.fetch();
 
-		for (GetGameResponse getGameResponse : content) {
+		for (GameResponse GameResponse : content) {
 			List<ThemeResponse> themes = queryFactory
 				.select(new QThemeResponse(
 					theme.name
 				))
 				.from(theme)
-				.where(theme.game.id.eq(getGameResponse.getId()))
+				.where(theme.game.id.eq(GameResponse.getId()))
 				.fetch();
 
-			getGameResponse.setThemeList(themes);
+			GameResponse.setThemeList(themes);
 		}
 
 		boolean hasNext = false;
