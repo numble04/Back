@@ -27,6 +27,7 @@ import com.numble.backend.meeting.dto.request.MeetingCreateRequest;
 import com.numble.backend.meeting.dto.request.MeetingUpdateRequest;
 import com.numble.backend.meeting.dto.response.MeetingDetailResponse;
 import com.numble.backend.meeting.dto.response.MeetingResponse;
+import com.numble.backend.meeting.dto.response.MyMeetingResponse;
 import com.numble.backend.meeting.exception.DuplicateMeetingUserException;
 import com.numble.backend.meeting.exception.MeetingFullException;
 import com.numble.backend.meeting.exception.MeetingLeaderException;
@@ -105,6 +106,10 @@ public class MeetingService {
 			.orElseThrow(() -> new MeetingNotFoundException());
 
 		meetingRepository.delete(meeting);
+	}
+
+	public Slice<MyMeetingResponse> findAllByUserId(CustomUserDetails customUserDetails, Pageable pageable) {
+		return meetingRepository.findAllByUserId(customUserDetails.getId(), pageable);
 	}
 
 	public Slice<MeetingResponse> findAllByDong(String city, String dong, Double latitude, Double longitude,
@@ -263,4 +268,6 @@ public class MeetingService {
 			meetingLikeRepository.save(meetingLike1);
 		}
 	}
+
+
 }
