@@ -9,7 +9,7 @@ import javax.persistence.ManyToOne;
 
 import com.numble.backend.common.domain.BaseEntity;
 import com.numble.backend.common.exception.business.InvalidFieldException;
-import com.numble.backend.game.dto.request.UpdateGameReviewRequest;
+import com.numble.backend.game.dto.request.GameReviewUpdateRequest;
 import com.numble.backend.post.dto.request.PostUpdateRequest;
 import com.numble.backend.user.domain.User;
 import com.numble.backend.user.exception.UserNotAuthorException;
@@ -48,10 +48,10 @@ public class GameReview extends BaseEntity {
 		}
 	}
 
-	public void updateGameReview(final UpdateGameReviewRequest updateGameReviewRequest, final Long userId) {
+	public void updateGameReview(final GameReviewUpdateRequest gameReviewUpdateRequest, final Long userId) {
 		validateMemberIsAuthor(userId);
-		this.content = updateGameReviewRequest.getContent();
-		this.rate = updateGameReviewRequest.getRate();
+		this.content = gameReviewUpdateRequest.getContent();
+		this.rate = gameReviewUpdateRequest.getRate();
 	}
 
 }

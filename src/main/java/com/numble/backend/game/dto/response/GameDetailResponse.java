@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class GetDetailGameResponse {
+public class GameDetailResponse {
 	private Long id;
 	private String age;
 	private String capacity;

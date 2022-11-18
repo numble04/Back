@@ -6,13 +6,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.numble.backend.game.domain.Game;
+import com.numble.backend.game.domain.mapper.GameReviewCreateMapper;
 import com.numble.backend.game.domain.repository.GameRepository;
 import com.numble.backend.game.domain.GameReview;
 import com.numble.backend.game.domain.repository.GameReviewRepository;
-import com.numble.backend.game.domain.mapper.PostGameReviewRequestMapper;
-import com.numble.backend.game.dto.request.PostGameReviewRequest;
-import com.numble.backend.game.dto.request.UpdateGameReviewRequest;
-import com.numble.backend.game.dto.response.GetReviewsResponse;
+import com.numble.backend.game.dto.request.GameReviewCreateRequest;
+import com.numble.backend.game.dto.request.GameReviewUpdateRequest;
+import com.numble.backend.game.dto.response.ReviewResponse;
 import com.numble.backend.game.exception.GameNotFoundException;
 import com.numble.backend.game.exception.GameReviewsNotFoundException;
 import com.numble.backend.user.domain.User;
@@ -34,30 +34,30 @@ public class GameReviewService {
 	private final GameRepository gameRepository;
 
 	@Transactional
-	public Long save(Long gameId, Long userId, PostGameReviewRequest postGameReviewRequest) {
+	public Long save(Long gameId, Long userId, GameReviewCreateRequest gameReviewCreateRequest) {
 		User user = userRepository.findById(userId)
 			.orElseThrow(() ->  new UserNotFoundException());
 		Game game = gameRepository.findById(gameId)
 			.orElseThrow(() ->  new GameNotFoundException());
 
-		GameReview gameReview  = PostGameReviewRequestMapper.INSTANCE
-			.toEntity(postGameReviewRequest,user,game);
+		GameReview gameReview  = GameReviewCreateMapper.INSTANCE
+			.toEntity(gameReviewCreateRequest,user,game);
 
 		return gameReviewRepository.save(gameReview).getId();
 	}
 
-	public Slice<GetReviewsResponse> findReviewsByGameId(Long userId, Long gameId, Pageable pageable) {
-		Slice<GetReviewsResponse> responses = gameReviewRepository.findAllByGameId(userId,gameId,pageable);
+	public Slice<ReviewResponse> findReviewsByGameId(Long userId, Long gameId, Pageable pageable) {
+		Slice<ReviewResponse> responses = gameReviewRepository.findAllByGameId(userId,gameId,pageable);
 
 		return responses;
 	}
 
 	@Transactional
-	public void updateById(Long userId, Long reviewId, UpdateGameReviewRequest updateGameReviewRequest) {
+	public void updateById(Long userId, Long reviewId, GameReviewUpdateRequest gameReviewUpdateRequest) {
 		GameReview gameReview = gameReviewRepository.findById(reviewId)
 			.orElseThrow(() -> new GameReviewsNotFoundException());
 
-		gameReview.updateGameReview(updateGameReviewRequest,userId);
+		gameReview.updateGameReview(gameReviewUpdateRequest,userId);
 	}
 
 	@Transactional
