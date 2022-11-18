@@ -5,6 +5,7 @@ import java.net.URI;
 
 import javax.websocket.server.PathParam;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -38,12 +39,14 @@ public class GameController {
 
 	private final GameReviewService gameReviewService;
 
+	@Cacheable(cacheNames = "game", cacheManager = "caffeineCacheManager")
 	@GetMapping
 	public ResponseEntity<ResponseDto> findAll(@PageableDefault(size = 10, sort = "title", direction = Sort.Direction.ASC) Pageable pageable) {
 		ResponseDto responseDto = ResponseDto.of(gameService.findAll(pageable));
 
 		return ResponseEntity.ok(responseDto);
 	}
+
 
 	@GetMapping("/search")
 	public ResponseEntity<ResponseDto> findAllBySearch(@PageableDefault(size = 10, sort = "title", direction = Sort.Direction.ASC) Pageable pageable,
