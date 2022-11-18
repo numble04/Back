@@ -65,8 +65,7 @@ public class MeetingRepositoryImpl implements MeetingRepositoryCustom {
 			))
 			.from(meetingUser)
 			.innerJoin(meetingUser.meeting, meeting)
-			.where(meeting.cafe.city.eq(city)
-				.and(meeting.cafe.dong.eq(dong))
+			.where(eqCityAndDong(city, dong)
 				.and(dateBetween(startDate, endDate)))
 			.groupBy(meeting)
 			.offset(pageable.getOffset())
@@ -184,6 +183,16 @@ public class MeetingRepositoryImpl implements MeetingRepositoryCustom {
 		}
 
 		return meetingUser.isApproved.eq(Boolean.TRUE);
+	}
+
+	private BooleanExpression eqCityAndDong(String city, String dong) {
+
+		if (city == null || dong == null) {
+			return null;
+		}
+
+		return meeting.cafe.city.eq(city)
+			.and(meeting.cafe.dong.eq(dong));
 	}
 
 }
