@@ -4,6 +4,7 @@ import static com.numble.backend.game.domain.QGame.game;
 import static com.numble.backend.game.domain.QTheme.theme;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -11,6 +12,7 @@ import org.springframework.data.domain.SliceImpl;
 import org.springframework.data.domain.Sort;
 
 import com.numble.backend.game.domain.Theme;
+import com.numble.backend.game.dto.response.GameDetailResponse;
 import com.numble.backend.game.dto.response.GameResponse;
 import com.numble.backend.game.dto.response.QGameResponse;
 import com.numble.backend.game.dto.response.QThemeResponse;
@@ -33,9 +35,6 @@ public class GameRepositoryImpl implements GameRepositoryCustom{
 				game.id,
 				game.title,
 				game.img,
-				game.capacity,
-				game.time,
-				game.age,
 				game.rate,
 				game.level
 			))
@@ -45,24 +44,11 @@ public class GameRepositoryImpl implements GameRepositoryCustom{
 			.orderBy(gameSort(pageable))
 			.fetch();
 
-		for (GameResponse GameResponse : content) {
-			List<ThemeResponse> themes = queryFactory
-				.select(new QThemeResponse(
-					theme.name
-				))
-				.from(theme)
-				.where(theme.game.id.eq(GameResponse.getId()))
-				.fetch();
-
-			GameResponse.setThemeList(themes);
-		}
-
 		boolean hasNext = false;
 		if (content.size() > pageable.getPageSize()) {
 			content.remove(pageable.getPageSize());
 			hasNext = true;
 		}
-
 
 		return new SliceImpl<>(content, pageable, hasNext);
 	}
@@ -74,9 +60,6 @@ public class GameRepositoryImpl implements GameRepositoryCustom{
 				game.id,
 				game.title,
 				game.img,
-				game.capacity,
-				game.time,
-				game.age,
 				game.rate,
 				game.level
 			))
@@ -87,24 +70,11 @@ public class GameRepositoryImpl implements GameRepositoryCustom{
 			.orderBy(gameSort(pageable))
 			.fetch();
 
-		for (GameResponse GameResponse : content) {
-			List<ThemeResponse> themes = queryFactory
-				.select(new QThemeResponse(
-					theme.name
-				))
-				.from(theme)
-				.where(theme.game.id.eq(GameResponse.getId()))
-				.fetch();
-
-			GameResponse.setThemeList(themes);
-		}
-
 		boolean hasNext = false;
 		if (content.size() > pageable.getPageSize()) {
 			content.remove(pageable.getPageSize());
 			hasNext = true;
 		}
-
 
 		return new SliceImpl<>(content, pageable, hasNext);
 	}
