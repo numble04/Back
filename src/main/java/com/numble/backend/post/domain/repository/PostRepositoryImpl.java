@@ -2,6 +2,8 @@ package com.numble.backend.post.domain.repository;
 
 import static com.numble.backend.comment.domain.QComment.comment;
 import static com.numble.backend.comment.domain.QCommentLike.commentLike;
+import static com.numble.backend.meeting.domain.QMeeting.meeting;
+import static com.numble.backend.post.domain.QImage.image;
 import static com.numble.backend.post.domain.QPost.post;
 import static com.numble.backend.post.domain.QPostLike.postLike;
 import static com.numble.backend.user.domain.QUser.user;
@@ -18,11 +20,17 @@ import com.numble.backend.comment.dto.response.CommentsChildrenResponse;
 import com.numble.backend.comment.dto.response.PostOneCommentResponse;
 import com.numble.backend.comment.dto.response.QCommentsChildrenResponse;
 import com.numble.backend.comment.dto.response.QPostOneCommentResponse;
+import com.numble.backend.post.domain.Post;
 import com.numble.backend.post.domain.PostType;
+import com.numble.backend.post.domain.QImage;
+import com.numble.backend.post.dto.response.MyPostResponse;
 import com.numble.backend.post.dto.response.PostDetailResponse;
 import com.numble.backend.post.dto.response.PostResponse;
+import com.numble.backend.post.dto.response.QMyPostResponse;
 import com.numble.backend.post.dto.response.QPostDetailResponse;
 import com.numble.backend.post.dto.response.QPostResponse;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
@@ -32,8 +40,6 @@ import lombok.RequiredArgsConstructor;
 public class PostRepositoryImpl implements PostRepositoryCustom {
 
 	private final JPAQueryFactory queryFactory;
-
-
 
 	@Override
 	public Optional<PostDetailResponse> findOnePostById(Long postId, Long userId) {
@@ -124,7 +130,6 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
 			.where(post.id.eq(postId).and(comment.parent.id.isNotNull()))
 			.fetch();
 
-
 		comments.stream()
 			.forEach(parent -> {
 				parent.setChildren(childComments.stream()
@@ -134,13 +139,11 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
 
 		response.get().setComments(comments);
 
-
 		return response;
 	}
 
 	@Override
 	public Slice<PostResponse> findAllByType(PostType type, Long userId, Pageable pageable) {
-
 
 		List<PostResponse> content = queryFactory
 			.select(new QPostResponse(
@@ -172,9 +175,6 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
 			.limit(pageable.getPageSize() + 1)
 			.orderBy(post.createdAt.desc())
 			.fetch();
-
-
-
 
 		boolean hasNext = false;
 		if (content.size() > pageable.getPageSize()) {
@@ -220,8 +220,28 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
 			.orderBy(post.createdAt.desc())
 			.fetch();
 
+		boolean hasNext = false;
+		if (content.size() > pageable.getPageSize()) {
+			content.remove(pageable.getPageSize());
+			hasNext = true;
+		}
+		return new SliceImpl<>(content, pageable, hasNext);
+	}
 
-
+	@Override
+	public Slice<MyPostResponse> findAllByUser(Long userId, Pageable pageable) {
+		List<MyPostResponse> content = queryFactory
+			.select(new QMyPostResponse(
+				post.id,
+				post.title,
+				post
+			))
+			.from(post)
+			.where(post.user.id.eq(userId))
+			.offset(pageable.getOffset())
+			.limit(pageable.getPageSize() + 1)
+			.orderBy(post.createdAt.desc())
+			.fetch();
 
 		boolean hasNext = false;
 		if (content.size() > pageable.getPageSize()) {
@@ -230,5 +250,30 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
 		}
 		return new SliceImpl<>(content, pageable, hasNext);
 	}
+
+	@Override
+	public Slice<MyPostResponse> findAllByUserAndLike(Long userId, Pageable pageable) {
+		List<MyPostResponse> content = queryFactory
+			.select(new QMyPostResponse(
+				post.id,
+				post.title,
+				post
+			))
+			.from(post)
+			.innerJoin(post.postLikes, postLike).on(postLike.user.id.eq(userId))
+			.offset(pageable.getOffset())
+			.limit(pageable.getPageSize() + 1)
+			.orderBy(post.createdAt.desc())
+			.fetch();
+
+		boolean hasNext = false;
+		if (content.size() > pageable.getPageSize()) {
+			content.remove(pageable.getPageSize());
+			hasNext = true;
+		}
+		return new SliceImpl<>(content, pageable, hasNext);
+	}
+
+
 
 }

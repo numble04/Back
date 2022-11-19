@@ -94,6 +94,14 @@ public class PostController {
 		return ResponseEntity.noContent().build();
 	}
 
+	@GetMapping("/like") //좋아요한 게시글 조회
+	public ResponseEntity<ResponseDto> findAllByLike(@AuthenticationPrincipal CustomUserDetails customUserDetails,
+		@PageableDefault(size = 10) Pageable pageable) {
+		ResponseDto responseDto = ResponseDto.of(postService.findAllByLike(customUserDetails, pageable));
+
+		return ResponseEntity.ok(responseDto);
+	}
+
 	@PutMapping("/{postId}/like") //좋아요
 	public ResponseEntity<Void> updateLikeById(@AuthenticationPrincipal CustomUserDetails customUserDetails,
 		@PathVariable final Long postId) {
