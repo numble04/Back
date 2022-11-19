@@ -91,15 +91,7 @@ public class PostService {
 
 	public Slice<MyPostResponse> findAllByUserId(CustomUserDetails customUserDetails, Pageable pageable) {
 
-		User user = userRepository.findById(customUserDetails.getId())
-			.orElseThrow(() -> new UserNotFoundException());
-
-		final List<MyPostResponse> postResponses = postRepository.findAllByUser(user, pageable)
-			.stream()
-			.map(MyPostResponse::toDto)
-			.collect(Collectors.toList());
-
-		return new SliceImpl<>(postResponses,pageable,checkHasNext(postResponses, pageable));
+		return postRepository.findAllByUser(customUserDetails.getId(), pageable);
 	}
 
 	private boolean checkHasNext(List<MyPostResponse> postResponses, Pageable pageable) {
@@ -133,6 +125,10 @@ public class PostService {
 		post.validateMemberIsAuthor(customUserDetails.getId());
 
 		postRepository.deleteById(postId);
+	}
+
+	public Slice<MyPostResponse> findAllByLike(CustomUserDetails customUserDetails, Pageable pageable) {
+		return postRepository.findAllByUserAndLike(customUserDetails.getId(), pageable);
 	}
 
 	@Transactional
