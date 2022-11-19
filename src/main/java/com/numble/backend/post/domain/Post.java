@@ -14,6 +14,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
@@ -57,6 +58,7 @@ public class Post extends BaseEntity {
 	@JoinColumn(name = "userId")
 	private User user;
 
+	@BatchSize(size = 100)
 	@OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
 	private List<Image> images;
 
