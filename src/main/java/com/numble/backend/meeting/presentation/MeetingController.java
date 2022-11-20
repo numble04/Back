@@ -149,6 +149,14 @@ public class MeetingController {
 
 		return ResponseEntity.noContent().build();
 	}
+	@GetMapping("/like") //모임 좋아요 조회
+	public ResponseEntity<ResponseDto> findAllByLike(@AuthenticationPrincipal CustomUserDetails customUserDetails,
+		@PageableDefault(size = 10) Pageable pageable) {
+
+		ResponseDto responseDto = ResponseDto.of(meetingService.findAllByUserAndLike(customUserDetails, pageable));
+
+		return ResponseEntity.ok(responseDto);
+	}
 
 	@PutMapping("/{id}/like") //모임 좋아요
 	public ResponseEntity<ResponseDto> updateMeetingLike(@PathVariable Long id,
