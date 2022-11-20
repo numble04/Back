@@ -122,6 +122,42 @@ public class MeetingRepositoryImpl implements MeetingRepositoryCustom {
 	}
 
 	@Override
+	public Slice<MyMeetingResponse> findAllByUserAndLike(Long userId, Pageable pageable) {
+		List<MyMeetingResponse> content = queryFactory
+			.select(new QMyMeetingResponse(
+				meeting.id,
+				meeting.title,
+				meeting.capacity,
+				JPAExpressions
+					.select(count(meetingUser))
+					.from(meetingUser)
+					.where(meetingUser.meeting.eq(meeting)
+						.and(meetingUser.isApproved.eq(Boolean.TRUE))
+						.and(meetingUser.isRejected.eq(Boolean.FALSE))),
+				meeting.day,
+				meeting.img,
+				meeting.cafe,
+				meeting.isFull
+			))
+			.from(meetingLike)
+			.innerJoin(meetingLike.meeting, meeting)
+			.where(meetingLike.user.id.eq(userId)
+				.and(meeting.day.after(LocalDateTime.now().minusDays(1))))
+			.groupBy(meeting)
+			.offset(pageable.getOffset())
+			.limit(pageable.getPageSize() + 1)
+			.orderBy(meeting.isFull.asc(), meeting.createdAt.desc())
+			.fetch();
+
+		boolean hasNext = false;
+		if (content.size() > pageable.getPageSize()) {
+			content.remove(pageable.getPageSize());
+			hasNext = true;
+		}
+		return new SliceImpl<>(content, pageable, hasNext);
+	}
+
+	@Override
 	public Optional<MeetingDetailResponse> findDetailById(Long id, Long userId, boolean isLeader) {
 
 		Optional<MeetingDetailResponse> response = Optional.ofNullable(queryFactory

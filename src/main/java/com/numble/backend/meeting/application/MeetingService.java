@@ -251,6 +251,10 @@ public class MeetingService {
 		meeting.updateIsFull(nowPersonnel);
 	}
 
+	public Slice<MyMeetingResponse> findAllByUserAndLike(CustomUserDetails customUserDetails, Pageable pageable) {
+		return meetingRepository.findAllByUserAndLike(customUserDetails.getId(), pageable);
+	}
+
 	@Transactional
 	public void updateMeetingLike(Long id, CustomUserDetails customUserDetails) {
 		Meeting meeting = meetingRepository.findById(id)
