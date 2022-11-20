@@ -38,7 +38,6 @@ services:
       SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
       SPRING_REDIS_HOST: redis
     depends_on:
-      - database
       - redis
 
 
