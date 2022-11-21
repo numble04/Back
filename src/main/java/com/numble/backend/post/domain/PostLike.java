@@ -10,7 +10,6 @@ import com.numble.backend.common.domain.BaseEntity;
 import com.numble.backend.user.domain.User;
 
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
