@@ -1,13 +1,12 @@
 package com.numble.backend.post.application;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,7 +22,6 @@ import com.numble.backend.post.domain.PostType;
 import com.numble.backend.post.domain.mapper.PostCreateMapper;
 import com.numble.backend.post.domain.repository.PostLikeRepository;
 import com.numble.backend.post.domain.repository.PostRepository;
-
 import com.numble.backend.post.dto.request.PostCreateRequest;
 import com.numble.backend.post.dto.request.PostUpdateRequest;
 import com.numble.backend.post.dto.response.MyPostResponse;
@@ -40,6 +38,8 @@ import lombok.RequiredArgsConstructor;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class PostService {
+
+	private static final int MAX_IMAGE_COUNT = 5;
 	private final UserRepository userRepository;
 	private final PostRepository postRepository;
 	private final PostLikeRepository postLikeRepository;
@@ -58,48 +58,33 @@ public class PostService {
 
 		Post post = PostCreateMapper.INSTANCE.toEntity(postRequest, user);
 
+		Long id = postRepository.save(post).getId();
 		uploadFiles(multipartFiles, post);
 
-		return postRepository.save(post).getId();
+		return id;
 	}
 
 	public Slice<PostResponse> findAllByType(PostType type, Pageable pageable, CustomUserDetails customUserDetails) {
 
-		Slice<PostResponse> postResponses = postRepository.findAllByType(type, customUserDetails.getId(), pageable);
-
-		return postResponses;
+		return postRepository.findAllByType(type, customUserDetails.getId(), pageable);
 	}
 
 	public Slice<PostResponse> findAllBySearch(PostType type, String searchWord, Pageable pageable,
 		CustomUserDetails customUserDetails) {
 
-		Slice<PostResponse> postResponses = postRepository.findAllByTypeAndSearch(type, searchWord,
-			customUserDetails.getId(), pageable);
-
-		return postResponses;
+		return postRepository.findAllByTypeAndSearch(type, searchWord, customUserDetails.getId(), pageable);
 	}
 
 	@Transactional
 	public PostDetailResponse findById(Long postId, CustomUserDetails customUserDetails) {
-		PostDetailResponse postDetailResponse = postRepository.findOnePostById(postId, customUserDetails.getId())
-			.orElseThrow(() -> new PostNotFoundException());
 
-		postDetailResponse.setImages(
-			imageRepository.findByPostId(postId).stream().map(i -> i.getUrl()).collect(Collectors.toList()));
-		return postDetailResponse;
+		return postRepository.findOnePostById(postId, customUserDetails.getId())
+			.orElseThrow(() -> new PostNotFoundException());
 	}
 
 	public Slice<MyPostResponse> findAllByUserId(CustomUserDetails customUserDetails, Pageable pageable) {
 
 		return postRepository.findAllByUser(customUserDetails.getId(), pageable);
-	}
-
-	private boolean checkHasNext(List<MyPostResponse> postResponses, Pageable pageable) {
-
-		if (postResponses.size() > pageable.getPageSize()) {
-			return true;
-		}
-		return false;
 	}
 
 	@Transactional
@@ -139,8 +124,7 @@ public class PostService {
 		User user = userRepository.findById(customUserDetails.getId())
 			.orElseThrow(() -> new UserNotFoundException());
 
-		Optional<PostLike> postLike = postLikeRepository.findByPostIdAndUserId(postId,
-			customUserDetails.getId());
+		Optional<PostLike> postLike = postLikeRepository.findByPostAndUser(post, user);
 
 		if (postLike.isPresent()) {
 			postLikeRepository.delete(postLike.get());
@@ -157,16 +141,17 @@ public class PostService {
 			return;
 		}
 
-		List<String> fileNames = S3Utils.uploadMultiFilesS3(amazonS3Client, bucketName, multipartFiles, 5);
+		List<String> fileNames = S3Utils.uploadMultiFilesS3(amazonS3Client, bucketName, multipartFiles,
+			MAX_IMAGE_COUNT);
+		List<Image> images = new ArrayList<>();
 
 		for (String fileName : fileNames) {
-			Image image = Image.builder()
+			images.add(Image.builder()
 				.url(amazonS3Client.getUrl(bucketName, fileName).toString())
 				.post(post)
-				.build();
-
-			imageRepository.save(image);
+				.build());
 		}
+		imageRepository.saveAll(images);
 	}
 
 }

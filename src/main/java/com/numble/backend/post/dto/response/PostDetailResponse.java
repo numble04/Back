@@ -3,9 +3,11 @@ package com.numble.backend.post.dto.response;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.numble.backend.comment.dto.response.PostOneCommentResponse;
+import com.numble.backend.post.domain.Post;
 import com.querydsl.core.annotations.QueryProjection;
 
 import lombok.Getter;
@@ -37,7 +39,7 @@ public class PostDetailResponse {
 	@QueryProjection
 	public PostDetailResponse(Long postId, String title, String content, int commentCount, int likeCount,
 		LocalDateTime createDate, LocalDateTime updateDate, Integer viewCount, String nickname, String userImg,
-		boolean myPost, boolean myLike) {
+		Post post, boolean myPost, boolean myLike) {
 		this.postId = postId;
 		this.title = title;
 		this.content = content;
@@ -48,6 +50,7 @@ public class PostDetailResponse {
 		this.viewCount = viewCount;
 		this.nickname = nickname;
 		this.userImg = userImg;
+		this.images = post.getImages().stream().map(i -> i.getUrl()).collect(Collectors.toList());
 		this.myPost = myPost;
 		this.myLike = myLike;
 	}

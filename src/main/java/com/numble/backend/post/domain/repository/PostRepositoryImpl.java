@@ -2,8 +2,6 @@ package com.numble.backend.post.domain.repository;
 
 import static com.numble.backend.comment.domain.QComment.comment;
 import static com.numble.backend.comment.domain.QCommentLike.commentLike;
-import static com.numble.backend.meeting.domain.QMeeting.meeting;
-import static com.numble.backend.post.domain.QImage.image;
 import static com.numble.backend.post.domain.QPost.post;
 import static com.numble.backend.post.domain.QPostLike.postLike;
 import static com.numble.backend.user.domain.QUser.user;
@@ -20,17 +18,13 @@ import com.numble.backend.comment.dto.response.CommentsChildrenResponse;
 import com.numble.backend.comment.dto.response.PostOneCommentResponse;
 import com.numble.backend.comment.dto.response.QCommentsChildrenResponse;
 import com.numble.backend.comment.dto.response.QPostOneCommentResponse;
-import com.numble.backend.post.domain.Post;
 import com.numble.backend.post.domain.PostType;
-import com.numble.backend.post.domain.QImage;
 import com.numble.backend.post.dto.response.MyPostResponse;
 import com.numble.backend.post.dto.response.PostDetailResponse;
 import com.numble.backend.post.dto.response.PostResponse;
 import com.numble.backend.post.dto.response.QMyPostResponse;
 import com.numble.backend.post.dto.response.QPostDetailResponse;
 import com.numble.backend.post.dto.response.QPostResponse;
-import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
@@ -60,6 +54,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
 				post.viewCount,
 				user.nickname,
 				user.img,
+				post,
 				JPAExpressions
 					.selectFrom(post)
 					.where(user.id.eq(userId))
@@ -273,7 +268,5 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
 		}
 		return new SliceImpl<>(content, pageable, hasNext);
 	}
-
-
 
 }
