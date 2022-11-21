@@ -4,8 +4,6 @@ import java.net.URI;
 import java.util.List;
 
 import javax.validation.Valid;
-import javax.validation.Validator;
-import javax.websocket.server.PathParam;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -52,8 +50,8 @@ public class PostController {
 
 	@GetMapping // 게시글 조회
 	public ResponseEntity<ResponseDto> findAllByType(@RequestParam("type") PostType type,
-		@PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
-		@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+		@PageableDefault(size = 10) Pageable pageable, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+
 		ResponseDto responseDto = ResponseDto.of(postService.findAllByType(type, pageable, customUserDetails));
 		return ResponseEntity.ok(responseDto);
 	}
@@ -61,13 +59,15 @@ public class PostController {
 	@GetMapping("/{postId}") //게시글 상세 조회
 	public ResponseEntity<ResponseDto> findById(@PathVariable final Long postId,
 		@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+
 		ResponseDto responseDto = ResponseDto.of(postService.findById(postId, customUserDetails));
 		return ResponseEntity.ok(responseDto);
 	}
 
 	@GetMapping("/my") //내 게시글 조회
 	public ResponseEntity<ResponseDto> findAllByUserId(@AuthenticationPrincipal CustomUserDetails customUserDetails,
-	@PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+		@PageableDefault(size = 10) Pageable pageable) {
+
 		ResponseDto responseDto = ResponseDto.of(postService.findAllByUserId(customUserDetails, pageable));
 		return ResponseEntity.ok(responseDto);
 	}
@@ -113,7 +113,6 @@ public class PostController {
 	@DeleteMapping("/{postId}")
 	public ResponseEntity<Void> updateById(@AuthenticationPrincipal CustomUserDetails customUserDetails,
 		@PathVariable final Long postId) {
-
 		postService.deleteById(customUserDetails, postId);
 
 		return ResponseEntity.noContent().build();

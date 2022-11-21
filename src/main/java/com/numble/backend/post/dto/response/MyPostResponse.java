@@ -1,10 +1,5 @@
 package com.numble.backend.post.dto.response;
 
-import java.util.List;
-
-import javax.persistence.Column;
-
-import com.numble.backend.post.domain.Image;
 import com.numble.backend.post.domain.Post;
 import com.querydsl.core.annotations.QueryProjection;
 
@@ -19,16 +14,16 @@ public class MyPostResponse {
 	private String thumbnail;
 
 	@Builder
-	private MyPostResponse(Long id, String title, String thumbnail){
-		this.id=id;
-		this.title=title;
-		this.thumbnail=thumbnail;
+	private MyPostResponse(Long id, String title, String thumbnail) {
+		this.id = id;
+		this.title = title;
+		this.thumbnail = thumbnail;
 	}
 
 	@QueryProjection
 	public MyPostResponse(Long id, String title, Post post) {
 		this.id = id;
 		this.title = title;
-		this.thumbnail = post.getImages().size()!=0 ? post.getImages().get(0).getUrl() : null;
+		this.thumbnail = post.getImages().size() != 0 ? post.getImages().get(0).getUrl() : null;
 	}
 }

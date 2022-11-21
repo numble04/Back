@@ -2,7 +2,6 @@ package com.numble.backend.post.domain;
 
 import static javax.persistence.FetchType.LAZY;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
