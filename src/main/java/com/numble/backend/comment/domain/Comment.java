@@ -11,13 +11,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.numble.backend.comment.dto.request.CommentUpdateRequest;
 import com.numble.backend.common.domain.BaseEntity;
 import com.numble.backend.common.exception.business.InvalidFieldException;
 import com.numble.backend.post.domain.Post;
-import com.numble.backend.post.domain.PostLike;
 import com.numble.backend.user.domain.User;
 import com.numble.backend.user.exception.UserNotAuthorException;
 
@@ -28,7 +25,6 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -57,7 +53,6 @@ public class Comment extends BaseEntity {
 	@JoinColumn(name = "postId")
 	private Post post;
 
-
 	private void validateContent(final String content) {
 		if (content == null || content.isBlank()) {
 			throw new InvalidFieldException("댓글 내용은 공백이나 null일 수 없습니다.");
@@ -70,7 +65,6 @@ public class Comment extends BaseEntity {
 			throw new UserNotAuthorException();
 		}
 	}
-
 
 	public void update(CommentUpdateRequest commentUpdateRequest, Long userId) {
 		validateContent(commentUpdateRequest.getContent());

@@ -18,17 +18,12 @@ import com.numble.backend.user.domain.User;
 public interface CommentMapper {
 	CommentMapper INSTANCE = Mappers.getMapper(CommentMapper.class);
 
-	@Mapping(expression = "java(dto.getContent())", target="content")
-	@Mapping(expression = "java(post)", target="post")
-	@Mapping(expression = "java(user)", target="user")
+	@Mapping(expression = "java(dto.getContent())", target = "content")
+	@Mapping(expression = "java(post)", target = "post")
+	@Mapping(expression = "java(user)", target = "user")
 	Comment toEntity(CommentCreateRequest dto, Post post, User user);
 
-	// @Mapping(expression = "java(dto.getContent())", target="content")
-	// @Mapping(expression = "java(comment)", target="parent")
-	// @Mapping(expression = "java(user)", target="user")
-	// Comment toEntity(CommentRequest dto, Comment comment, User user);
-
-	@Mapping(expression = "java(comment.getPost().getId())", target="postId")
+	@Mapping(expression = "java(comment.getPost().getId())", target = "postId")
 	CommentResponse toDto(Comment comment);
 
 }

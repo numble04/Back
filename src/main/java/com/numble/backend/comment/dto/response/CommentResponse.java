@@ -1,12 +1,5 @@
 package com.numble.backend.comment.dto.response;
 
-import java.util.List;
-
-import com.numble.backend.comment.domain.Comment;
-import com.numble.backend.user.domain.User;
-import com.numble.backend.user.dto.response.UserResponse;
-
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 

@@ -1,7 +1,6 @@
 package com.numble.backend.comment.dto.request;
 
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 
 import lombok.Builder;
 import lombok.Getter;
