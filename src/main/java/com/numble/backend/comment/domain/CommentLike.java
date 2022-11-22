@@ -7,7 +7,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import com.numble.backend.common.domain.BaseEntity;
-import com.numble.backend.post.domain.Post;
 import com.numble.backend.user.domain.User;
 
 import lombok.AccessLevel;
