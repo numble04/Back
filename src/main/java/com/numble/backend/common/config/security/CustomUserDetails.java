@@ -19,8 +19,8 @@ import java.util.Collection;
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CustomUserDetails implements UserDetails {
-	String username;
-	String password;
+	private String username;
+	private String password;
 
 	// user 객체를 userdetails 객체로 반환해줌
 	public static UserDetails of(User user) {
@@ -35,7 +35,9 @@ public class CustomUserDetails implements UserDetails {
 		return null;
 	}
 
-	public Long getId() {return Long.parseLong(getUsername());}
+	public Long getId() {
+		return Long.parseLong(getUsername());
+	}
 
 	@Override
 	public String getPassword() {
