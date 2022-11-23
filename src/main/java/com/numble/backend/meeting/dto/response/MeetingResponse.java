@@ -1,11 +1,6 @@
 package com.numble.backend.meeting.dto.response;
 
-import static javax.persistence.FetchType.LAZY;
-
 import java.time.LocalDateTime;
-
-import javax.persistence.Column;
-import javax.persistence.ManyToOne;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -37,12 +32,13 @@ public class MeetingResponse {
 	private Boolean isFull;
 
 	@QueryProjection
-	public MeetingResponse(Long id, String title, Integer maxPersonnel, Long nowPersonnel, LocalDateTime day, String img,
+	public MeetingResponse(Long id, String title, Integer maxPersonnel, Long nowPersonnel, LocalDateTime day,
+		String img,
 		Cafe cafe, Boolean isFull) {
 		this.id = id;
 		this.title = title;
 		this.maxPersonnel = maxPersonnel;
-		this.nowPersonnel = (int) (long) nowPersonnel;
+		this.nowPersonnel = (int)(long)nowPersonnel;
 		this.day = day;
 		this.img = img;
 		this.cafeName = cafe.getName();

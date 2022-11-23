@@ -7,11 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import org.hibernate.annotations.ColumnDefault;
-
 import com.numble.backend.common.domain.BaseEntity;
 import com.numble.backend.user.domain.User;
-import com.numble.backend.user.exception.UserNotAuthorException;
 
 import lombok.AccessLevel;
 import lombok.Getter;

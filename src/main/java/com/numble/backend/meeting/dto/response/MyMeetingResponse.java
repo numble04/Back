@@ -29,12 +29,13 @@ public class MyMeetingResponse {
 	private Boolean isFull;
 
 	@QueryProjection
-	public MyMeetingResponse(Long id, String title, Integer maxPersonnel, Long nowPersonnel, LocalDateTime day, String img,
+	public MyMeetingResponse(Long id, String title, Integer maxPersonnel, Long nowPersonnel, LocalDateTime day,
+		String img,
 		Cafe cafe, Boolean isFull) {
 		this.id = id;
 		this.title = title;
 		this.maxPersonnel = maxPersonnel;
-		this.nowPersonnel = (int) (long) nowPersonnel;
+		this.nowPersonnel = (int)(long)nowPersonnel;
 		this.day = day;
 		this.img = img;
 		this.cafeName = cafe.getName();

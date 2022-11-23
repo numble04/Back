@@ -12,15 +12,12 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.validation.Valid;
 
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import com.numble.backend.cafe.domain.Cafe;
 import com.numble.backend.common.domain.BaseEntity;
 import com.numble.backend.meeting.dto.request.MeetingUpdateRequest;
-import com.numble.backend.post.domain.PostLike;
-import com.numble.backend.user.exception.UserNotAuthorException;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -59,7 +56,7 @@ public class Meeting extends BaseEntity {
 	@Column(nullable = false)
 	private Integer cost;
 
-	@Column(columnDefinition="tinyint(1) default 0")
+	@Column(columnDefinition = "tinyint(1) default 0")
 	private Boolean isFull;
 
 	@ManyToOne(fetch = LAZY)
@@ -72,10 +69,10 @@ public class Meeting extends BaseEntity {
 	private List<MeetingUser> meetingUsers = new ArrayList<>();
 
 	public void updateIsFull(int nowPersonnel) {
-		if (this.capacity.equals(nowPersonnel)){
-			this.isFull=true;
+		if (this.capacity.equals(nowPersonnel)) {
+			this.isFull = true;
 		} else {
-			this.isFull=false;
+			this.isFull = false;
 		}
 	}
 
@@ -90,7 +87,5 @@ public class Meeting extends BaseEntity {
 		this.cost = meetingUpdateRequest.getCost();
 		this.cafe = cafe;
 	}
-
-
 
 }
