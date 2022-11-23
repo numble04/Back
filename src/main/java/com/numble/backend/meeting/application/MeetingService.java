@@ -73,16 +73,18 @@ public class MeetingService {
 		String img = uploadFile(multipartFile);
 
 		Meeting meeting = MeetingCreateMapper.INSTANCE.toEntity(meetingCreateRequest, img, cafe);
+		Long id = meetingRepository.save(meeting).getId();
 
 		MeetingUser meetingUser = new MeetingUser(user, meeting, true, true, false);
 		meetingUserRepository.save(meetingUser);
 
-		return meetingRepository.save(meeting).getId();
+		return id;
 	}
 
 	@Transactional
 	public void update(Long id, MeetingUpdateRequest meetingUpdateRequest, MultipartFile multipartFile,
 		CustomUserDetails customUserDetails) {
+
 		validateUserIsAuthor(customUserDetails.getId(), id);
 
 		Cafe cafe = cafeRepository.findById(meetingUpdateRequest.getCafeId())
@@ -120,7 +122,7 @@ public class MeetingService {
 
 	@Transactional
 	public String uploadFile(MultipartFile multipartFile) {
-		if (multipartFile ==null){
+		if (multipartFile == null) {
 			return null;
 		}
 
@@ -130,14 +132,21 @@ public class MeetingService {
 
 	public MeetingDetailResponse findById(Long id, CustomUserDetails customUserDetails) {
 
-		MeetingUser meetingUser = meetingUserRepository.findByUserIdAndMeetingId(customUserDetails.getId(), id)
-			.orElseThrow(() -> new MeetingUserNotFoundException());
+		boolean isLeader = validateIsLeader(customUserDetails.getId(), id);
 
-		MeetingDetailResponse response = meetingRepository.findDetailById(id, customUserDetails.getId(),
-				meetingUser.getIsLeader())
+		MeetingDetailResponse response = meetingRepository.findDetailById(id, customUserDetails.getId(), isLeader)
 			.orElseThrow(() -> new MeetingNotFoundException());
 
 		return response;
+	}
+
+	private boolean validateIsLeader(Long userId, Long id) {
+		Optional<MeetingUser> meetingUser = meetingUserRepository.findByUserIdAndMeetingId(userId, id);
+
+		if (meetingUser.isPresent() && meetingUser.get().getIsLeader()) {
+			return true;
+		}
+		return false;
 	}
 
 	@Transactional
@@ -263,7 +272,7 @@ public class MeetingService {
 		User user = userRepository.findById(customUserDetails.getId())
 			.orElseThrow(() -> new UserNotFoundException());
 
-		Optional<MeetingLike> meetingLike = meetingLikeRepository.findByMeetingAndUser(meeting,user);
+		Optional<MeetingLike> meetingLike = meetingLikeRepository.findByMeetingAndUser(meeting, user);
 
 		if (meetingLike.isPresent()) {
 			meetingLikeRepository.delete(meetingLike.get());
@@ -272,6 +281,5 @@ public class MeetingService {
 			meetingLikeRepository.save(meetingLike1);
 		}
 	}
-
 
 }
