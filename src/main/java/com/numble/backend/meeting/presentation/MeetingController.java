@@ -2,8 +2,6 @@ package com.numble.backend.meeting.presentation;
 
 import java.net.URI;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
 
 import javax.validation.Valid;
 import javax.websocket.server.PathParam;
@@ -27,11 +25,8 @@ import org.springframework.web.multipart.MultipartFile;
 import com.numble.backend.common.config.security.CustomUserDetails;
 import com.numble.backend.common.dto.ResponseDto;
 import com.numble.backend.meeting.application.MeetingService;
-import com.numble.backend.meeting.domain.Meeting;
 import com.numble.backend.meeting.dto.request.MeetingCreateRequest;
 import com.numble.backend.meeting.dto.request.MeetingUpdateRequest;
-import com.numble.backend.post.application.PostService;
-import com.numble.backend.post.dto.request.PostCreateRequest;
 
 import lombok.RequiredArgsConstructor;
 
@@ -110,7 +105,7 @@ public class MeetingController {
 
 		final Long meetingUserId = meetingService.saveMeetingUser(id, customUserDetails);
 
-		return ResponseEntity.created(URI.create("/api/meetings/" + meetingUserId)).build();
+		return ResponseEntity.created(URI.create("/api/meetings/" + meetingUserId + "/register")).build();
 	}
 
 	@PutMapping("/{id}/approve/{userId}") //모임 신청 승인
@@ -149,6 +144,7 @@ public class MeetingController {
 
 		return ResponseEntity.noContent().build();
 	}
+
 	@GetMapping("/like") //모임 좋아요 조회
 	public ResponseEntity<ResponseDto> findAllByLike(@AuthenticationPrincipal CustomUserDetails customUserDetails,
 		@PageableDefault(size = 10) Pageable pageable) {

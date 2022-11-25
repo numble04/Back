@@ -4,8 +4,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.Column;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.numble.backend.cafe.domain.Cafe;
@@ -57,7 +55,7 @@ public class MeetingDetailResponse {
 		this.time = time;
 		this.cost = cost;
 		this.maxPersonnel = maxPersonnel;
-		this.nowPersonnel = (int) (long) nowPersonnel;
+		this.nowPersonnel = (int)(long)nowPersonnel;
 		this.likeCount = likeCount;
 		this.day = day;
 		this.isFull = isFull;

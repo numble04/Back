@@ -23,7 +23,7 @@ public class MeetingCreateRequest {
 	private String content;
 
 	@NotNull(message = "인원수를 입력해 주세요")
-	@Range(min = 2, max=100, message = "최소 2명 부터 100명까지 가능합니다.")
+	@Range(min = 2, max = 100, message = "최소 2명 부터 100명까지 가능합니다.")
 	private Integer capacity;
 
 	private String kakaoUrl;

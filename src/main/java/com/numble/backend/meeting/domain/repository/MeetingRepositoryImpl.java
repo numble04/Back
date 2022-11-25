@@ -106,6 +106,7 @@ public class MeetingRepositoryImpl implements MeetingRepositoryCustom {
 			.innerJoin(meetingUser.meeting, meeting)
 			.where(meetingUser.user.id.eq(userId)
 				.and(meetingUser.isApproved.eq(Boolean.TRUE))
+				.and(meetingUser.isRejected.eq(Boolean.FALSE))
 				.and(meeting.day.after(LocalDateTime.now().minusDays(1))))
 			.groupBy(meeting)
 			.offset(pageable.getOffset())
@@ -213,8 +214,10 @@ public class MeetingRepositoryImpl implements MeetingRepositoryCustom {
 			.orderBy(meetingUser.isLeader.desc(), meetingUser.isApproved.desc())
 			.fetch();
 
-		response.get().setUsers(meetingUserResponses);
-		response.get().setIsLeader(isLeader);
+		if(response.isPresent()) {
+			response.get().setUsers(meetingUserResponses);
+			response.get().setIsLeader(isLeader);
+		}
 
 		return response;
 	}
