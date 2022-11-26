@@ -10,9 +10,7 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 import com.numble.backend.common.domain.BaseEntity;
-import com.numble.backend.common.exception.business.InvalidFieldException;
 import com.numble.backend.game.dto.request.GameReviewUpdateRequest;
-import com.numble.backend.post.dto.request.PostUpdateRequest;
 import com.numble.backend.user.domain.User;
 import com.numble.backend.user.exception.UserNotAuthorException;
 
@@ -29,7 +27,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @Table(uniqueConstraints = {
 	@UniqueConstraint(name = "uk_game_review_rate", columnNames = {"rate"}),
-	@UniqueConstraint(name = "uk_game_review_created_at", columnNames = {"created_at"})
+	@UniqueConstraint(name = "uk_game_review_created_at", columnNames = {"createdAt"})
 })
 public class GameReview extends BaseEntity {
 
