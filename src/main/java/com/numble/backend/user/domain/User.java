@@ -12,7 +12,10 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Getter
 @Builder
-@Table(uniqueConstraints = {@UniqueConstraint(name = "uk_user_email", columnNames = {"email"})})
+@Table(uniqueConstraints = {
+	@UniqueConstraint(name = "uk_user_email", columnNames = {"email"}),
+	@UniqueConstraint(name = "uk_user_nickname", columnNames = {"nickname"})
+})
 public class User extends BaseEntity {
 
 	@Column(nullable = false)
