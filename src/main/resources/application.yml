@@ -35,7 +35,7 @@ spring:
                 BasicBinder: TRACE
 
 jwt:
-  secret: my-32-character-ultra-secure-and-ultra-long-secret
+  secret: ${JWT_SECRET}
 
 
 cloud:
