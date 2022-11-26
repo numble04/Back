@@ -73,13 +73,12 @@ public class PostController {
 	}
 
 	@GetMapping("/search")
-	public ResponseEntity<ResponseDto> findAllBySearch(@RequestParam("type") PostType type,
-		@RequestParam("searchWord") String searchWord,
+	public ResponseEntity<ResponseDto> findAllBySearch(@RequestParam("searchWord") String searchWord,
 		@PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
 		@AuthenticationPrincipal CustomUserDetails customUserDetails) {
 
 		ResponseDto responseDto = ResponseDto.of(
-			postService.findAllBySearch(type, searchWord, pageable, customUserDetails));
+			postService.findAllBySearch(searchWord, pageable, customUserDetails));
 
 		return ResponseEntity.ok(responseDto);
 	}

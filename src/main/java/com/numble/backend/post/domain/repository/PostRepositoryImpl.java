@@ -181,7 +181,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
 	}
 
 	@Override
-	public Slice<PostResponse> findAllByTypeAndSearch(PostType type, String searchWord, Long userId,
+	public Slice<PostResponse> findAllBySearch(String searchWord, Long userId,
 		Pageable pageable) {
 
 		List<PostResponse> content = queryFactory
@@ -209,7 +209,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
 				post.updatedAt))
 			.from(post)
 			.innerJoin(post.user, user)
-			.where(post.type.eq(type).and(post.content.contains(searchWord).or(post.title.contains(searchWord))))
+			.where(post.content.contains(searchWord).or(post.title.contains(searchWord)))
 			.offset(pageable.getOffset())
 			.limit(pageable.getPageSize() + 1)
 			.orderBy(post.createdAt.desc())

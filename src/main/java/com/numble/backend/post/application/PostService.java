@@ -69,10 +69,10 @@ public class PostService {
 		return postRepository.findAllByType(type, customUserDetails.getId(), pageable);
 	}
 
-	public Slice<PostResponse> findAllBySearch(PostType type, String searchWord, Pageable pageable,
+	public Slice<PostResponse> findAllBySearch(String searchWord, Pageable pageable,
 		CustomUserDetails customUserDetails) {
 
-		return postRepository.findAllByTypeAndSearch(type, searchWord, customUserDetails.getId(), pageable);
+		return postRepository.findAllBySearch(searchWord, customUserDetails.getId(), pageable);
 	}
 
 	@Transactional

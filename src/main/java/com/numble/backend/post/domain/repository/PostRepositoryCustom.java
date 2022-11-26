@@ -15,7 +15,7 @@ public interface PostRepositoryCustom {
 
 	Slice<PostResponse> findAllByType(PostType type, Long userId, Pageable pageable);
 
-	Slice<PostResponse> findAllByTypeAndSearch(PostType type, String searchWord, Long userId, Pageable pageable);
+	Slice<PostResponse> findAllBySearch(String searchWord, Long userId, Pageable pageable);
 
 	Slice<MyPostResponse> findAllByUser(Long userId, Pageable pageable);
 
