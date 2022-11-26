@@ -14,6 +14,7 @@ import com.numble.backend.game.dto.request.GameReviewCreateRequest;
 import com.numble.backend.game.dto.request.GameReviewUpdateRequest;
 import com.numble.backend.game.dto.response.ReviewResponse;
 import com.numble.backend.game.exception.GameNotFoundException;
+import com.numble.backend.game.exception.GameReviewExistException;
 import com.numble.backend.game.exception.GameReviewsNotFoundException;
 import com.numble.backend.user.domain.User;
 import com.numble.backend.user.domain.UserRepository;
@@ -40,10 +41,18 @@ public class GameReviewService {
 		Game game = gameRepository.findById(gameId)
 			.orElseThrow(() ->  new GameNotFoundException());
 
+		validateReview(user,game);
+
 		GameReview gameReview  = GameReviewCreateMapper.INSTANCE
 			.toEntity(gameReviewCreateRequest,user,game);
 
 		return gameReviewRepository.save(gameReview).getId();
+	}
+
+	private void validateReview(User user, Game game) {
+		if (gameReviewRepository.existsByUserAndGame(user, game)) {
+			throw new GameReviewExistException();
+		}
 	}
 
 	public Slice<ReviewResponse> findReviewsByGameId(Long userId, Long gameId, Pageable pageable) {
