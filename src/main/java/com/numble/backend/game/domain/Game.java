@@ -6,6 +6,8 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.numble.backend.common.domain.BaseEntity;
@@ -21,6 +23,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Getter
 @Builder
+@Table(uniqueConstraints = {
+	@UniqueConstraint(name = "uk_game_title", columnNames = {"title"}),
+	@UniqueConstraint(name = "uk_game_rate", columnNames = {"rate"}),
+	@UniqueConstraint(name = "uk_game_level", columnNames = {"level"})
+})
 public class Game extends BaseEntity {
 
 	@Column(nullable = false)
