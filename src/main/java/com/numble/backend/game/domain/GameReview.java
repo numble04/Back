@@ -6,6 +6,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import com.numble.backend.common.domain.BaseEntity;
 import com.numble.backend.common.exception.business.InvalidFieldException;
@@ -25,6 +27,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Getter
 @Builder
+@Table(uniqueConstraints = {
+	@UniqueConstraint(name = "uk_game_review_rate", columnNames = {"rate"}),
+	@UniqueConstraint(name = "uk_game_review_created_at", columnNames = {"created_at"})
+})
 public class GameReview extends BaseEntity {
 
 	@Column(nullable = false, columnDefinition = "TEXT")
