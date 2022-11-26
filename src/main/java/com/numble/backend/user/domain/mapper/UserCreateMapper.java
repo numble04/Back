@@ -1,11 +1,11 @@
 package com.numble.backend.user.domain.mapper;
 
-import com.numble.backend.user.domain.User;
-import com.numble.backend.user.dto.request.UserCreateRequest;
-
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
+
+import com.numble.backend.user.domain.User;
+import com.numble.backend.user.dto.request.UserCreateRequest;
 
 @Mapper(componentModel = "spring")
 public interface UserCreateMapper {

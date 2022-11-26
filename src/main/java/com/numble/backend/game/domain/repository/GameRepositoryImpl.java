@@ -1,25 +1,18 @@
 package com.numble.backend.game.domain.repository;
 
 import static com.numble.backend.game.domain.QGame.game;
-import static com.numble.backend.game.domain.QTheme.theme;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.data.domain.Sort;
 
-import com.numble.backend.game.domain.Theme;
-import com.numble.backend.game.dto.response.GameDetailResponse;
 import com.numble.backend.game.dto.response.GameResponse;
 import com.numble.backend.game.dto.response.QGameResponse;
-import com.numble.backend.game.dto.response.QThemeResponse;
-import com.numble.backend.game.dto.response.ThemeResponse;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
-import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;

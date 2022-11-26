@@ -1,8 +1,5 @@
 package com.numble.backend.cafe.dto.response;
 
-import org.locationtech.jts.geom.Point;
-import org.springframework.web.bind.annotation.GetMapping;
-
 import lombok.Builder;
 import lombok.Getter;
 

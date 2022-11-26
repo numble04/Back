@@ -1,6 +1,5 @@
 package com.numble.backend.game.domain.repository;
 
-import static com.numble.backend.game.domain.QGame.game;
 import static com.numble.backend.game.domain.QGameReview.gameReview;
 
 import java.util.List;
@@ -10,7 +9,6 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.data.domain.Sort;
 
-import com.numble.backend.game.domain.GameReview;
 import com.numble.backend.game.dto.response.QReviewResponse;
 import com.numble.backend.game.dto.response.ReviewResponse;
 import com.querydsl.core.types.Order;

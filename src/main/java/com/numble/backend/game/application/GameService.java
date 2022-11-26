@@ -10,7 +10,6 @@ import com.numble.backend.game.domain.repository.GameRepository;
 import com.numble.backend.game.dto.response.GameDetailResponse;
 import com.numble.backend.game.dto.response.GameResponse;
 import com.numble.backend.game.exception.GameNotFoundException;
-import com.numble.backend.game.exception.GameTypeErrorException;
 
 import lombok.RequiredArgsConstructor;
 
