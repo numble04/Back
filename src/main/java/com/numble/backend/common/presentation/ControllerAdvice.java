@@ -2,17 +2,7 @@ package com.numble.backend.common.presentation;
 
 import javax.validation.ConstraintViolationException;
 
-import com.numble.backend.common.dto.ExceptionResponse;
-import com.numble.backend.common.exception.business.BusinessException;
-import com.numble.backend.common.exception.auth.ExceptionCode;
-
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.security.SignatureException;
-import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.core.codec.DecodingException;
-import org.springframework.core.convert.ConversionFailedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -20,6 +10,15 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import com.numble.backend.common.dto.ExceptionResponse;
+import com.numble.backend.common.exception.auth.ExceptionCode;
+import com.numble.backend.common.exception.business.BusinessException;
+
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.security.SignatureException;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestControllerAdvice

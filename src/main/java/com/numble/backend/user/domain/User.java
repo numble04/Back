@@ -1,11 +1,18 @@
 package com.numble.backend.user.domain;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
+
 import com.numble.backend.common.domain.BaseEntity;
 import com.numble.backend.user.dto.request.UserUpdateRequest;
 
-import lombok.*;
-
-import javax.persistence.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

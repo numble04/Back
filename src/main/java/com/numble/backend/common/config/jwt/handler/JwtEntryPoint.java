@@ -1,15 +1,16 @@
 package com.numble.backend.common.config.jwt.handler;
 
-import com.numble.backend.common.exception.auth.ExceptionCode;
+import java.io.IOException;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.json.JSONObject;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import com.numble.backend.common.exception.auth.ExceptionCode;
 
 // bean으로 등록됨
 @Component

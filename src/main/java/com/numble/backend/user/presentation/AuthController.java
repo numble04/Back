@@ -7,16 +7,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
-import com.numble.backend.common.dto.ResponseDto;
-import com.numble.backend.user.application.AuthService;
-import com.numble.backend.user.dto.request.UserCreateRequest;
-import com.numble.backend.user.dto.request.UserLoginRequest;
-import com.numble.backend.user.dto.response.UserTokenResponse;
-
-import lombok.RequiredArgsConstructor;
-
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,6 +16,13 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.numble.backend.common.dto.ResponseDto;
+import com.numble.backend.user.application.AuthService;
+import com.numble.backend.user.dto.request.UserCreateRequest;
+import com.numble.backend.user.dto.request.UserLoginRequest;
+
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/auth")

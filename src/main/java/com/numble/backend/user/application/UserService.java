@@ -1,49 +1,29 @@
 package com.numble.backend.user.application;
 
-import java.io.FileNotFoundException;
-import java.util.List;
-
-import com.amazonaws.services.s3.AmazonS3Client;
-import com.numble.backend.common.config.jwt.JwtTokenUtil;
-import com.numble.backend.common.config.jwt.enums.JwtExpirationEnums;
-import com.numble.backend.common.domain.access.LogoutAccessToken;
-import com.numble.backend.common.domain.access.LogoutAccessTokenRedisRepository;
-import com.numble.backend.common.domain.refresh.RefreshToken;
-import com.numble.backend.common.domain.refresh.RefreshTokenRedisRepository;
-import com.numble.backend.common.exception.business.FileUploadFailedException;
-import com.numble.backend.common.utils.S3Utils;
-import com.numble.backend.post.domain.Image;
-import com.numble.backend.post.domain.Post;
-import com.numble.backend.post.domain.repository.ImageRepository;
-import com.numble.backend.post.exception.PostNotFoundException;
-import com.numble.backend.user.domain.Token;
-import com.numble.backend.user.domain.User;
-import com.numble.backend.user.domain.mapper.UserInfoMapper;
-import com.numble.backend.user.domain.mapper.UserMapper;
-import com.numble.backend.user.domain.UserRepository;
-import com.numble.backend.user.domain.mapper.UserCreateMapper;
-import com.numble.backend.user.dto.request.UserCreateRequest;
-import com.numble.backend.user.dto.request.UserLoginRequest;
-import com.numble.backend.user.dto.request.UserUpdateRequest;
-import com.numble.backend.user.dto.response.UserInfoResponse;
-import com.numble.backend.user.dto.response.UserTokenResponse;
-import com.numble.backend.user.exception.EmailExistsException;
-import com.numble.backend.user.exception.EmailNotExistsException;
-import com.numble.backend.user.exception.InvalidPasswordException;
-import com.numble.backend.user.exception.NicknameExistsException;
-import com.numble.backend.user.exception.TokenErrorException;
-import com.numble.backend.user.exception.UserNotFoundException;
-
-import io.jsonwebtoken.io.DecodingException;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.amazonaws.services.s3.AmazonS3Client;
+import com.numble.backend.common.config.jwt.JwtTokenUtil;
+import com.numble.backend.common.domain.access.LogoutAccessToken;
+import com.numble.backend.common.domain.access.LogoutAccessTokenRedisRepository;
+import com.numble.backend.common.domain.refresh.RefreshTokenRedisRepository;
+import com.numble.backend.common.exception.business.FileUploadFailedException;
+import com.numble.backend.common.utils.S3Utils;
+import com.numble.backend.user.domain.User;
+import com.numble.backend.user.domain.UserRepository;
+import com.numble.backend.user.domain.mapper.UserInfoMapper;
+import com.numble.backend.user.dto.request.UserUpdateRequest;
+import com.numble.backend.user.dto.response.UserInfoResponse;
+import com.numble.backend.user.exception.NicknameExistsException;
+import com.numble.backend.user.exception.TokenErrorException;
+import com.numble.backend.user.exception.UserNotFoundException;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service

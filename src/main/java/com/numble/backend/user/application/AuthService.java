@@ -1,6 +1,10 @@
 package com.numble.backend.user.application;
 
-import java.util.Optional;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import com.numble.backend.common.config.jwt.JwtTokenUtil;
 import com.numble.backend.common.config.jwt.enums.JwtExpirationEnums;
@@ -25,14 +29,7 @@ import com.numble.backend.user.exception.TokenErrorException;
 import com.numble.backend.user.exception.TokenNotExistsException;
 import com.numble.backend.user.exception.UserNotFoundException;
 
-import io.jsonwebtoken.io.DecodingException;
 import lombok.RequiredArgsConstructor;
-
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 @Service
 @Transactional(readOnly = true)
