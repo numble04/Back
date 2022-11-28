@@ -4,13 +4,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.numble.backend.cafe.domain.Cafe;
-import com.numble.backend.cafe.domain.CafeRepository;
-import com.numble.backend.cafe.domain.mapper.CafeResponseMapper;
+import com.numble.backend.cafe.domain.repository.CafeRepository;
 import com.numble.backend.cafe.dto.response.CafeResponse;
-import com.numble.backend.cafe.exception.CafeNotFoundException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -22,9 +18,7 @@ public class CafeService {
 	private final CafeRepository cafeRepository;
 
 	public Slice<CafeResponse> findByKeyword(String keyword, Pageable pageable) {
-		Slice<CafeResponse> responses = cafeRepository
-			.findByNameContainingOrDongContaining(keyword,keyword, pageable)
-			.map(CafeResponseMapper.INSTANCE::toDto);
+		Slice<CafeResponse> responses = cafeRepository.findCafesContainingTitleAndDong(keyword, pageable);
 
 		return responses;
 	}
