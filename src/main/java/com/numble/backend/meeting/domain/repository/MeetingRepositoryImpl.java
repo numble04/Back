@@ -68,7 +68,7 @@ public class MeetingRepositoryImpl implements MeetingRepositoryCustom {
 			.from(meetingUser)
 			.innerJoin(meetingUser.meeting, meeting)
 			.where(eqCityAndDong(city, dong)
-				.and(dateBetween(startDate, endDate)))
+				,(dateBetween(startDate, endDate)))
 			.groupBy(meeting)
 			.offset(pageable.getOffset())
 			.limit(pageable.getPageSize() + 1)
@@ -265,7 +265,7 @@ public class MeetingRepositoryImpl implements MeetingRepositoryCustom {
 	}
 
 	private BooleanExpression eqCityAndDong(String city, String dong) {
-
+		System.out.println("city = " + city);
 		if (city == null || dong == null) {
 			return null;
 		}
