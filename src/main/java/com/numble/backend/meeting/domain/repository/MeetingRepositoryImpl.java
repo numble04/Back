@@ -3,8 +3,6 @@ package com.numble.backend.meeting.domain.repository;
 import static com.numble.backend.meeting.domain.QMeeting.meeting;
 import static com.numble.backend.meeting.domain.QMeetingLike.meetingLike;
 import static com.numble.backend.meeting.domain.QMeetingUser.meetingUser;
-import static com.numble.backend.post.domain.QPost.post;
-import static com.numble.backend.post.domain.QPostLike.postLike;
 import static com.numble.backend.user.domain.QUser.user;
 import static com.querydsl.core.types.ExpressionUtils.count;
 
@@ -18,19 +16,14 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.data.domain.Sort;
 
-import com.numble.backend.meeting.domain.QMeetingLike;
-import com.numble.backend.meeting.domain.QMeetingUser;
 import com.numble.backend.meeting.dto.response.MeetingDetailResponse;
 import com.numble.backend.meeting.dto.response.MeetingResponse;
 import com.numble.backend.meeting.dto.response.MeetingUserResponse;
 import com.numble.backend.meeting.dto.response.MyMeetingResponse;
 import com.numble.backend.meeting.dto.response.QMeetingDetailResponse;
 import com.numble.backend.meeting.dto.response.QMeetingResponse;
-
 import com.numble.backend.meeting.dto.response.QMeetingUserResponse;
 import com.numble.backend.meeting.dto.response.QMyMeetingResponse;
-import com.numble.backend.post.dto.response.PostDetailResponse;
-import com.numble.backend.post.dto.response.QPostDetailResponse;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -265,7 +258,6 @@ public class MeetingRepositoryImpl implements MeetingRepositoryCustom {
 	}
 
 	private BooleanExpression eqCityAndDong(String city, String dong) {
-		System.out.println("city = " + city);
 		if (city == null || dong == null) {
 			return null;
 		}
