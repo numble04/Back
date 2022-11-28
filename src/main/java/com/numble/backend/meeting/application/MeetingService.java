@@ -12,7 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.numble.backend.cafe.domain.Cafe;
-import com.numble.backend.cafe.domain.CafeRepository;
+import com.numble.backend.cafe.domain.repository.CafeRepository;
 import com.numble.backend.cafe.exception.CafeNotFoundException;
 import com.numble.backend.common.config.security.CustomUserDetails;
 import com.numble.backend.common.utils.S3Utils;
