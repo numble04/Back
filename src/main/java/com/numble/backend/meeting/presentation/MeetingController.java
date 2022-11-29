@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,6 +29,8 @@ import com.numble.backend.common.dto.ResponseDto;
 import com.numble.backend.meeting.application.MeetingService;
 import com.numble.backend.meeting.dto.request.MeetingCreateRequest;
 import com.numble.backend.meeting.dto.request.MeetingUpdateRequest;
+import com.numble.backend.meeting.dto.response.MeetingCreateResponse;
+import com.numble.backend.meeting.dto.response.MeetingResponse;
 
 import lombok.RequiredArgsConstructor;
 
@@ -37,14 +41,16 @@ public class MeetingController {
 
 	private final MeetingService meetingService;
 
+	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping // 모임 생성
-	public ResponseEntity<Void> save(@AuthenticationPrincipal CustomUserDetails customUserDetails,
+	public ResponseEntity<ResponseDto> save(@AuthenticationPrincipal CustomUserDetails customUserDetails,
 		@RequestPart(value = "meetingRequest") @Valid MeetingCreateRequest meetingCreateRequest,
 		@RequestPart(value = "file", required = false) MultipartFile multipartFile) {
 
 		final Long id = meetingService.save(customUserDetails, meetingCreateRequest, multipartFile);
+		ResponseDto responseDto = ResponseDto.of(new MeetingCreateResponse(id));
 
-		return ResponseEntity.created(URI.create("/api/meetings/" + id)).build();
+		return ResponseEntity.created(URI.create("/api/meetings/" + id)).body(responseDto);
 	}
 
 	@GetMapping // 모임 조회
