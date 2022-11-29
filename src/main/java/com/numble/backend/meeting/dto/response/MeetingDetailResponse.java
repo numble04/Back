@@ -34,6 +34,7 @@ public class MeetingDetailResponse {
 
 	private String cafeName;
 	private Long cafeId;
+	private String cafeAddress;
 	private Double latitude;
 	private Double longitude;
 
@@ -61,6 +62,7 @@ public class MeetingDetailResponse {
 		this.isFull = isFull;
 		this.cafeName = cafe.getName();
 		this.cafeId = cafe.getId();
+		this.cafeAddress = cafe.getAddress();
 		this.latitude = cafe.getPoint().getY();
 		this.longitude = cafe.getPoint().getX();
 		this.myLike = myLike;
