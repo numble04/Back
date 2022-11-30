@@ -84,5 +84,5 @@ public class User extends BaseEntity {
 		this.img = img;
 	}
 
-	public void deleteImg() {this.img = "";}
+	public void deleteImg() {this.img = null;}
 }
