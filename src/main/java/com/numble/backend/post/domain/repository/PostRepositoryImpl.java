@@ -62,7 +62,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
 				JPAExpressions
 					.select()
 					.from(postLike)
-					.where(postLike.post.eq(post).and(user.id.eq(userId)))
+					.where(postLike.post.eq(post).and(postLike.user.id.eq(userId)))
 					.exists()))
 			.from(post)
 			.innerJoin(post.user, user)
@@ -88,7 +88,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
 				JPAExpressions
 					.select()
 					.from(commentLike)
-					.where(commentLike.comment.eq(comment).and(user.id.eq(userId)))
+					.where(commentLike.comment.eq(comment).and(commentLike.user.id.eq(userId)))
 					.exists(),
 				comment.createdAt,
 				comment.updatedAt))
@@ -114,7 +114,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
 				JPAExpressions
 					.select()
 					.from(commentLike)
-					.where(commentLike.comment.eq(comment).and(user.id.eq(userId)))
+					.where(commentLike.comment.eq(comment).and(commentLike.user.id.eq(userId)))
 					.exists(),
 				comment.createdAt,
 				comment.updatedAt
@@ -157,7 +157,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
 				JPAExpressions
 					.select()
 					.from(postLike)
-					.where(postLike.post.eq(post).and(user.id.eq(userId)))
+					.where(postLike.post.eq(post).and(postLike.user.id.eq(userId)))
 					.exists(),
 				user.nickname,
 				user.img,
@@ -201,7 +201,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
 				JPAExpressions
 					.select()
 					.from(postLike)
-					.where(postLike.post.eq(post).and(user.id.eq(userId)))
+					.where(postLike.post.eq(post).and(postLike.user.id.eq(userId)))
 					.exists(),
 				user.nickname,
 				user.img,
