@@ -61,7 +61,7 @@ public class MeetingRepositoryImpl implements MeetingRepositoryCustom {
 			.from(meetingUser)
 			.innerJoin(meetingUser.meeting, meeting)
 			.where(eqCityAndDong(city, dong)
-				,(dateBetween(startDate, endDate)))
+				, (dateBetween(startDate, endDate)))
 			.groupBy(meeting)
 			.offset(pageable.getOffset())
 			.limit(pageable.getPageSize() + 1)
@@ -183,6 +183,13 @@ public class MeetingRepositoryImpl implements MeetingRepositoryCustom {
 					.select()
 					.from(meetingUser)
 					.where(meetingUser.meeting.eq(meeting).and(user.id.eq(userId)))
+					.exists(),
+				JPAExpressions
+					.select()
+					.from(meetingUser)
+					.where(meetingUser.meeting.eq(meeting)
+						.and(user.id.eq(userId))
+						.and(meetingUser.isApproved.eq(Boolean.TRUE)))
 					.exists()
 			))
 			.from(meetingUser)
@@ -207,7 +214,7 @@ public class MeetingRepositoryImpl implements MeetingRepositoryCustom {
 			.orderBy(meetingUser.isLeader.desc(), meetingUser.isApproved.desc())
 			.fetch();
 
-		if(response.isPresent()) {
+		if (response.isPresent()) {
 			response.get().setUsers(meetingUserResponses);
 			response.get().setIsLeader(isLeader);
 		}

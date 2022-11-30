@@ -31,7 +31,6 @@ public class MeetingDetailResponse {
 
 	@JsonProperty(value = "isFull")
 	private Boolean isFull;
-
 	private String cafeName;
 	private Long cafeId;
 	private String cafeAddress;
@@ -43,11 +42,12 @@ public class MeetingDetailResponse {
 	private Boolean myLike;
 	private Boolean isLeader;
 	private Boolean isRegistered;
+	private Boolean isAttended;
 
 	@QueryProjection
 	public MeetingDetailResponse(Long id, String title, String content, String kakaoUrl, String img,
 		Integer time, Integer cost, Integer maxPersonnel, Long nowPersonnel, Integer likeCount, LocalDateTime day,
-		Boolean isFull, Cafe cafe, boolean myLike, boolean isRegistered) {
+		Boolean isFull, Cafe cafe, boolean myLike, boolean isRegistered, boolean isAttended) {
 		this.id = id;
 		this.title = title;
 		this.content = content;
@@ -67,5 +67,6 @@ public class MeetingDetailResponse {
 		this.longitude = cafe.getPoint().getX();
 		this.myLike = myLike;
 		this.isRegistered = isRegistered;
+		this.isAttended = isAttended;
 	}
 }
