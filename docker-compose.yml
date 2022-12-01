@@ -14,6 +14,19 @@ services:
       - ./nginx/conf.d:/etc/nginx/conf.d
     depends_on:
       - backend
+  
+  frontend:
+    restart: always
+    container_name: boardker_frontend
+    build:
+      context: ./front
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    expose:
+      - 3000
+    depends_on:
+      - backend
 
   redis:
     image: redis:alpine
@@ -32,15 +45,15 @@ services:
     expose:
       - 8080
     environment:
-      SPRING_DATASOURCE_driver-class-name: com.mysql.cj.jdbc.Driver
-      SPRING_DATASOURCE_URL: jdbc:mysql://${RDS_ENDPOINT}:3306/boardker?useSSL=false
-      SPRING_DATASOURCE_USERNAME: ${DB_USERNAME}
-      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
-      SPRING_REDIS_HOST: redis
-      JWT_SECRET: ${JWT_SECRET}
-      CLOUD_AWS_CREDENTIALS_ACCESSKEY: ${AWS_ACCESS_KEY_ID}
-      CLOUD_AWS_CREDENTIALS_SECRETKEY: ${AWS_SECRET_ACCESS_KEY}
-
+     SPRING_DATASOURCE_driver-class-name: com.mysql.cj.jdbc.Driver
+     SPRING_DATASOURCE_URL: jdbc:mysql://${RDS_ENDPOINT}:3306/boardker?useSSL=false
+     SPRING_DATASOURCE_USERNAME: ${DB_USERNAME}
+     SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+     SPRING_REDIS_HOST: redis
+     JWT_SECRET: ${JWT_SECRET}
+     CLOUD_AWS_CREDENTIALS_ACCESSKEY: ${AWS_ACCESS_KEY_ID}
+     CLOUD_AWS_CREDENTIALS_SECRETKEY: ${AWS_SECRET_ACCESS_KEY}
+      
 
     depends_on:
       - redis
